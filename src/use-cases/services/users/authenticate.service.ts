@@ -1,8 +1,8 @@
 import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
-import { UsersRepository } from "../../database/repositories/users-repository";
-import { InputAuthenticateDto } from "../dtos/authenticate.dto";
+import { UsersRepository } from "../../../database/repositories/users-repository";
 import { compare } from "bcryptjs";
 import { User } from "@prisma/client";
+import { InputAuthenticateDto } from "./dtos/authenticate.dto";
 
 @Injectable()
 export class AuthenticateService {

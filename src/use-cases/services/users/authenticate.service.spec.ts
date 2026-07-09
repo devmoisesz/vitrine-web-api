@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { UsersInMemoryRepository } from '../../../test/in-memory-repository/users-in-memory-repository';
-import { CreateAccountService } from './create-account.service';
-import { compare, hash } from 'bcryptjs';
-import { BadRequestException, ConflictException } from '@nestjs/common';
+import { UsersInMemoryRepository } from '../../../../test/in-memory-repository/users-in-memory-repository';
+import { hash } from 'bcryptjs';
+import { BadRequestException } from '@nestjs/common';
 import { AuthenticateService } from './authenticate.service';
 
 let usersRepository: UsersInMemoryRepository;

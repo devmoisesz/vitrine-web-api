@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { UsersInMemoryRepository } from '../../../test/in-memory-repository/users-in-memory-repository';
+import { UsersInMemoryRepository } from '../../../../test/in-memory-repository/users-in-memory-repository';
 import { CreateAccountService } from './create-account.service';
 import { compare } from 'bcryptjs';
 import { ConflictException } from '@nestjs/common';

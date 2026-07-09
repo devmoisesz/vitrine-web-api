@@ -4,7 +4,7 @@ import { UsersRepository } from "../../database/repositories/users-repository";
 import { hash } from "bcryptjs";
 
 @Injectable()
-export class CreateAccountService {
+export class RegisterCollaboratorService {
     constructor(private usersRepositoy: UsersRepository){}
 
     async execute(data: InputCreateAccountDto): Promise<OutputCreateAccountDto> {
