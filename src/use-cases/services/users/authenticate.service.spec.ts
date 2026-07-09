@@ -5,12 +5,12 @@ import { BadRequestException } from '@nestjs/common';
 import { AuthenticateService } from './authenticate.service';
 
 let usersRepository: UsersInMemoryRepository;
-let authenticateService: AuthenticateService;
+let sut: AuthenticateService;
 
 describe('Authenticate Service', () => {
   beforeEach(() => {
     usersRepository = new UsersInMemoryRepository();
-    authenticateService = new AuthenticateService(usersRepository);
+    sut = new AuthenticateService(usersRepository);
   });
 
   it('must be possible to authenticate the user.', async () => {
@@ -20,7 +20,7 @@ describe('Authenticate Service', () => {
       password: await hash('123456', 8),
     });
 
-    const user = await authenticateService.execute({
+    const user = await sut.execute({
       email: 'johndoe@example.com',
       password: '123456',
     });
@@ -30,7 +30,7 @@ describe('Authenticate Service', () => {
 
   it('should not be able to authenticate with wrong email', async () => {
     await expect(() =>
-      authenticateService.execute({
+      sut.execute({
         email: 'johndoe@example.com',
         password: '123456',
       }),
@@ -45,7 +45,7 @@ describe('Authenticate Service', () => {
     });
 
     await expect(() =>
-      authenticateService.execute({
+      sut.execute({
         email: 'johndoe@example.com',
         password: '123456123',
       }),

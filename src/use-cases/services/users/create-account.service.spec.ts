@@ -5,16 +5,16 @@ import { compare } from 'bcryptjs';
 import { ConflictException } from '@nestjs/common';
 
 let usersRepository: UsersInMemoryRepository;
-let createAccountService: CreateAccountService;
+let sut: CreateAccountService;
 
 describe('Create Account Service', () => {
   beforeEach(() => {
     usersRepository = new UsersInMemoryRepository();
-    createAccountService = new CreateAccountService(usersRepository);
+    sut = new CreateAccountService(usersRepository);
   });
 
   it('it should be able to create a user.', async () => {
-    const user = await createAccountService.execute({
+    const user = await sut.execute({
       name: 'John Doe',
       email: 'johndoe@example.com',
       password: '123456',
@@ -26,14 +26,14 @@ describe('Create Account Service', () => {
   it('should not be able to register with same email twice.', async () => {
     const email = 'johndoe@example.com';
 
-    await createAccountService.execute({
+    await sut.execute({
       name: 'John Doe',
       email,
       password: '123456',
     });
 
     await expect(() =>
-      createAccountService.execute({
+      sut.execute({
         name: 'John Doe',
         email,
         password: '123456',
@@ -42,7 +42,7 @@ describe('Create Account Service', () => {
   });
 
   it('Check if the password was encrypted correctly.', async () => {
-    const user = await createAccountService.execute({
+    const user = await sut.execute({
       name: 'John Doe',
       email: 'johndoe@example.com',
       password: '123456',
