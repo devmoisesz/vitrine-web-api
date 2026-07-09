@@ -12,18 +12,18 @@ datasource db {
 }
 
 enum UserRole {
-  USER
-  ADMIN
+  Usuário
+  Admin
 }
 
 enum CollaboratorRole {
-  OWNER
-  EMPLOYEE
+  Proprietário
+  Funcionário
 }
 
 enum StatusStore {
-  ACTIVE
-  INACTIVE
+  Ativa
+  Inativa
 }
 
 model User {
@@ -31,7 +31,7 @@ model User {
   name        String
   email       String @unique
   password    String?
-  role        UserRole @default(USER)
+  role        UserRole @default(Usuário)
 
   collaborator Collaborator?
   addresses Address[]
@@ -43,7 +43,7 @@ model Collaborator {
   id          String @id @default(uuid())
   userId      String @unique @map("user_id")
   storeId     String @map("store_id")
-  role        CollaboratorRole @default(EMPLOYEE)
+  role        CollaboratorRole @default(Funcionário)
   
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
@@ -57,7 +57,7 @@ model Store {
   slug        String @unique
   description String
   whatsapp    String
-  status      StatusStore @default(ACTIVE)
+  status      StatusStore @default(Ativa)
 
   collaborators Collaborator[]
   address Address?

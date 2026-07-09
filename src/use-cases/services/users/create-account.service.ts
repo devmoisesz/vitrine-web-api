@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from "@nestjs/common";
-import { InputCreateAccountDto, OutputCreateAccountDto } from "../dtos/create-account.dto";
-import { UsersRepository } from "../../database/repositories/users-repository";
+import { UsersRepository } from "../../../database/repositories/users-repository";
 import { hash } from "bcryptjs";
+import { InputCreateAccountDto, OutputCreateAccountDto } from "./dtos/create-account.dto";
 
 @Injectable()
 export class CreateAccountService {
