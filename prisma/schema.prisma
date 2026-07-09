@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum CollaboratorRole {
+  OWNER
+  EMPLOYEE
+}
+
+enum StatusStore {
+  ACTIVE
+  INACTIVE
+}
+
+model User {
+  id          String @id @default(uuid())
+  name        String
+  email       String @unique
+  password    String?
+  role        UserRole @default(USER)
+
+  collaborator Collaborator?
+  addresses Address[]
+
+  @@map("users")
+}
+
+model Collaborator {
+  id          String @id @default(uuid())
+  userId      String @unique @map("user_id")
+  storeId     String @map("store_id")
+  role        CollaboratorRole @default(EMPLOYEE)
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@map("collaborators")
+}
+
+model Store {
+  id          String @id @default(uuid())
+  name        String
+  slug        String @unique
+  description String
+  whatsapp    String
+  status      StatusStore @default(ACTIVE)
+
+  collaborators Collaborator[]
+  address Address?
+
+  @@map("stores")
+}
+
+model Address {
+  id           String   @id @default(uuid())
+  userId       String?  @map("user_id")
+  storeId      String?  @unique @map("store_id")
+  cep          String?
+  state        String
+  city         String
+  neighborhood String
+  street       String?
+  number       String?
+  complement   String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user  User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store Store? @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}

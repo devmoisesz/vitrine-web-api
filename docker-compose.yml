@@ -1,0 +1,13 @@
+services:
+  portgres:
+    container_name: vitrine-web-pg
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRESQL_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRES_DB: ${POSTGRESQL_DATABASE}
+      PGDATA: /data/postgres
+    volumes:
+      - ./data/pg:/data/postgres
