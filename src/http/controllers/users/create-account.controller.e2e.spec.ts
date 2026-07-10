@@ -54,8 +54,6 @@ describe('Create account (E2E)', () => {
       password: '123456',
     });
 
-    console.log('Mensagem de erro do NestJS:', response.body);
-
     expect(response.statusCode).toBe(201);
 
     const userOnDatebase = await prisma.user.findUnique({
