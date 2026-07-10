@@ -1,7 +1,7 @@
 services:
   portgres:
     container_name: vitrine-web-pg
-    image: postgres
+    image: postgres:17
     ports:
       - "5432:5432"
     environment:
