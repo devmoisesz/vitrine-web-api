@@ -1,5 +1,5 @@
 import { ExecutionContext, ForbiddenException, UnauthorizedException } from '@nestjs/common';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { AdminAccessGuard } from './admin-access.guard';
 
 describe('Admin Access Guard', () => {
