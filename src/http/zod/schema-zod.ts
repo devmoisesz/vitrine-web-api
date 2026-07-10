@@ -14,3 +14,12 @@ export const authenticateBodySchema = z.object({
 })
 
 export type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>
+
+export const registerCollaboratorBodySchema = z.object({
+    name: z.string(),
+    email: z.string().email(),
+    password: z.string().min(6),
+    role: z.string()
+})
+
+export type RegisterCollaboratorBodySchema = z.infer<typeof registerCollaboratorBodySchema>
