@@ -1,8 +1,8 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
-import { PrismaService } from '../../database/prisma/prisma.service';
-import { AppModule } from '../../app.module';
+import { PrismaService } from '../../../database/prisma/prisma.service';
+import { AppModule } from '../../../app.module';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
