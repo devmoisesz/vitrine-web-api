@@ -26,7 +26,6 @@ export class CreateAccountService {
             id: user.id,
             name: user.name,
             email: user.email,
-            password: user.password ?? hashedPassword
         }
     }
 }
