@@ -1,11 +1,11 @@
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('USER', 'ADMIN');
+CREATE TYPE "UserRole" AS ENUM ('Usuário', 'Admin');
 
 -- CreateEnum
-CREATE TYPE "CollaboratorRole" AS ENUM ('OWNER', 'EMPLOYEE');
+CREATE TYPE "CollaboratorRole" AS ENUM ('Proprietário', 'Funcionário');
 
 -- CreateEnum
-CREATE TYPE "StatusStore" AS ENUM ('ACTIVE', 'INACTIVE');
+CREATE TYPE "StatusStore" AS ENUM ('Ativa', 'Inativa');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -13,7 +13,7 @@ CREATE TABLE "users" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT,
-    "role" "UserRole" NOT NULL DEFAULT 'USER',
+    "role" "UserRole" NOT NULL DEFAULT 'Usuário',
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -23,7 +23,7 @@ CREATE TABLE "collaborators" (
     "id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
     "store_id" TEXT NOT NULL,
-    "role" "CollaboratorRole" NOT NULL DEFAULT 'EMPLOYEE',
+    "role" "CollaboratorRole" NOT NULL DEFAULT 'Funcionário',
 
     CONSTRAINT "collaborators_pkey" PRIMARY KEY ("id")
 );
@@ -35,7 +35,7 @@ CREATE TABLE "stores" (
     "slug" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "whatsapp" TEXT NOT NULL,
-    "status" "StatusStore" NOT NULL DEFAULT 'ACTIVE',
+    "status" "StatusStore" NOT NULL DEFAULT 'Ativa',
 
     CONSTRAINT "stores_pkey" PRIMARY KEY ("id")
 );
@@ -80,10 +80,3 @@ ALTER TABLE "addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("us
 
 -- AddForeignKey
 ALTER TABLE "addresses" ADD CONSTRAINT "addresses_store_id_fkey" FOREIGN KEY ("store_id") REFERENCES "stores"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "addresses" 
-ADD CONSTRAINT "check_address_owner" 
-CHECK (
-  ("user_id" IS NOT NULL AND "store_id" IS NULL) OR 
-  ("user_id" IS NULL AND "store_id" IS NOT NULL)
-);

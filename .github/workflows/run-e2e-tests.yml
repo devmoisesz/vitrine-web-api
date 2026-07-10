@@ -1,0 +1,42 @@
+name: Run E2E Tests
+
+on: [pull_request]
+
+jobs:
+  run-e2e-tests:
+    name: Run E2E Tests
+    runs-on: ubuntu-latest
+
+    services: 
+        postgres:
+          image: postgres:17
+          env: 
+            POSTGRES_USER: ${{ secrets.POSTGRESQL_USERNAME }}
+            POSTGRES_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
+            POSTGRES_DB: ${{ secrets.POSTGRESQL_DATABASE }}
+          ports: 
+            - 5432:5432
+          options: >-
+            --health-cmd="pg_isready -U ${{ secrets.POSTGRESQL_USERNAME }} -d ${{ secrets.POSTGRESQL_DATABASE }}"
+            --health-interval=10s
+            --health-timeout=5s
+            --health-retries=5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm test:e2e
+        env: 
+          NODE_ENV: test
+          JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+          JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}

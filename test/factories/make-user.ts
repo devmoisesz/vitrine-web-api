@@ -1,4 +1,3 @@
-import { StoresInMemoryRepository } from "../in-memory-repository/stores-in-memory-repository"
 import { randomUUID } from "node:crypto"
 import { faker } from '@faker-js/faker'
 import { InputCreateAccountDto } from "@/use-cases/services/users/dtos/create-account.dto"
@@ -15,5 +14,4 @@ export async function makeUser(
         password: faker.internet.password(),
         ...override
     })
-
 }
