@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from "@nestjs/config";
 import { envSchema } from './env/env';
 import { HttpModule } from './http/http.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { HttpModule } from './http/http.module';
       ignoreEnvFile: process.env.NODE_ENV === 'test',
     }),
     HttpModule,
+    AuthModule
   ],
 })
 export class AppModule {}

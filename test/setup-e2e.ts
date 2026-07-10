@@ -40,10 +40,7 @@ const prisma = new PrismaClient({
 });
 
 beforeAll(async () => {
-  execSync('npx prisma migrate deploy', {
-    stdio: 'inherit',
-    env: process.env
-  });
+  execSync('npx prisma migrate deploy');
 });
 
 afterAll(async () => {
