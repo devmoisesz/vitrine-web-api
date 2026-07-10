@@ -1,7 +1,6 @@
 import { CollaboratorsRepository } from '@/database/repositories/collaborators-repository';
 import { Collaborator, Prisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
-import { UsersInMemoryRepository } from './users-in-memory-repository';
 
 export class CollaboratorsInMemoryRepository implements CollaboratorsRepository {
   public items: Collaborator[] = [];

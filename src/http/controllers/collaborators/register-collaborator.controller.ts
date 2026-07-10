@@ -13,8 +13,7 @@ import {
   HttpCode,
   Param,
   Post,
-  UseGuards,
-  UsePipes,
+  UseGuards
 } from '@nestjs/common';
 
 @Controller('/stores/:storeId/collaborators')

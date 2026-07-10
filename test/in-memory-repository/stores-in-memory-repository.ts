@@ -1,7 +1,6 @@
 import { StoresRepository } from '@/database/repositories/stores-repository';
-import { UsersRepository } from '@/database/repositories/users-repository';
 import { Slug } from '@/use-cases/types/slug';
-import { Prisma, Store, User } from '@prisma/client';
+import { Prisma, Store } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 
 export class StoresInMemoryRepository implements StoresRepository {

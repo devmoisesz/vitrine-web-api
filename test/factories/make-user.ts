@@ -3,8 +3,6 @@ import { faker } from '@faker-js/faker'
 import { InputCreateAccountDto } from "@/use-cases/services/users/dtos/create-account.dto"
 import { UsersInMemoryRepository } from "../in-memory-repository/users-in-memory-repository"
 
-let inMemoryUsersRepository = new UsersInMemoryRepository()
-
 export async function makeUser(
     inMemoryUsersRepository: UsersInMemoryRepository,
     override: Partial<InputCreateAccountDto> = {},

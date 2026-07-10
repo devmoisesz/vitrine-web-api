@@ -11,7 +11,6 @@ import { hash } from 'bcryptjs';
 import { Slug } from '@/use-cases/types/slug';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
-import { randomUUID } from 'node:crypto';
 
 describe('Register collaborator (E2E)', () => {
   let app: INestApplication;

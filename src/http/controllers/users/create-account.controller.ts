@@ -1,8 +1,11 @@
 import { Public } from '@/auth/public';
 import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
-import { type CreateAccountBodySchema, createAccountBodySchema } from '@/http/zod/schema-zod';
+import {
+  type CreateAccountBodySchema,
+  createAccountBodySchema,
+} from '@/http/zod/schema-zod';
 import { CreateAccountService } from '@/use-cases/services/users/create-account.service';
-import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 
 @Controller('/accounts')
 @Public()
@@ -11,14 +14,16 @@ export class CreateAccountController {
 
   @Post()
   @HttpCode(201)
-  @UsePipes(new ZodValidationPipes(createAccountBodySchema))
-  async handle(@Body() body: CreateAccountBodySchema) {
+  async handle(
+    @Body(new ZodValidationPipes(createAccountBodySchema))
+    body: CreateAccountBodySchema,
+  ) {
     const { name, email, password } = body;
 
     await this.createAccountService.execute({
-        name, 
-        email,
-        password
-    })
+      name,
+      email,
+      password,
+    });
   }
 }
