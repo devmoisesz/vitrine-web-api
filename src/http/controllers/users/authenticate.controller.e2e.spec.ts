@@ -7,6 +7,7 @@ import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { hash } from 'bcryptjs';
+import { makeEmail } from '../../../../test/factories/make-email';
 
 describe('Create account (E2E)', () => {
   let app: INestApplication;
@@ -49,16 +50,18 @@ describe('Create account (E2E)', () => {
   });
 
   test('[POST] /authenticate', async () => {
+    const uniqueEmail = makeEmail()
+
     await prisma.user.create({
         data: {
             name: 'john doe',
-            email: 'johndoe@example.com',
+            email: uniqueEmail,
             password: await hash('123456', 8)
         }
     })
 
     const response = await request(app.getHttpServer()).post('/authenticate').send({
-      email: 'johndoe@example.com',
+      email: uniqueEmail,
       password: '123456',
     });
 
@@ -69,7 +72,7 @@ describe('Create account (E2E)', () => {
 
     const userOnDatebase = await prisma.user.findUnique({
       where: {
-        email: 'johndoe@example.com',
+        email: uniqueEmail,
       },
     });
 

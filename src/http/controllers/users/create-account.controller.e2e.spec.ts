@@ -6,6 +6,7 @@ import { AppModule } from '../../../app.module';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
+import { makeEmail } from '../../../../test/factories/make-email';
 
 describe('Create account (E2E)', () => {
   let app: INestApplication;
@@ -48,9 +49,11 @@ describe('Create account (E2E)', () => {
   });
 
   test('[POST] /accounts', async () => {
+    const uniqueEmail = makeEmail()
+
     const response = await request(app.getHttpServer()).post('/accounts').send({
       name: 'John doe',
-      email: 'johndoe@example.com',
+      email: uniqueEmail,
       password: '123456',
     });
 
@@ -58,7 +61,7 @@ describe('Create account (E2E)', () => {
 
     const userOnDatebase = await prisma.user.findUnique({
       where: {
-        email: 'johndoe@example.com',
+        email: uniqueEmail,
       },
     });
 
