@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -26,6 +21,16 @@ enum StatusStore {
   Inativa
 }
 
+enum StatusProduct {
+  Ativo
+  Inativo
+}
+
+enum StatusCart {
+  Ativo
+  Concluído
+}
+
 model User {
   id          String @id @default(uuid())
   name        String
@@ -35,6 +40,8 @@ model User {
 
   collaborator Collaborator?
   addresses Address[]
+  carts Cart[]
+  orders Order[]
 
   @@map("users")
 }
@@ -52,15 +59,23 @@ model Collaborator {
 }
 
 model Store {
-  id          String @id @default(uuid())
-  name        String
-  slug        String @unique
-  description String
-  whatsapp    String
-  status      StatusStore @default(Ativa)
+  id                String @id @default(uuid())
+  name              String
+  slug              String @unique
+  email             String? @unique
+  description       String?
+  whatsapp          String @unique
+  cnpj              String? @unique
+  cpf               String? @unique
+  status            StatusStore @default(Ativa)
+  logo_image_url    String?
+  storage_public_id String?
 
   collaborators Collaborator[]
   address Address?
+  products Product[]
+  cart Cart[]
+  orders Order[]
 
   @@map("stores")
 }
@@ -82,4 +97,117 @@ model Address {
   store Store? @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
   @@map("addresses")
+}
+
+model Product {
+  id           String   @id @default(uuid())
+  name         String
+  slug         String @unique
+  description  String
+  price        Decimal
+  stock        Int
+  status       StatusProduct @default(Ativo)
+  storeId      String @map("store_id")
+  subcategoryId String @map("subcategory_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  subcategory SubCategory @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+
+  products_images ProductImages[]
+  cart_items CartItems[]
+
+  @@index([storeId, subcategoryId])
+  @@map("products")
+}
+
+model ProductImages {
+  id           String   @id @default(uuid())
+  productId    String @map("product_id")
+  image_url    String
+  storage_public_id String
+  is_main       Boolean
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+model Category {
+  id           String   @id @default(uuid())
+  name         String
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  subcategories SubCategory[]
+  
+  @@map("categories")
+}
+
+model SubCategory {
+  id           String   @id @default(uuid())
+  name         String
+  categoryId   String @map("category_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  products Product[]
+
+  @@map("subcategories")
+}
+
+model Cart {
+  id           String   @id @default(uuid())
+  userId      String @map("user_id")
+  storeId      String  @map("store_id")
+  status       StatusCart @default(Ativo)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  cart_items CartItems[]
+
+  @@unique([userId, storeId])
+  @@map("carts")
+}
+
+model CartItems {
+  id           String   @id @default(uuid())
+  cartId       String @map("cart_id")
+  productId    String @map("product_id")
+  quantity     Int
+  priceAtPurchase Decimal @map("price_at_purchase")
+
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("cart_items")
+}
+
+model Order {
+  id           String   @id @default(uuid())
+  userId       String @map("user_id") 
+  storeId      String @map("store_id")
+  total        Decimal
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  order_items OrderItems[]
+
+  @@map("orders")
+}
+
+model OrderItems {
+  id           String   @id @default(uuid())
+  orderId      String @map("order_id")
+  productName  String
+  price        Decimal
+  quantity     Int
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_items")
 }
