@@ -16,8 +16,8 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Autenticação e Perfil (todos os usuários)
 
-- [ ] Deve ser possível se cadastrar com nome, e-mail e senha
-- [ ] Deve ser possível fazer login com e-mail e senha
+- [x] Deve ser possível se cadastrar com nome, e-mail e senha
+- [x] Deve ser possível fazer login com e-mail e senha
 - [ ] Deve ser possível fazer login com Google
 - [ ] Deve ser possível visualizar o próprio perfil
 - [ ] Deve ser possível editar os próprios dados pessoais
@@ -48,15 +48,14 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Dono da Loja (permissões do Funcionário, mais as abaixo)
 
-- [ ] Deve ser possível cadastrar funcionários e vinculá-los à própria loja
+- [x] Deve ser possível cadastrar funcionários e vinculá-los à própria loja
 - [ ] Deve ser possível editar os dados da própria loja
 - [ ] Deve ser possível desativar funcionários da própria loja
 
 ## Admin da Plataforma
 
-- [ ] Deve ser possível cadastrar lojas (nome, descrição, WhatsApp, endereço, logo, modalidades de entrega e pagamento aceitas)
-- [ ] Deve ser possível cadastrar o Dono de uma loja e vinculá-lo a ela
-- [ ] Deve ser possível cadastrar funcionários e vinculá-los a uma loja
+- [ ] Deve ser possível cadastrar lojas 
+- [x] Deve ser possível cadastrar o Dono de uma loja e vinculá-lo a ela
 - [ ] Deve ser possível desativar e reativar lojas
 - [ ] Deve ser possível desativar qualquer produto da plataforma
 - [ ] Deve ser possível visualizar todas as lojas cadastradas na plataforma
@@ -70,12 +69,11 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Usuários e Acesso
 
-- [ ] Não é permitido cadastrar dois usuários com o mesmo e-mail
-- [ ] Um Funcionário e um Dono devem estar obrigatoriamente vinculados a uma loja
-- [ ] O Funcionário não pode cadastrar outros funcionários
-- [ ] Apenas o Admin e o Dono podem cadastrar funcionários para uma loja
+- [x] Não é permitido cadastrar dois usuários com o mesmo e-mail
+- [x] Um Funcionário e um Dono devem estar obrigatoriamente vinculados a uma loja
+- [x] O Funcionário não pode cadastrar outros funcionários
+- [x] Apenas o Dono pode cadastrar funcionários para uma loja
 - [ ] O Dono e o Funcionário só podem gerenciar produtos e dados da própria loja
-- [ ] O cliente pode visualizar o catálogo, buscar produtos e acessar vitrines de lojas sem estar autenticado. No entanto, as ações de adicionar ao carrinho ou finalizar a compra exigem autenticação obrigatória
 
 ## Carrinho
 
@@ -88,7 +86,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 - [ ] A mensagem gerada deve conter: nome do cliente, lista de produtos, quantidades e modalidades de entrega e pagamento aceitas pela loja
 - [ ] Se o cliente tiver endereço cadastrado, ele deve ser incluído automaticamente na mensagem
-- [ ] Ao enviar a solicitação, o sistema deve registrar o pedido com data, loja, produtos selecionados e status **"solicitado"**
+- [ ] Ao enviar a solicitação, o sistema deve registrar o pedido com data, loja e produtos selecionados
 - [ ] O histórico do cliente exibe solicitações enviadas
 
 ## Produtos
@@ -121,18 +119,17 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Segurança
 
-- [ ] A senha do usuário deve ser armazenada criptografada com hash bcrypt
-- [ ] O usuário deve ser autenticado via JWT (JSON Web Token)
-- [ ] As entradas do usuário devem ser validadas no backend antes de serem processadas
+- [x] A senha do usuário deve ser armazenada criptografada com hash bcrypt
+- [x] O usuário deve ser autenticado via JWT (JSON Web Token)
+- [x] As entradas do usuário devem ser validadas no backend antes de serem processadas
 
 ## Dados e Armazenamento
 
-- [ ] Os dados da aplicação devem ser persistidos em banco de dados relacional
+- [x] Os dados da aplicação devem ser persistidos em banco de dados relacional
 - [ ] As imagens dos produtos devem ser armazenadas em serviço de storage externo (Cloudinary)
 
 ## Experiência e Interface
 
 - [ ] A aplicação deve ser responsiva para dispositivos móveis
-- [ ] Todas as listagens de produtos devem ser paginadas com 20 itens por página
+- [ ] Todas as listagens de produtos devem ser paginadas com 40 itens por página
 - [ ] A aplicação deve integrar com a API ViaCEP para autopreenchimento de endereços no cadastro de lojas e no perfil do cliente
-- [ ] O estado dos carrinhos das lojas do usuário não autenticado deve ser persistido temporariamente no LocalStorage do navegador para evitar perda de dados caso a página seja recarregada antes do login
