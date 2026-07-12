@@ -9,7 +9,7 @@ import { PrismaClient } from '@prisma/client';
 import { hash } from 'bcryptjs';
 import { makeEmail } from '../../../../test/factories/make-email';
 
-describe('Create account (E2E)', () => {
+describe('Authenticate (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
 
@@ -67,7 +67,8 @@ describe('Create account (E2E)', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual({
-        access_token: expect.any(String)
+        access_token: expect.any(String),
+        refresh_token: expect.any(String)
     })
 
     const userOnDatebase = await prisma.user.findUnique({

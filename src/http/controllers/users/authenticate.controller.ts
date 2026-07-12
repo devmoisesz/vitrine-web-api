@@ -44,18 +44,19 @@ export class AuthenticateController {
 
     const refreshToken = this.jwt.sign(
       { role: user.role },
-      { subject: user.id, expiresIn: '7d' },
+      { subject: user.id, expiresIn: '1h' },
     );
 
     response.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'prodution',
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60,
     });
 
     return {
       access_token: accessToken,
+      refresh_token: refreshToken,
     };
   }
 }
