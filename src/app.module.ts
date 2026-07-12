@@ -12,7 +12,7 @@ import { AuthModule } from './auth/auth.module';
       ignoreEnvFile: process.env.NODE_ENV === 'test',
     }),
     HttpModule,
-    AuthModule
+    AuthModule, 
   ],
 })
 export class AppModule {}

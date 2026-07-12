@@ -8,6 +8,8 @@ import { RegisterCollaboratorService } from "@/use-cases/services/collaborators/
 import { RegisterCollaboratorController } from "./controllers/collaborators/register-collaborator.controller";
 import { RegisterStoreController } from "./controllers/admin/register-store.controller";
 import { RegisterStoreService } from "@/use-cases/services/stores/register-store.service";
+import { RefreshTokenController } from "./controllers/users/refresh-token.controller";
+import { EnvService } from "@/env/env.service";
 
 @Module({
     imports: [DatabaseModule],
@@ -15,13 +17,15 @@ import { RegisterStoreService } from "@/use-cases/services/stores/register-store
         CreateAccountController,
         AuthenticateController,
         RegisterCollaboratorController,
-        RegisterStoreController
+        RegisterStoreController,
+        RefreshTokenController
     ],
     providers: [
         CreateAccountService,
         AuthenticateService,
         RegisterCollaboratorService,
-        RegisterStoreService
+        RegisterStoreService,
+        EnvService
     ]
 })
 export class HttpModule{}

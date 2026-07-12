@@ -8,8 +8,9 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { hash } from 'bcryptjs';
 import { makeEmail } from '../../../../test/factories/make-email';
+import cookieParser from 'cookie-parser';
 
-describe('Authenticate (E2E)', () => {
+describe('Refresh token (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
 
@@ -38,6 +39,9 @@ describe('Authenticate (E2E)', () => {
       .compile();
 
     app = moduleRef.createNestApplication();
+
+    app.use(cookieParser())
+
     prisma = app.get(PrismaService);
 
     await app.init();
@@ -49,34 +53,38 @@ describe('Authenticate (E2E)', () => {
     await app.close();
   });
 
-  test('[POST] /authenticate', async () => {
-    const uniqueEmail = makeEmail()
+  test('[POST] /refresh', async () => {
+    const uniqueEmail = makeEmail();
 
     await prisma.user.create({
-        data: {
-            name: 'john doe',
-            email: uniqueEmail,
-            password: await hash('123456', 8)
-        }
-    })
-
-    const response = await request(app.getHttpServer()).post('/authenticate').send({
-      email: uniqueEmail,
-      password: '123456',
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual({
-        access_token: expect.any(String),
-        refresh_token: expect.any(String)
-    })
-
-    const userOnDatebase = await prisma.user.findUnique({
-      where: {
+      data: {
+        name: 'john doe',
         email: uniqueEmail,
+        password: await hash('123456', 8),
       },
     });
 
-    expect(userOnDatebase).toBeTruthy();
+    const authResponse = await request(app.getHttpServer())
+      .post('/authenticate')
+      .send({
+        email: uniqueEmail,
+        password: '123456',
+      });
+
+    const cookies = authResponse.get('Set-Cookie');
+    
+    const response = await request(app.getHttpServer())
+      .patch('/refresh')
+      .set('Cookie', cookies)
+      .send();
+
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toEqual({
+        access_token: expect.any(String),
+        refresh_token: expect.any(String)
+    });
+    expect(response.get('Set-Cookie')).toEqual([
+      expect.stringContaining('refreshToken'),
+    ]);
   });
 });
