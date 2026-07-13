@@ -82,6 +82,7 @@ model Store {
 
 model Address {
   id           String   @id @default(uuid())
+  label        String?
   userId       String?  @map("user_id")
   storeId      String?  @unique @map("store_id")
   cep          String?

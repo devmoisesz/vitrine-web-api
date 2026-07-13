@@ -32,6 +32,7 @@ export class AddressInMemoryRepository implements AddressRepository {
     const address = {
       number: data.number || null,
       id: data.id ?? randomUUID(),
+      label: data.label ?? null,
       userId: data.userId || null,
       storeId: data.storeId || null,
       cep: data.cep || null,
