@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { UsersRepository } from "../../../database/repositories/users-repository";
 import { compare } from "bcryptjs";
 import { User } from "@prisma/client";

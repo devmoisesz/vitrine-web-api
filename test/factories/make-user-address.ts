@@ -1,8 +1,6 @@
-import { StoresInMemoryRepository } from "../in-memory-repository/stores-in-memory-repository"
 import { randomUUID } from "node:crypto"
 import { faker } from '@faker-js/faker'
 import { AddressInMemoryRepository } from "../in-memory-repository/addresses-in-memory-repository"
-import { InputAddressDto } from "@/use-cases/services/address/dto/register-address.dto"
 
 export function makeUserAddress(
     inMemoryAddressRepository: AddressInMemoryRepository,

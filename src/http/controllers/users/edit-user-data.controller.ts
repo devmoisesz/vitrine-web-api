@@ -1,7 +1,6 @@
 import { CurrentUser } from '@/auth/current-user-decorator';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { UserPayload } from '@/auth/jwt-payload';
-import { Public } from '@/auth/public';
 import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
 import { type EditUserDataBodySchema, editUserDataBodySchema } from '@/http/zod/schema/users';
 import { EditUserDataService } from '@/use-cases/services/users/edit-user-data.service';
