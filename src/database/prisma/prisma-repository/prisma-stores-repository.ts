@@ -37,4 +37,16 @@ export class PrismaStoresRepository implements StoresRepository {
 
     return user;
   }
+
+  async findBySlug(slug: string): Promise<Store | null> {
+    const user = await this.prisma.store.findUnique({
+      where: {
+        slug,
+      },
+    });
+
+    if (!user) return null;
+
+    return user;
+  }
 }
