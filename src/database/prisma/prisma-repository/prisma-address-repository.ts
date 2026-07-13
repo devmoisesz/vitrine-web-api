@@ -4,7 +4,7 @@ import { Address, Collaborator, Prisma } from "@prisma/client";
 import { AddressRepository } from "@/database/repositories/addresses-repository";
 
 @Injectable()
-export class PrismaCollaboratorsRepository implements AddressRepository {
+export class PrismaAddressRepository implements AddressRepository {
     constructor(private readonly prisma: PrismaService){}
 
     async create(data: Prisma.AddressUncheckedCreateInput): Promise<Address> {
