@@ -1,6 +1,6 @@
 import { Address, Prisma } from "@prisma/client"
 
-export abstract class AddresssRepository {
+export abstract class AddressRepository {
     abstract create(data: Prisma.AddressUncheckedCreateInput): Promise<Address>
     abstract findById(id: string): Promise<Address | null>
     abstract findByUserId(userId: string): Promise<Address[]>
