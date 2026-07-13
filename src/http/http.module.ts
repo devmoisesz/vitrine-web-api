@@ -14,6 +14,8 @@ import { GetProfileService } from "@/use-cases/services/users/get-profile.servic
 import { GetProfileController } from "./controllers/users/get-profile.controller";
 import { RegisterUserAddressController } from "./controllers/users/register-user-address.controller";
 import { RegisterUserAddressService } from "@/use-cases/services/address/register-user-address.service";
+import { RegisterStoreAddressController } from "./controllers/collaborators/register-store-address.controller";
+import { RegisterStoreAddressService } from "@/use-cases/services/address/register-store-address.service";
 
 @Module({
     imports: [DatabaseModule],
@@ -24,7 +26,8 @@ import { RegisterUserAddressService } from "@/use-cases/services/address/registe
         RegisterStoreController,
         RefreshTokenController,
         GetProfileController,
-        RegisterUserAddressController
+        RegisterUserAddressController,
+        RegisterStoreAddressController
     ],
     providers: [
         CreateAccountService,
@@ -33,7 +36,8 @@ import { RegisterUserAddressService } from "@/use-cases/services/address/registe
         RegisterStoreService,
         EnvService,
         GetProfileService,
-        RegisterUserAddressService
+        RegisterUserAddressService,
+        RegisterStoreAddressService
     ]
 })
 export class HttpModule{}
