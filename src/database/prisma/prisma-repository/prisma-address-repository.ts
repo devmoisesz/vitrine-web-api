@@ -1,47 +1,65 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../prisma.service";
-import { Address, Prisma } from "@prisma/client";
-import { AddressRepository } from "@/database/repositories/addresses-repository";
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma.service';
+import { Address, Prisma } from '@prisma/client';
+import { AddressRepository } from '@/database/repositories/addresses-repository';
 
 @Injectable()
 export class PrismaAddressRepository implements AddressRepository {
-    constructor(private readonly prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService) {}
 
-    async create(data: Prisma.AddressUncheckedCreateInput): Promise<Address> {
-        return await this.prisma.address.create({
-            data
-        })
-    }
+  async create(data: Prisma.AddressUncheckedCreateInput): Promise<Address> {
+    return await this.prisma.address.create({
+      data,
+    });
+  }
 
-    async findByUserId(id: string): Promise<Address[]> {
-        const user = await this.prisma.address.findMany({
-            where: {
-                userId: id
-            }
-        })
+  async save(address: Address): Promise<Address> {
+    return await this.prisma.address.update({
+      where: {
+        id: address.id,
+      },
+      data: {
+        label: address.label,
+        cep: address.cep,
+        state: address.state,
+        city: address.city,
+        neighborhood: address.neighborhood,
+        street: address.street,
+        number: address.number,
+        complement: address.complement 
+      },
+    });
+  }
 
-        return user
-    }
+  async findByUserId(id: string): Promise<Address[]> {
+    const user = await this.prisma.address.findMany({
+      where: {
+        userId: id,
+      },
+    });
 
-    async findByStoreId(storeId: string): Promise<Address | null> {
-        const user = await this.prisma.address.findUnique({
-            where: {
-                storeId
-            }
-        })
+    return user;
+  }
 
-        return user
-    }
-    
-    async findById(id: string): Promise<Address | null> {
-        const address = await this.prisma.address.findUnique({
-            where: {
-                id: id
-            }
-        })
+  async findByStoreId(storeId: string): Promise<Address | null> {
+    const user = await this.prisma.address.findUnique({
+      where: {
+        storeId,
+      },
+    });
 
-        if(!address) return null;
+    return user;
+  }
 
-        return address
-    }
+  async findById(id: string): Promise<Address | null> {
+    const address = await this.prisma.address.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!address) return null;
+
+    return address;
+  }
 }
