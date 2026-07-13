@@ -42,13 +42,13 @@ export class PrismaAddressRepository implements AddressRepository {
   }
 
   async findByStoreId(storeId: string): Promise<Address | null> {
-    const user = await this.prisma.address.findUnique({
+    const store = await this.prisma.address.findUnique({
       where: {
         storeId,
       },
     });
 
-    return user;
+    return store;
   }
 
   async findById(id: string): Promise<Address | null> {
