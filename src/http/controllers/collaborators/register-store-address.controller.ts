@@ -2,10 +2,7 @@ import { RequireRoles } from '@/auth/authorization/roles.decorator';
 import { StoreAccessGuard } from '@/auth/authorization/store-access.guard';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
-import {
-    type RegisterAddressBodySchema,
-    registerAddressBodySchema
-} from '@/http/zod/schema-zod';
+import { type RegisterAddressBodySchema, registerAddressBodySchema } from '@/http/zod/schema/address';
 import { RegisterStoreAddressService } from '@/use-cases/services/address/register-store-address.service';
 import { Body, Controller, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 

@@ -1,19 +1,13 @@
 import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
-import {
-    type AuthenticateBodySchema,
-    authenticateBodySchema,
-} from '@/http/zod/schema-zod';
 import { AuthenticateService } from '@/use-cases/services/users/authenticate.service';
 import type { Response } from 'express';
-import {
-    Body,
-    Controller,
-    HttpCode,
-    Post,
-    Res
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Public } from '@/auth/public';
+import {
+  type AuthenticateBodySchema,
+  authenticateBodySchema,
+} from '@/http/zod/schema/users';
 
 @Controller('/authenticate')
 @Public()

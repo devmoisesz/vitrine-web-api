@@ -3,9 +3,7 @@ import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { UserPayload } from '@/auth/jwt-payload';
 import { Public } from '@/auth/public';
 import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
-import {
-    editUserDataBodySchema
-} from '@/http/zod/schema-zod';
+import { type EditUserDataBodySchema, editUserDataBodySchema } from '@/http/zod/schema/users';
 import { EditUserDataService } from '@/use-cases/services/users/edit-user-data.service';
 import { Body, Controller, HttpCode, Put, UseGuards } from '@nestjs/common';
 
@@ -18,7 +16,7 @@ export class EditUserDataController {
   @HttpCode(204)
   async handle(
     @Body(new ZodValidationPipes(editUserDataBodySchema))
-    body: editUserDataBodySchema,
+    body: EditUserDataBodySchema,
 
     @CurrentUser() user: UserPayload
   ) {

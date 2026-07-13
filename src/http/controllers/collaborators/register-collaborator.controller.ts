@@ -2,10 +2,7 @@ import { RequireRoles } from '@/auth/authorization/roles.decorator';
 import { StoreAccessGuard } from '@/auth/authorization/store-access.guard';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
-import {
-  type RegisterCollaboratorBodySchema,
-  registerCollaboratorBodySchema,
-} from '@/http/zod/schema-zod';
+import { type RegisterCollaboratorBodySchema, registerCollaboratorBodySchema } from '@/http/zod/schema/collaborators';
 import { RegisterCollaboratorService } from '@/use-cases/services/collaborators/register-collaborator.service';
 import {
   Body,

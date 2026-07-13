@@ -2,10 +2,7 @@ import { CurrentUser } from '@/auth/current-user-decorator';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { UserPayload } from '@/auth/jwt-payload';
 import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
-import {
-  type RegisterAddressBodySchema,
-  registerAddressBodySchema
-} from '@/http/zod/schema-zod';
+import { type RegisterAddressBodySchema, registerAddressBodySchema } from '@/http/zod/schema/address';
 import { RegisterUserAddressService } from '@/use-cases/services/address/register-user-address.service';
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 
