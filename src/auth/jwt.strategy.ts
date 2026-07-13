@@ -19,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   // O Passport injeta o retorno desse método diretamente dentro do `request.user`
   async validate(payload: UserPayload) {
     return {
-      id: payload.sub,
+      sub: payload.sub,
       role: payload.role,
     };
   }
