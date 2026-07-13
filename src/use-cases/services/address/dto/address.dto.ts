@@ -7,5 +7,5 @@ export abstract class InputAddressDto {
     abstract street?: string 
     abstract number?: string  
     abstract complement?: string 
-    abstract createdAt: Date
+    abstract createdAt?: Date
 }
