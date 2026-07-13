@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersRepository } from '@/database/repositories/users-repository';
 import { AddressRepository } from '@/database/repositories/addresses-repository';
-import { InputAddressDto } from './dto/address.dto';
+import { InputAddressDto } from './dto/register-address.dto';
 
 @Injectable()
 export class RegisterUserAddressService {

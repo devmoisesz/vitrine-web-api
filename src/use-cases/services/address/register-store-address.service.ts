@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { AddressRepository } from '@/database/repositories/addresses-repository';
-import { InputAddressDto } from './dto/address.dto';
 import { StoresRepository } from '@/database/repositories/stores-repository';
+import { InputAddressDto } from './dto/register-address.dto';
 
 @Injectable()
 export class RegisterStoreAddressService {
