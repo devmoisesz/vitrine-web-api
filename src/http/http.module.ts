@@ -10,6 +10,8 @@ import { RegisterStoreController } from "./controllers/admin/register-store.cont
 import { RegisterStoreService } from "@/use-cases/services/stores/register-store.service";
 import { RefreshTokenController } from "./controllers/users/refresh-token.controller";
 import { EnvService } from "@/env/env.service";
+import { GetProfileService } from "@/use-cases/services/users/get-profile.service";
+import { GetProfileController } from "./controllers/users/get-profile.controller";
 
 @Module({
     imports: [DatabaseModule],
@@ -18,14 +20,16 @@ import { EnvService } from "@/env/env.service";
         AuthenticateController,
         RegisterCollaboratorController,
         RegisterStoreController,
-        RefreshTokenController
+        RefreshTokenController,
+        GetProfileController
     ],
     providers: [
         CreateAccountService,
         AuthenticateService,
         RegisterCollaboratorService,
         RegisterStoreService,
-        EnvService
+        EnvService,
+        GetProfileService
     ]
 })
 export class HttpModule{}

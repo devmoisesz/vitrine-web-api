@@ -6,6 +6,8 @@ import { CollaboratorsRepository } from "./repositories/collaborators-repository
 import { PrismaCollaboratorsRepository } from "./prisma/prisma-repository/prisma-collaborators-repository";
 import { StoresRepository } from "./repositories/stores-repository";
 import { PrismaStoresRepository } from "./prisma/prisma-repository/prisma-stores-repository";
+import { AddressRepository } from "./repositories/addresses-repository";
+import { PrismaAddressRepository } from "./prisma/prisma-repository/prisma-address-repository";
 
 @Module({
     imports: [],
@@ -23,12 +25,17 @@ import { PrismaStoresRepository } from "./prisma/prisma-repository/prisma-stores
             provide: StoresRepository,
             useClass: PrismaStoresRepository
         },
+        {
+            provide: AddressRepository,
+            useClass: PrismaAddressRepository
+        },
     ],
     exports: [
         PrismaService,
         UsersRepository,
         CollaboratorsRepository,
-        StoresRepository
+        StoresRepository,
+        AddressRepository
     ]
 })
 export class DatabaseModule {}
