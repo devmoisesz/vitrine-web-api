@@ -1,7 +1,6 @@
 import { AddressRepository } from '@/database/repositories/addresses-repository';
 import { Address, Prisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
-import { number } from 'zod';
 
 export class AddressInMemoryRepository implements AddressRepository {
   public items: Address[] = [];
@@ -32,6 +31,7 @@ export class AddressInMemoryRepository implements AddressRepository {
     const address = {
       number: data.number || null,
       id: data.id ?? randomUUID(),
+      label: data.label ?? null,
       userId: data.userId || null,
       storeId: data.storeId || null,
       cep: data.cep || null,

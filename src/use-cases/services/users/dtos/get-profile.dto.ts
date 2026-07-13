@@ -3,6 +3,7 @@ export abstract class InputGetProfileDto{
 }
 
 abstract class AddressResponse {
+    abstract label: string | null
     abstract cep: string | null
     abstract state: string
     abstract city: string

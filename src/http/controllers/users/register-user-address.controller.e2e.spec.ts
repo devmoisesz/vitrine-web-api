@@ -12,7 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
 
-describe('Register collaborator (E2E)', () => {
+describe('Register User Address (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
@@ -43,7 +43,7 @@ describe('Register collaborator (E2E)', () => {
 
     app = moduleRef.createNestApplication();
 
-    app.use(cookieParser())
+    app.use(cookieParser());
 
     prisma = app.get(PrismaService);
     jwt = moduleRef.get(JwtService);
@@ -57,7 +57,7 @@ describe('Register collaborator (E2E)', () => {
     await app.close();
   });
 
-  test('[GET] /me', async () => {
+  test('[POST] address/register', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
@@ -65,24 +65,30 @@ describe('Register collaborator (E2E)', () => {
         name: 'John doe',
         email: uniqueEmail,
         password: await hash('123456', 8),
+        role: 'Admin',
       },
     });
 
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
     const response = await request(app.getHttpServer())
-      .get(`/me`)
+      .post(`/address/register`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send();
+      .send({
+        label: 'Home',
+        state: 'SP',
+        city: 'Miami',
+        neighborhood: 'Long Beach',
+      });
 
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual(
-        expect.objectContaining({
-            user_name: user.name,
-            user_email: user.email,
-            user_role: 'Cliente',
-            user_address: []
-        }),
-    )
+    expect(response.statusCode).toBe(201);
+
+    const addressOnDatabase = await prisma.address.findMany({
+      where: {
+        userId: user.id
+      },
+    });
+
+    expect(addressOnDatabase).toBeTruthy();
   });
 });

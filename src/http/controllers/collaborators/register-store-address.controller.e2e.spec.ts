@@ -11,8 +11,9 @@ import { hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
+import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 
-describe('Register collaborator (E2E)', () => {
+describe('Register Store Address (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
@@ -43,7 +44,7 @@ describe('Register collaborator (E2E)', () => {
 
     app = moduleRef.createNestApplication();
 
-    app.use(cookieParser())
+    app.use(cookieParser());
 
     prisma = app.get(PrismaService);
     jwt = moduleRef.get(JwtService);
@@ -57,7 +58,7 @@ describe('Register collaborator (E2E)', () => {
     await app.close();
   });
 
-  test('[GET] /me', async () => {
+  test('[POST] address/:slug/register', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
@@ -68,21 +69,44 @@ describe('Register collaborator (E2E)', () => {
       },
     });
 
+    const uniqueWhatsapp = makeWhatsapp()
+
+    const store = await prisma.store.create({
+      data: {
+        name: 'store 013',
+        slug: 'store-013',
+        whatsapp: uniqueWhatsapp
+      },
+    });
+
+    await prisma.collaborator.create({
+        data: {
+            userId: user.id,
+            storeId: store.id,
+            role: 'Proprietário'
+        }
+    })
+
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
     const response = await request(app.getHttpServer())
-      .get(`/me`)
+      .post(`/address/${store.slug}/register`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send();
+      .send({
+        label: 'Home',
+        state: 'SP',
+        city: 'Miami',
+        neighborhood: 'Long Beach',
+      });
 
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual(
-        expect.objectContaining({
-            user_name: user.name,
-            user_email: user.email,
-            user_role: 'Cliente',
-            user_address: []
-        }),
-    )
+    expect(response.statusCode).toBe(201);
+
+    const addressOnDatabase = await prisma.address.findMany({
+      where: {
+        storeId: store.id
+      },
+    });
+
+    expect(addressOnDatabase).toBeTruthy();
   });
 });

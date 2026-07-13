@@ -2,7 +2,6 @@ import { StoresRepository } from '@/database/repositories/stores-repository';
 import { Slug } from '@/use-cases/types/slug';
 import { Prisma, Store } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
-import { string } from 'zod';
 
 export class StoresInMemoryRepository implements StoresRepository {
   public items: Store[] = [];
@@ -17,6 +16,14 @@ export class StoresInMemoryRepository implements StoresRepository {
 
   async findById(id: string): Promise<Store | null> {
     const store = this.items.find((item) => item.id === id)
+
+    if (!store) return null
+
+    return store
+  }
+
+  async findBySlug(slug: string): Promise<Store | null> {
+    const store = this.items.find((item) => item.slug === slug)
 
     if (!store) return null
 

@@ -12,6 +12,10 @@ import { RefreshTokenController } from "./controllers/users/refresh-token.contro
 import { EnvService } from "@/env/env.service";
 import { GetProfileService } from "@/use-cases/services/users/get-profile.service";
 import { GetProfileController } from "./controllers/users/get-profile.controller";
+import { RegisterUserAddressController } from "./controllers/users/register-user-address.controller";
+import { RegisterUserAddressService } from "@/use-cases/services/address/register-user-address.service";
+import { RegisterStoreAddressController } from "./controllers/collaborators/register-store-address.controller";
+import { RegisterStoreAddressService } from "@/use-cases/services/address/register-store-address.service";
 
 @Module({
     imports: [DatabaseModule],
@@ -21,7 +25,9 @@ import { GetProfileController } from "./controllers/users/get-profile.controller
         RegisterCollaboratorController,
         RegisterStoreController,
         RefreshTokenController,
-        GetProfileController
+        GetProfileController,
+        RegisterUserAddressController,
+        RegisterStoreAddressController
     ],
     providers: [
         CreateAccountService,
@@ -29,7 +35,9 @@ import { GetProfileController } from "./controllers/users/get-profile.controller
         RegisterCollaboratorService,
         RegisterStoreService,
         EnvService,
-        GetProfileService
+        GetProfileService,
+        RegisterUserAddressService,
+        RegisterStoreAddressService
     ]
 })
 export class HttpModule{}
