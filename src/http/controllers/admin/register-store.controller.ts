@@ -9,10 +9,8 @@ import { RegisterStoreService } from '@/use-cases/services/stores/register-store
 import {
   Body,
   Controller,
-  HttpCode,
-  Param,
-  Post,
-  UseGuards,
+  HttpCode, Post,
+  UseGuards
 } from '@nestjs/common';
 
 @Controller('/store')

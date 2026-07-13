@@ -1,5 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersRepository } from '@/database/repositories/users-repository';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { AddressRepository } from '@/database/repositories/addresses-repository';
 import { InputAddressDto } from './dto/address.dto';
 import { StoresRepository } from '@/database/repositories/stores-repository';

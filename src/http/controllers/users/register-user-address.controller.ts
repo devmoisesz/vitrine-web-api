@@ -3,11 +3,10 @@ import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { UserPayload } from '@/auth/jwt-payload';
 import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
 import {
-    type RegisterAddressBodySchema,
-    registerAddressBodySchema
+  type RegisterAddressBodySchema,
+  registerAddressBodySchema
 } from '@/http/zod/schema-zod';
 import { RegisterUserAddressService } from '@/use-cases/services/address/register-user-address.service';
-import { CreateAccountService } from '@/use-cases/services/users/create-account.service';
 import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 
 @Controller('/address/register')
