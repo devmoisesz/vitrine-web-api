@@ -16,6 +16,8 @@ import { RegisterUserAddressController } from "./controllers/users/register-user
 import { RegisterUserAddressService } from "@/use-cases/services/address/register-user-address.service";
 import { RegisterStoreAddressController } from "./controllers/collaborators/register-store-address.controller";
 import { RegisterStoreAddressService } from "@/use-cases/services/address/register-store-address.service";
+import { EditUserDataController } from "./controllers/users/edit-user-data.controller";
+import { EditUserDataService } from "@/use-cases/services/users/edit-user-data.service";
 
 @Module({
     imports: [DatabaseModule],
@@ -27,7 +29,8 @@ import { RegisterStoreAddressService } from "@/use-cases/services/address/regist
         RefreshTokenController,
         GetProfileController,
         RegisterUserAddressController,
-        RegisterStoreAddressController
+        RegisterStoreAddressController,
+        EditUserDataController
     ],
     providers: [
         CreateAccountService,
@@ -37,7 +40,8 @@ import { RegisterStoreAddressService } from "@/use-cases/services/address/regist
         EnvService,
         GetProfileService,
         RegisterUserAddressService,
-        RegisterStoreAddressService
+        RegisterStoreAddressService,
+        EditUserDataService
     ]
 })
 export class HttpModule{}

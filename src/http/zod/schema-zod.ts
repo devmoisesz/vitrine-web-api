@@ -14,6 +14,16 @@ export const createAccountBodySchema = z.object({
 
 export type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>;
 
+export const editUserDataBodySchema = z.object({
+  name: z.string().trim().optional(),
+
+  email: z
+    .string().email('Insira um endereço de e-mail válido')
+    .optional(),
+});
+
+export type editUserDataBodySchema = z.infer<typeof editUserDataBodySchema>;
+
 export const authenticateBodySchema = z.object({
   email: z
     .string({ message: 'O e-mail é obrigatório' })
