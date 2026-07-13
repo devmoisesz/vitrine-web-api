@@ -9,7 +9,7 @@ import {
     OutputGetProfileDto,
 } from './dtos/get-profile.dto';
 import { CollaboratorsRepository } from '@/database/repositories/collaborators-repository';
-import { AddresssRepository } from '@/database/repositories/addresses-repository';
+import { AddressRepository } from '@/database/repositories/addresses-repository';
 import { StoresRepository } from '@/database/repositories/stores-repository';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class GetProfileService {
   constructor(
     private usersRepositoy: UsersRepository,
     private collaboratorsRepository: CollaboratorsRepository,
-    private addressRepository: AddresssRepository,
+    private addressRepository: AddressRepository,
     private storesRepository: StoresRepository,
   ) {}
 

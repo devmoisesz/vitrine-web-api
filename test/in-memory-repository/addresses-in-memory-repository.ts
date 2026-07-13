@@ -1,9 +1,9 @@
-import { AddresssRepository } from '@/database/repositories/addresses-repository';
+import { AddressRepository } from '@/database/repositories/addresses-repository';
 import { Address, Prisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import { number } from 'zod';
 
-export class AddressInMemoryRepository implements AddresssRepository {
+export class AddressInMemoryRepository implements AddressRepository {
   public items: Address[] = [];
 
   async findById(id: string): Promise<Address | null> {
