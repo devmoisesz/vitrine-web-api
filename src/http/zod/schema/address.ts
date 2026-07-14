@@ -1,4 +1,4 @@
-import z from "zod";
+import z from 'zod';
 
 export const registerAddressBodySchema = z.object({
   label: z
@@ -32,4 +32,38 @@ export const registerAddressBodySchema = z.object({
 
 export type RegisterAddressBodySchema = z.infer<
   typeof registerAddressBodySchema
+>;
+
+export const updateUserAddressBodySchema = z.object({
+  label: z
+    .string('Digite um texto')
+    .trim()
+    .min(1, 'Informe um nome para identificar este endereço.')
+    .optional(),
+
+  cep: z.string().trim().optional(),
+
+  state: z.string().trim().min(1, 'Informe o estado.').optional(),
+
+  city: z
+    .string({ message: 'Informe a cidade.' })
+    .trim()
+    .min(1, 'Informe a cidade.')
+    .optional(),
+
+  neighborhood: z
+    .string({ message: 'Informe o bairro.' })
+    .trim()
+    .min(1, 'Informe o bairro.')
+    .optional(),
+
+  street: z.string().trim().optional(),
+
+  number: z.string().trim().optional(),
+
+  complement: z.string().trim().optional(),
+});
+
+export type UpdateUserAddressBodySchema = z.infer<
+  typeof updateUserAddressBodySchema
 >;
