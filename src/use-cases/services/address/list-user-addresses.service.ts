@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  UnauthorizedException
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersRepository } from '../../../database/repositories/users-repository';
 import { AddressRepository } from '@/database/repositories/addresses-repository';
 import { Address } from '@prisma/client';
@@ -15,11 +12,11 @@ export class ListUserAddressesService {
 
   async execute(userId: string, page: number): Promise<Address[]> {
     const user = await this.usersRepository.findById(userId);
-
+    
     if (!user) {
-      throw new UnauthorizedException('Authentication required.');
+      throw new UnauthorizedException('Invalid authentication credentials.');
     }
 
-    return await this.addressRepository.findManyByUserId(user.id, page)
+    return await this.addressRepository.findManyByUserId(user.id, page);
   }
 }

@@ -19,11 +19,12 @@ export class RegisterCollaboratorService {
     if (existingUser) {
       userId = existingUser.id;
 
-      const alreadyCollaborator = await this.collaboratorsRepository.findByUserId(userId);
+      const alreadyCollaborator =
+        await this.collaboratorsRepository.findByUserId(userId);
 
       if (alreadyCollaborator) {
         throw new BadRequestException(
-          'This user is already a collaborator for a store and cannot be linked to another.',
+          'Unable to complete the requested operation.',
         );
       }
     } else {
@@ -34,12 +35,12 @@ export class RegisterCollaboratorService {
         email: data.email,
         password: hashedPassword,
       });
-      userId = newUser.id
+      userId = newUser.id;
     }
 
     return await this.collaboratorsRepository.create({
-        userId: userId,
-        storeId: storeId
-    })
+      userId: userId,
+      storeId: storeId,
+    });
   }
 }

@@ -24,7 +24,9 @@ export class EditStoreDataService {
     const store = await this.storesRepository.findBySlug(slug);
 
     if (!store) {
-      throw new NotFoundException('Store Not Found');
+      throw new NotFoundException(
+        'The requested resource could not be processed.',
+      );
     }
 
     let updatedSlug = store.slug;
@@ -39,7 +41,9 @@ export class EditStoreDataService {
       );
 
       if (isEmailDuplicate) {
-        throw new ConflictException('Email already exists');
+        throw new ConflictException(
+          'Unable to complete the requested operation.',
+        );
       }
     }
 

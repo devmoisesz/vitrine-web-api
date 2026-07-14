@@ -1,9 +1,12 @@
 import {
-    ConflictException,
-    Injectable,
-    UnauthorizedException,
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
-import { InputUpdateAddressDto, OutputUpdateAddressDto } from './dto/update-address.dto';
+import {
+  InputUpdateAddressDto,
+  OutputUpdateAddressDto,
+} from './dto/update-address.dto';
 import { AddressRepository } from '@/database/repositories/addresses-repository';
 import { StoresRepository } from '@/database/repositories/stores-repository';
 
@@ -12,22 +15,22 @@ export class UpdateStoreAddressService {
   constructor(
     private storesRepository: StoresRepository,
     private addressRepository: AddressRepository,
-) {}
+  ) {}
 
   async execute(
     slug: string,
     data: InputUpdateAddressDto,
   ): Promise<OutputUpdateAddressDto> {
-    const store = await this.storesRepository.findBySlug(slug)
+    const store = await this.storesRepository.findBySlug(slug);
 
     if (!store) {
-      throw new UnauthorizedException('Authentication required.');
+      throw new UnauthorizedException('Invalid authentication credentials.');
     }
 
     const address = await this.addressRepository.findByStoreId(store.id);
 
-    if(!address) {
-      throw new ConflictException('Address not found.');
+    if (!address) {
+      throw new ConflictException('Unable to process the request.');
     }
 
     return await this.addressRepository.save({

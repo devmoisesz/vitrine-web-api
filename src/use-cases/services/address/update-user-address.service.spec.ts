@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UsersInMemoryRepository } from '../../../../test/in-memory-repository/users-in-memory-repository';
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { makeUser } from '../../../../test/factories/make-user';
 import { UpdateUserAddressService } from './update-user-address.service';
 import { AddressInMemoryRepository } from '../../../../test/in-memory-repository/addresses-in-memory-repository';
@@ -48,6 +48,6 @@ describe('Update User Address Service', () => {
       sut.execute(user.id, 'not exists',{
         city: 'New York'
       }),
-    ).rejects.toBeInstanceOf(ConflictException)
+    ).rejects.toBeInstanceOf(NotFoundException)
   });
 });
