@@ -1,4 +1,4 @@
-import z from "zod";
+import z from 'zod';
 
 export const registerStoreBodySchema = z.object({
   store_name: z.string({ message: 'O nome da loja é obrigatório' }).trim(),
@@ -23,3 +23,17 @@ export const registerStoreBodySchema = z.object({
 });
 
 export type RegisterStoreBodySchema = z.infer<typeof registerStoreBodySchema>;
+
+export const editStoreDataBodySchema = z.object({
+  newName: z.string().trim().optional(),
+
+  newEmail: z
+    .string()
+    .email('Insira um e-mail de loja válido')
+    .optional()
+    .or(z.literal('')),
+
+  newDescription: z.string().trim().optional(),
+});
+
+export type EditStoreDataBodySchema = z.infer<typeof editStoreDataBodySchema>;
