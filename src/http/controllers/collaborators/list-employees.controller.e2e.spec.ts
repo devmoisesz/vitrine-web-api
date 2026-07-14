@@ -10,13 +10,12 @@ import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
-import { SlugGeneratorService } from '@/use-cases/services/stores/utils/generate-slug.service';
+import cookieParser from 'cookie-parser';
 
-describe('Register collaborator (E2E)', () => {
+describe('List Employees (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
-  let slugGenerator: SlugGeneratorService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -43,9 +42,11 @@ describe('Register collaborator (E2E)', () => {
       .compile();
 
     app = moduleRef.createNestApplication();
+
+    app.use(cookieParser());
+
     prisma = app.get(PrismaService);
     jwt = moduleRef.get(JwtService);
-    slugGenerator = moduleRef.get(SlugGeneratorService);
 
     await app.init();
     await prisma.$connect();
@@ -56,55 +57,65 @@ describe('Register collaborator (E2E)', () => {
     await app.close();
   });
 
-  test('[POST] /stores/:storeId/collaborators', async () => {
-    const uniqueEmail = makeEmail();
+  test('[GET] /store/:slug/employees', async () => {
+    const userEmail = makeEmail();
+    const storeEmail = makeEmail();
+
+    const owner = await prisma.user.create({
+      data: {
+        name: 'Owner',
+        email: userEmail,
+        password: await hash('123456', 8),
+      },
+    });
 
     const user = await prisma.user.create({
       data: {
         name: 'John doe',
-        email: uniqueEmail,
+        email: 'johndoe@example.com',
         password: await hash('123456', 8),
       },
     });
 
     const store = await prisma.store.create({
       data: {
-        name: 'store',
-        description: 'description',
-        slug: await slugGenerator.execute('store'),
-        whatsapp: '1722222222',
+        name: 'fake store',
+        slug: 'fake-store',
+        email: storeEmail,
+        whatsapp: '19876526587',
       },
     });
 
     await prisma.collaborator.create({
-        data: {
-            userId: user.id,
-            storeId: store.id,
-            role: 'Proprietário'
-        }
-    })
-
-    const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
-
-    const response = await request(app.getHttpServer())
-      .post(`/stores/${store.id}/collaborators`)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        name: 'John doe',
-        email: 'johndoe@example.com',
-        password: '1234567',
-        role: 'Funcionário',
-      });
-
-    expect(response.statusCode).toBe(201);
-
-    const collaboratorOnDatabase = await prisma.collaborator.findUnique({
-      where: {
-        userId: user.id,
+      data: {
+        userId: owner.id,
         storeId: store.id,
+        role: 'Proprietário'
       },
+    }),
+
+    await prisma.collaborator.create({
+        data: {
+          userId: user.id,
+          storeId: store.id,
+          role: 'Funcionário'
+        },
     });
 
-    expect(collaboratorOnDatabase).toBeTruthy();
+    const accessToken = jwt.sign({ role: owner.role }, { subject: owner.id });
+
+    const response = await request(app.getHttpServer())
+      .get(`/store/${store.slug}/employees`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send();
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          email: 'johndoe@example.com',
+        }),
+      ]),
+    );
   });
 });

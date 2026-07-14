@@ -1,32 +1,39 @@
-import { ConflictException, Injectable } from "@nestjs/common";
-import { UsersRepository } from "../../../database/repositories/users-repository";
-import { hash } from "bcryptjs";
-import { InputCreateAccountDto, OutputCreateAccountDto } from "./dtos/create-account.dto";
+import { ConflictException, Injectable } from '@nestjs/common';
+import { UsersRepository } from '../../../database/repositories/users-repository';
+import { hash } from 'bcryptjs';
+import {
+  InputCreateAccountDto,
+  OutputCreateAccountDto,
+} from './dtos/create-account.dto';
 
 @Injectable()
 export class CreateAccountService {
-    constructor(private usersRepositoy: UsersRepository){}
+  constructor(private usersRepository: UsersRepository) {}
 
-    async execute(data: InputCreateAccountDto): Promise<OutputCreateAccountDto> {
-        const userWithSameEmail = await this.usersRepositoy.findByEmail(data.email)
-        
-        if(userWithSameEmail){
-            throw new ConflictException('User already exists')
-        }
+  async execute(data: InputCreateAccountDto): Promise<OutputCreateAccountDto> {
+    const userWithSameEmail = await this.usersRepository.findByEmail(
+      data.email,
+    );
 
-        const hashedPassword = await hash(data.password, 8)
-
-        const user = await this.usersRepositoy.create({
-            name: data.name,
-            email: data.email,
-            password: hashedPassword
-        })
-
-        return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            password: user.password ?? hashedPassword
-        }
+    if (userWithSameEmail) {
+      throw new ConflictException(
+        'Unable to complete the requested operation.',
+      );
     }
+
+    const hashedPassword = await hash(data.password, 8);
+
+    const user = await this.usersRepository.create({
+      name: data.name,
+      email: data.email,
+      password: hashedPassword,
+    });
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      password: user.password ?? hashedPassword,
+    };
+  }
 }

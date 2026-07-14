@@ -7,6 +7,15 @@ import { CollaboratorsRepository } from "@/database/repositories/collaborators-r
 export class PrismaCollaboratorsRepository implements CollaboratorsRepository {
     constructor(private readonly prisma: PrismaService){}
 
+    async findManyEmployee(storeId: string): Promise<Collaborator[]> {
+        return this.prisma.collaborator.findMany({
+            where: {
+                storeId,
+                role: 'Funcionário'
+            }
+        })
+    }
+
     async create(data: Prisma.CollaboratorUncheckedCreateInput): Promise<Collaborator> {
         return await this.prisma.collaborator.create({
             data: {

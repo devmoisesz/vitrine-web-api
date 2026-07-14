@@ -7,6 +7,20 @@ import { Prisma, User } from "@prisma/client";
 export class PrismaUsersRepository implements UsersRepository {
     constructor(private readonly prisma: PrismaService){}
 
+    async findManyById(ids: string[], page: number): Promise<User[]> {
+        const perPage = 5
+
+        return await this.prisma.user.findMany({
+            where: {
+                id: {
+                    in: ids
+                },
+            },
+            skip: (page -1 ) * perPage,
+            take: perPage
+        })
+    }
+
     async create(data: Prisma.UserUncheckedCreateInput): Promise<User> {
         return await this.prisma.user.create({
             data: {

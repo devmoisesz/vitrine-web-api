@@ -14,7 +14,7 @@ export class RegisterStoreAddressService {
     const store = await this.storesRepository.findBySlug(slug)
 
     if(!store){
-        throw new BadRequestException('Non-existent store')
+        throw new BadRequestException('Unable to process the request.')
     }
 
     return await this.addressRepository.create({

@@ -11,22 +11,22 @@ export class RegisterUserAddressService {
   ) {}
 
   async execute(userId: string, data: InputAddressDto) {
-    const isUserExists = await this.usersRepository.findById(userId)
+    const isUserExists = await this.usersRepository.findById(userId);
 
-    if(!isUserExists){
-        throw new UnauthorizedException('Authentication required.')
+    if (!isUserExists) {
+      throw new UnauthorizedException('Invalid authentication credentials.');
     }
 
     return await this.addressRepository.create({
-        label: data.label,
-        userId: userId,
-        cep: data.cep ?? null,
-        state: data.state,
-        city: data.city,
-        neighborhood: data.neighborhood,
-        street: data.street ?? null,
-        number: data.number ?? null,
-        complement: data.complement ?? null
-    })
+      label: data.label,
+      userId: userId,
+      cep: data.cep ?? null,
+      state: data.state,
+      city: data.city,
+      neighborhood: data.neighborhood,
+      street: data.street ?? null,
+      number: data.number ?? null,
+      complement: data.complement ?? null,
+    });
   }
 }

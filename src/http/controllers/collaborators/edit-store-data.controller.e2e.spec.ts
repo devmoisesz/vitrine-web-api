@@ -9,18 +9,15 @@ import { PrismaClient } from '@prisma/client';
 import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { DatabaseModule } from '@/database/database.module';
-import { SlugGeneratorService } from '@/use-cases/services/stores/utils/generate-slug.service';
 
-describe('Register collaborator (E2E)', () => {
+describe('Edit Store Data (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
-  let slugGenerator: SlugGeneratorService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
+      imports: [AppModule],
     })
       .overrideProvider(PrismaService)
       .useFactory({
@@ -44,8 +41,7 @@ describe('Register collaborator (E2E)', () => {
 
     app = moduleRef.createNestApplication();
     prisma = app.get(PrismaService);
-    jwt = moduleRef.get(JwtService);
-    slugGenerator = moduleRef.get(SlugGeneratorService);
+    jwt = moduleRef.get(JwtService)
 
     await app.init();
     await prisma.$connect();
@@ -56,25 +52,26 @@ describe('Register collaborator (E2E)', () => {
     await app.close();
   });
 
-  test('[POST] /stores/:storeId/collaborators', async () => {
+  test('[PUT] /store/:slug/edit', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
       data: {
-        name: 'John doe',
+        name: 'fulano',
         email: uniqueEmail,
         password: await hash('123456', 8),
       },
     });
 
     const store = await prisma.store.create({
-      data: {
-        name: 'store',
-        description: 'description',
-        slug: await slugGenerator.execute('store'),
-        whatsapp: '1722222222',
-      },
-    });
+        data: {
+            name: 'fake store',
+            slug: 'fake-store',
+            email: 'fake@example.com',
+            whatsapp: '155987645654',
+            description: 'Fake Description'
+        }
+    })
 
     await prisma.collaborator.create({
         data: {
@@ -87,24 +84,20 @@ describe('Register collaborator (E2E)', () => {
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
     const response = await request(app.getHttpServer())
-      .post(`/stores/${store.id}/collaborators`)
+      .put(`/store/${store.slug}/edit`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        name: 'John doe',
-        email: 'johndoe@example.com',
-        password: '1234567',
-        role: 'Funcionário',
+        newName: 'store fake'
       });
 
-    expect(response.statusCode).toBe(201);
+    expect(response.statusCode).toBe(204);
 
-    const collaboratorOnDatabase = await prisma.collaborator.findUnique({
-      where: {
-        userId: user.id,
-        storeId: store.id,
-      },
-    });
+    const storeOnDatabase = await prisma.store.findUnique({
+        where: {
+            slug: 'store-fake'
+        }
+    })
 
-    expect(collaboratorOnDatabase).toBeTruthy();
+    expect(storeOnDatabase).toBeTruthy()
   });
 });

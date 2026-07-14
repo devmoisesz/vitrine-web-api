@@ -8,10 +8,12 @@ import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { RegisterStoreService } from './register-store.service';
 import { faker } from '@faker-js/faker';
 import { makeEmail } from '../../../../test/factories/make-email';
+import { SlugGeneratorService } from './utils/generate-slug.service';
 
 let usersRepository: UsersInMemoryRepository;
 let collaboratorsRepository: CollaboratorsInMemoryRepository;
 let storesRepository: StoresInMemoryRepository;
+let slugGenerator:SlugGeneratorService
 let sut: RegisterStoreService;
 
 describe('Register Collaborator Service', () => {
@@ -19,10 +21,12 @@ describe('Register Collaborator Service', () => {
     usersRepository = new UsersInMemoryRepository();
     storesRepository = new StoresInMemoryRepository();
     collaboratorsRepository = new CollaboratorsInMemoryRepository();
+    slugGenerator = new SlugGeneratorService(storesRepository)
     sut = new RegisterStoreService(
       collaboratorsRepository,
       usersRepository,
       storesRepository,
+      slugGenerator
     );
   });
 

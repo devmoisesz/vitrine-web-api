@@ -3,8 +3,8 @@ import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { UserPayload } from '@/auth/jwt-payload';
 import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
 import {
-  type UpdateUserAddressBodySchema,
-  updateUserAddressBodySchema,
+  type UpdateAddressBodySchema,
+  updateAddressBodySchema,
 } from '@/http/zod/schema/address';
 import { UpdateUserAddressService } from '@/use-cases/services/address/update-user-address.service';
 import {
@@ -24,8 +24,8 @@ export class UpdateUserAddresController {
   @Put()
   @HttpCode(204)
   async handle(
-    @Body(new ZodValidationPipes(updateUserAddressBodySchema))
-    body: UpdateUserAddressBodySchema,
+    @Body(new ZodValidationPipes(updateAddressBodySchema))
+    body: UpdateAddressBodySchema,
 
     @CurrentUser() user: UserPayload,
     @Param('addressId') addressId: string,
