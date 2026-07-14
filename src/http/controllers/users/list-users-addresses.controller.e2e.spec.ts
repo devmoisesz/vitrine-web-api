@@ -87,8 +87,6 @@ describe('List Users (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send();
 
-    console.log(response.body);
-
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual(
       expect.arrayContaining([
