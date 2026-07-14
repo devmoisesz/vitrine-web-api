@@ -15,14 +15,14 @@ import { StoresRepository } from '@/database/repositories/stores-repository';
 @Injectable()
 export class GetProfileService {
   constructor(
-    private usersRepositoy: UsersRepository,
+    private usersRepository: UsersRepository,
     private collaboratorsRepository: CollaboratorsRepository,
     private addressRepository: AddressRepository,
     private storesRepository: StoresRepository,
   ) {}
 
   async execute(data: InputGetProfileDto): Promise<OutputGetProfileDto> {
-    const user = await this.usersRepositoy.findById(data.userId);
+    const user = await this.usersRepository.findById(data.userId);
 
     if (!user) {
       throw new UnauthorizedException('Authentication required.');

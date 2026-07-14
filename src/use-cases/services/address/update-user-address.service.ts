@@ -10,7 +10,7 @@ import { AddressRepository } from '@/database/repositories/addresses-repository'
 @Injectable()
 export class UpdateUserAddressService {
   constructor(
-    private usersRepositoy: UsersRepository,
+    private usersRepository: UsersRepository,
     private addressRepository: AddressRepository,
 ) {}
 
@@ -19,7 +19,7 @@ export class UpdateUserAddressService {
     addressId: string,
     data: InputUpdateAddressDto,
   ): Promise<OutputUpdateAddressDto> {
-    const isUserExists = await this.usersRepositoy.findById(userId);
+    const isUserExists = await this.usersRepository.findById(userId);
 
     if (!isUserExists) {
       throw new UnauthorizedException('Authentication required.');

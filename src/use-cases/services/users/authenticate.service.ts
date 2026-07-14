@@ -6,10 +6,10 @@ import { InputAuthenticateDto } from "./dtos/authenticate.dto";
 
 @Injectable()
 export class AuthenticateService {
-    constructor(private usersRepositoy: UsersRepository){}
+    constructor(private usersRepository: UsersRepository){}
 
     async execute(data: InputAuthenticateDto): Promise<User> {
-        const user = await this.usersRepositoy.findByEmail(data.email)
+        const user = await this.usersRepository.findByEmail(data.email)
         
         if(!user){
             throw new BadRequestException('Invalid credentials')

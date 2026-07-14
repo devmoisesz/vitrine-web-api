@@ -5,10 +5,10 @@ import { InputCreateAccountDto, OutputCreateAccountDto } from "./dtos/create-acc
 
 @Injectable()
 export class CreateAccountService {
-    constructor(private usersRepositoy: UsersRepository){}
+    constructor(private usersRepository: UsersRepository){}
 
     async execute(data: InputCreateAccountDto): Promise<OutputCreateAccountDto> {
-        const userWithSameEmail = await this.usersRepositoy.findByEmail(data.email)
+        const userWithSameEmail = await this.usersRepository.findByEmail(data.email)
         
         if(userWithSameEmail){
             throw new ConflictException('User already exists')
@@ -16,7 +16,7 @@ export class CreateAccountService {
 
         const hashedPassword = await hash(data.password, 8)
 
-        const user = await this.usersRepositoy.create({
+        const user = await this.usersRepository.create({
             name: data.name,
             email: data.email,
             password: hashedPassword

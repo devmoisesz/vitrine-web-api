@@ -3,17 +3,17 @@ import {
   UnauthorizedException
 } from '@nestjs/common';
 import { UsersRepository } from '../../../database/repositories/users-repository';
-import { AddressRepository } from '@/database/repositories/addresses-repository';
-import { Address } from '@prisma/client';
+import { Address, Collaborator } from '@prisma/client';
+import { CollaboratorsRepository } from '@/database/repositories/collaborators-repository';
 
 @Injectable()
-export class ListUserAddressesService {
+export class ListEmployeeService {
   constructor(
     private usersRepository: UsersRepository,
-    private addressRepository: AddressRepository,
+    private collaboratorsRepository: CollaboratorsRepository,
   ) {}
 
-  async execute(userId: string, page: number): Promise<Address[]> {
+  async execute(storeId: string): Promise<Collaborator[]> {
     const user = await this.usersRepository.findById(userId);
 
     if (!user) {

@@ -10,7 +10,7 @@ import { StoresRepository } from '@/database/repositories/stores-repository';
 @Injectable()
 export class UpdateStoreAddressService {
   constructor(
-    private storesRepositoy: StoresRepository,
+    private storesRepository: StoresRepository,
     private addressRepository: AddressRepository,
 ) {}
 
@@ -18,7 +18,7 @@ export class UpdateStoreAddressService {
     slug: string,
     data: InputUpdateAddressDto,
   ): Promise<OutputUpdateAddressDto> {
-    const store = await this.storesRepositoy.findBySlug(slug)
+    const store = await this.storesRepository.findBySlug(slug)
 
     if (!store) {
       throw new UnauthorizedException('Authentication required.');
