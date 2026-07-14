@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ConflictException, NotFoundException } from '@nestjs/common';
-import { EditStoreDataService } from './edit-data-store.service';
 import { SlugGeneratorService } from './utils/generate-slug.service';
 import { StoresInMemoryRepository } from '../../../../test/in-memory-repository/stores-in-memory-repository';
 import { makeStore } from '../../../../test/factories/make-store';
+import { EditStoreDataService } from './edit-store-data.service';
 
 let storesRepository: StoresInMemoryRepository;
 let slugGenerator: SlugGeneratorService
