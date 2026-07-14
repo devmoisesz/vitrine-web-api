@@ -3,7 +3,7 @@ import { UsersRepository } from '@/database/repositories/users-repository';
 import { CollaboratorsRepository } from '@/database/repositories/collaborators-repository';
 import { InputRegisterStroreDto } from './dtos/register-store.dto';
 import { StoresRepository } from '@/database/repositories/stores-repository';
-import { Slug } from '@/use-cases/types/slug';
+import { SlugGeneratorService } from './utils/generate-slug.service';
 
 @Injectable()
 export class RegisterStoreService {
@@ -11,6 +11,7 @@ export class RegisterStoreService {
     private collaboratorsRepository: CollaboratorsRepository,
     private usersRepository: UsersRepository,
     private storesRepository: StoresRepository,
+    private slugGenerator: SlugGeneratorService
   ) {}
 
   async execute(data: InputRegisterStroreDto) {
@@ -32,10 +33,12 @@ export class RegisterStoreService {
         throw new ForbiddenException('Not allowed')
     }
 
+    const slug = await this.slugGenerator.execute(data.store_name)
+
     const store = await this.storesRepository.create({
        name: data.store_name,
        email: data.store_email,
-       slug: Slug.createFromText(data.store_name),
+       slug,
        whatsapp: data.whatsapp
     })
 
