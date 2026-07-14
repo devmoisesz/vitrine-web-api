@@ -34,7 +34,7 @@ export type RegisterAddressBodySchema = z.infer<
   typeof registerAddressBodySchema
 >;
 
-export const updateUserAddressBodySchema = z.object({
+export const updateAddressBodySchema = z.object({
   label: z
     .string('Digite um texto')
     .trim()
@@ -64,6 +64,6 @@ export const updateUserAddressBodySchema = z.object({
   complement: z.string().trim().optional(),
 });
 
-export type UpdateUserAddressBodySchema = z.infer<
-  typeof updateUserAddressBodySchema
+export type UpdateAddressBodySchema = z.infer<
+  typeof updateAddressBodySchema
 >;
