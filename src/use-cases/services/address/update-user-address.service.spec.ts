@@ -10,7 +10,7 @@ let usersRepository: UsersInMemoryRepository;
 let addressRepository: AddressInMemoryRepository;
 let sut: UpdateUserAddressService;
 
-describe('Create Account Service', () => {
+describe('Update User Address Service', () => {
   beforeEach(() => {
     usersRepository = new UsersInMemoryRepository();
     addressRepository = new AddressInMemoryRepository()
