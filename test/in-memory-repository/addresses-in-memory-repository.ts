@@ -14,9 +14,17 @@ export class AddressInMemoryRepository implements AddressRepository {
   }
 
   async findByUserId(userId: string): Promise<Address[]> {
-    const user = this.items.filter((item) => item.userId === userId);
+    const address = this.items.filter((item) => item.userId === userId);
 
-    return user;
+    return address;
+  }
+
+  async findManyByUserId(userId: string, page: number): Promise<Address[]> {
+    const address = this.items
+    .filter((item) => item.userId === userId)
+    .slice((page -1) * 5)
+
+    return address;
   }
 
   async findByStoreId(storeId: string): Promise<Address | null> {

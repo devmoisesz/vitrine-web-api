@@ -41,6 +41,21 @@ export class PrismaAddressRepository implements AddressRepository {
     return user;
   }
 
+  async findManyByUserId(userId: string, page: number): Promise<Address[]> {
+    const user = await this.prisma.address.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      take: 5,
+      skip: (page - 1) * 5
+    });
+
+    return user;
+  }
+
   async findByStoreId(storeId: string): Promise<Address | null> {
     const store = await this.prisma.address.findUnique({
       where: {
