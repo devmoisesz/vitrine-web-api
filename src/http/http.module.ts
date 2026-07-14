@@ -27,6 +27,8 @@ import { EditStoreDataController } from "./controllers/collaborators/edit-store-
 import { EditStoreDataService } from "@/use-cases/services/stores/edit-store-data.service";
 import { UpdateStoreAddresController } from "./controllers/collaborators/update-store-address.controller";
 import { UpdateStoreAddressService } from "@/use-cases/services/address/update-store-address.service";
+import { ListEmployeesController } from "./controllers/collaborators/list-employees.controller";
+import { ListEmployeeService } from "@/use-cases/services/collaborators/list-employee.service";
 
 @Module({
     imports: [DatabaseModule],
@@ -43,7 +45,8 @@ import { UpdateStoreAddressService } from "@/use-cases/services/address/update-s
         UpdateUserAddresController,
         ListUsersAddressesController,
         EditStoreDataController,
-        UpdateStoreAddresController
+        UpdateStoreAddresController,
+        ListEmployeesController
     ],
     providers: [
         CreateAccountService,
@@ -59,7 +62,8 @@ import { UpdateStoreAddressService } from "@/use-cases/services/address/update-s
         ListUserAddressesService,
         SlugGeneratorService,
         EditStoreDataService,
-        UpdateStoreAddressService
+        UpdateStoreAddressService,
+        ListEmployeeService
     ]
 })
 export class HttpModule{}
