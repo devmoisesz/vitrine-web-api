@@ -13,6 +13,17 @@ export class PrismaStoresRepository implements StoresRepository {
     });
   }
 
+  async save(store: Store): Promise<Store> {
+    return await this.prisma.store.update({
+      where: {
+        id: store.id,
+      },
+      data: {
+        ...store
+      },
+    });
+  }
+
   async findByWhatsapp(whatsapp: string): Promise<Store | null> {
     const store = await this.prisma.store.findUnique({
       where: {
@@ -29,6 +40,19 @@ export class PrismaStoresRepository implements StoresRepository {
     const user = await this.prisma.store.findUnique({
       where: {
         id,
+      },
+    });
+
+    if (!user) return null;
+
+    return user;
+  }
+
+  async findBySLugAndEmail(slug: string, email: string): Promise<Store | null> {
+    const user = await this.prisma.store.findUnique({
+      where: {
+        slug,
+        email
       },
     });
 
