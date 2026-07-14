@@ -5,6 +5,11 @@ import { randomUUID } from 'node:crypto';
 export class UsersInMemoryRepository implements UsersRepository {
   public items: User[] = [];
 
+  async findManyById(ids: string[], page: number): Promise<User[]> {
+    return this.items.filter((user) => ids.includes(user.id))
+      .slice((page - 1) * 5)
+  }
+
   async save(user: User): Promise<User> {
     const itemIndex = this.items.findIndex((item) => item.id === user.id);
 

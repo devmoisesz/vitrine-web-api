@@ -1,25 +1,36 @@
 import {
-  Injectable,
-  UnauthorizedException
+    Injectable,
+    UnauthorizedException
 } from '@nestjs/common';
-import { UsersRepository } from '../../../database/repositories/users-repository';
-import { Address, Collaborator } from '@prisma/client';
 import { CollaboratorsRepository } from '@/database/repositories/collaborators-repository';
+import { StoresRepository } from '@/database/repositories/stores-repository';
+import { OutputListEmployee } from './dtos/output-list-employee.dto';
+import { UsersRepository } from '@/database/repositories/users-repository';
 
 @Injectable()
 export class ListEmployeeService {
   constructor(
     private usersRepository: UsersRepository,
     private collaboratorsRepository: CollaboratorsRepository,
+    private storesRepository: StoresRepository,
   ) {}
 
-  async execute(storeId: string): Promise<Collaborator[]> {
-    const user = await this.usersRepository.findById(userId);
+  async execute(slug: string, page: number): Promise<OutputListEmployee[]> {
+    const store = await this.storesRepository.findBySlug(slug)
 
-    if (!user) {
-      throw new UnauthorizedException('Authentication required.');
+    if (!store) {
+      throw new UnauthorizedException();
     }
 
-    return await this.addressRepository.findManyByUserId(user.id, page)
+    const employees = await this.collaboratorsRepository.findManyEmployee(store.id)
+
+    const employeeUserId = employees.map((employee) => employee.userId)
+
+    const users = await this.usersRepository.findManyById(employeeUserId, page)
+
+    return users.map((user) => ({
+        name: user.name,
+        email: user.email
+    }))
   }
 }
