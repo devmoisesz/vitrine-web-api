@@ -8,14 +8,15 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
-import { Slug } from '@/use-cases/types/slug';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
+import { SlugGeneratorService } from '@/use-cases/services/stores/utils/generate-slug.service';
 
 describe('Register collaborator (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
+  let slugGenerator: SlugGeneratorService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -44,6 +45,7 @@ describe('Register collaborator (E2E)', () => {
     app = moduleRef.createNestApplication();
     prisma = app.get(PrismaService);
     jwt = moduleRef.get(JwtService);
+    slugGenerator = moduleRef.get(SlugGeneratorService);
 
     await app.init();
     await prisma.$connect();
@@ -69,7 +71,7 @@ describe('Register collaborator (E2E)', () => {
       data: {
         name: 'store',
         description: 'description',
-        slug: Slug.createFromText('store'),
+        slug: await slugGenerator.execute('store'),
         whatsapp: '1722222222',
       },
     });
