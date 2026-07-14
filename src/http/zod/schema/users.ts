@@ -35,3 +35,12 @@ export const editUserDataBodySchema = z.object({
 });
 
 export type EditUserDataBodySchema = z.infer<typeof editUserDataBodySchema>;
+
+export const pageQueryParamSchema = z
+  .string()
+  .optional()
+  .default("1")
+  .transform(Number)
+  .pipe(z.number().min(1));
+
+export type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>

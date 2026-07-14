@@ -20,6 +20,8 @@ import { EditUserDataController } from "./controllers/users/edit-user-data.contr
 import { EditUserDataService } from "@/use-cases/services/users/edit-user-data.service";
 import { UpdateUserAddresController } from "./controllers/users/update-user-address.controller";
 import { UpdateUserAddressService } from "@/use-cases/services/address/update-user-address.service";
+import { ListUsersAddressesController } from "./controllers/users/list-users-addresses.controller";
+import { ListUserAddressesService } from "@/use-cases/services/address/list-user-addresses.service";
 
 @Module({
     imports: [DatabaseModule],
@@ -33,7 +35,8 @@ import { UpdateUserAddressService } from "@/use-cases/services/address/update-us
         RegisterUserAddressController,
         RegisterStoreAddressController,
         EditUserDataController,
-        UpdateUserAddresController
+        UpdateUserAddresController,
+        ListUsersAddressesController
     ],
     providers: [
         CreateAccountService,
@@ -45,7 +48,8 @@ import { UpdateUserAddressService } from "@/use-cases/services/address/update-us
         RegisterUserAddressService,
         RegisterStoreAddressService,
         EditUserDataService,
-        UpdateUserAddressService
+        UpdateUserAddressService,
+        ListUserAddressesService
     ]
 })
 export class HttpModule{}
