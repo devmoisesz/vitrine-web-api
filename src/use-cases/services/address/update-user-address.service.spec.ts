@@ -2,19 +2,19 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { UsersInMemoryRepository } from '../../../../test/in-memory-repository/users-in-memory-repository';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { makeUser } from '../../../../test/factories/make-user';
-import { UpdateUserAddresService } from './update-user-address.service';
+import { UpdateUserAddressService } from './update-user-address.service';
 import { AddressInMemoryRepository } from '../../../../test/in-memory-repository/addresses-in-memory-repository';
 import { makeUserAddress } from '../../../../test/factories/make-user-address';
 
 let usersRepository: UsersInMemoryRepository;
 let addressRepository: AddressInMemoryRepository;
-let sut: UpdateUserAddresService;
+let sut: UpdateUserAddressService;
 
 describe('Create Account Service', () => {
   beforeEach(() => {
     usersRepository = new UsersInMemoryRepository();
     addressRepository = new AddressInMemoryRepository()
-    sut = new UpdateUserAddresService(usersRepository, addressRepository);
+    sut = new UpdateUserAddressService(usersRepository, addressRepository);
   });
 
   it('should be possible to update user address.', async () => {

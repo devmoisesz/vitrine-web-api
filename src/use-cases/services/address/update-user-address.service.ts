@@ -8,7 +8,7 @@ import { InputUpdateAddressDto, OutputUpdateAddressDto } from './dto/update-addr
 import { AddressRepository } from '@/database/repositories/addresses-repository';
 
 @Injectable()
-export class UpdateUserAddresService {
+export class UpdateUserAddressService {
   constructor(
     private usersRepositoy: UsersRepository,
     private addressRepository: AddressRepository,
