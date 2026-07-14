@@ -9,17 +9,15 @@ import { PrismaClient } from '@prisma/client';
 import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { DatabaseModule } from '@/database/database.module';
-import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 
-describe('Register Store (E2E)', () => {
+describe('Edit User Data (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
+      imports: [AppModule],
     })
       .overrideProvider(PrismaService)
       .useFactory({
@@ -43,7 +41,7 @@ describe('Register Store (E2E)', () => {
 
     app = moduleRef.createNestApplication();
     prisma = app.get(PrismaService);
-    jwt = moduleRef.get(JwtService);
+    jwt = moduleRef.get(JwtService)
 
     await app.init();
     await prisma.$connect();
@@ -54,40 +52,27 @@ describe('Register Store (E2E)', () => {
     await app.close();
   });
 
-  test('[POST] /store/', async () => {
+  test('[PUT] /account/edit', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
       data: {
-        name: 'John doe',
+        name: 'fulano',
         email: uniqueEmail,
         password: await hash('123456', 8),
-        role: 'Admin'
       },
     });
 
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
-    const uniqueWhatsapp = makeWhatsapp()
-
     const response = await request(app.getHttpServer())
-      .post(`/store`)
+      .put('/account/edit')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        store_name: 'store',
-        store_email: 'store@example.com',
-        owner_email: uniqueEmail,
-        whatsapp: uniqueWhatsapp
+        name: 'John Doe',
+        email: 'johndoe@example.com',
       });
 
-    expect(response.statusCode).toBe(201);
-
-    const storeOnDatabase = await prisma.store.findUnique({
-      where: {
-        whatsapp: uniqueWhatsapp
-      },
-    });
-
-    expect(storeOnDatabase).toBeTruthy();
+    expect(response.statusCode).toBe(204);
   });
 });

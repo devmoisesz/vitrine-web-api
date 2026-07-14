@@ -10,9 +10,10 @@ import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
-import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
+import cookieParser from 'cookie-parser';
+import { faker } from '@faker-js/faker';
 
-describe('Register Store (E2E)', () => {
+describe('List Users (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
@@ -42,6 +43,9 @@ describe('Register Store (E2E)', () => {
       .compile();
 
     app = moduleRef.createNestApplication();
+
+    app.use(cookieParser());
+
     prisma = app.get(PrismaService);
     jwt = moduleRef.get(JwtService);
 
@@ -54,7 +58,7 @@ describe('Register Store (E2E)', () => {
     await app.close();
   });
 
-  test('[POST] /store/', async () => {
+  test('[GET] /me/addresses', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
@@ -62,32 +66,36 @@ describe('Register Store (E2E)', () => {
         name: 'John doe',
         email: uniqueEmail,
         password: await hash('123456', 8),
-        role: 'Admin'
       },
     });
+
+    for (let i = 0; i <= 6; i++) {
+      await prisma.address.create({
+        data: {
+          userId: user.id,
+          city: 'Miami',
+          neighborhood: 'Long Beach',
+          state: faker.location.state(),
+        },
+      });
+    }
 
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
-    const uniqueWhatsapp = makeWhatsapp()
-
     const response = await request(app.getHttpServer())
-      .post(`/store`)
+      .get(`/me/addresses`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        store_name: 'store',
-        store_email: 'store@example.com',
-        owner_email: uniqueEmail,
-        whatsapp: uniqueWhatsapp
-      });
+      .send();
 
-    expect(response.statusCode).toBe(201);
+    console.log(response.body);
 
-    const storeOnDatabase = await prisma.store.findUnique({
-      where: {
-        whatsapp: uniqueWhatsapp
-      },
-    });
-
-    expect(storeOnDatabase).toBeTruthy();
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          city: 'Miami',
+        }),
+      ]),
+    );
   });
 });

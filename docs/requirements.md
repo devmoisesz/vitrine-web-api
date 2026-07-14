@@ -19,10 +19,9 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível se cadastrar com nome, e-mail e senha
 - [x] Deve ser possível fazer login com e-mail e senha
 - [ ] Deve ser possível fazer login com Google
-- [ ] Deve ser possível cadastrar endereços 
+- [x] Deve ser possível cadastrar endereços 
 - [x] Deve ser possível visualizar o próprio perfil
-- [ ] Deve ser possível editar os próprios dados pessoais
-- [ ] Deve ser possível fazer logout (sair da conta)
+- [x] Deve ser possível editar os próprios dados pessoais
 
 ## Cliente
 
@@ -33,6 +32,9 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [ ] Deve ser possível buscar lojas pelo nome
 - [ ] Deve ser possível visualizar a página de uma loja (vitrine exclusiva) com seus dados e apenas os seus produtos
 - [ ] Deve ser possível visualizar os detalhes de um produto
+- [x] Deve ser possível cadastrar vários endereços 
+- [x] Deve ser possível editar seus próprios endereços
+- [x] Deve ser possível visualizar seus próprios endereços
 - [ ] Deve ser possível adicionar produtos ao carrinho de uma loja
 - [ ] Deve ser possível remover produtos do carrinho
 - [ ] Deve ser possível visualizar carrinhos ativos de múltiplas lojas simultaneamente
@@ -50,12 +52,13 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 ## Dono da Loja (permissões do Funcionário, mais as abaixo)
 
 - [x] Deve ser possível cadastrar funcionários e vinculá-los à própria loja
+- [x] Deve ser possível cadastrar endereço da loja
 - [ ] Deve ser possível editar os dados da própria loja
 - [ ] Deve ser possível desativar funcionários da própria loja
 
 ## Admin da Plataforma
 
-- [ ] Deve ser possível cadastrar lojas 
+- [x] Deve ser possível cadastrar lojas 
 - [x] Deve ser possível cadastrar o Dono de uma loja e vinculá-lo a ela
 - [ ] Deve ser possível desativar e reativar lojas
 - [ ] Deve ser possível desativar qualquer produto da plataforma
@@ -74,7 +77,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Um Funcionário e um Dono devem estar obrigatoriamente vinculados a uma loja
 - [x] O Funcionário não pode cadastrar outros funcionários
 - [x] Apenas o Dono pode cadastrar funcionários para uma loja
-- [ ] O Dono e o Funcionário só podem gerenciar produtos e dados da própria loja
+- [x] O Dono e o Funcionário só podem gerenciar produtos e dados da própria loja
 
 ## Carrinho
 
@@ -110,6 +113,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 ## Lojas
 
 - [ ] Um produto desativado não pode aparecer em nenhuma busca.
+- [x] Uma loja só pode ter um endereço cadastrado
 - [ ] Apenas o Admin pode cadastrar e desativar lojas
 - [ ] Uma loja desativada não aparece nos resultados de busca global e sua rota de vitrine exclusiva fica inacessível
 - [ ] Caso uma loja seja desativada, todos os seus produtos associados são ocultados da busca global automaticamente

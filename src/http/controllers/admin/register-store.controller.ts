@@ -4,14 +4,9 @@ import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
 import {
   type RegisterStoreBodySchema,
   registerStoreBodySchema,
-} from '@/http/zod/schema-zod';
+} from '@/http/zod/schema/store';
 import { RegisterStoreService } from '@/use-cases/services/stores/register-store.service';
-import {
-  Body,
-  Controller,
-  HttpCode, Post,
-  UseGuards
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 
 @Controller('/store')
 @UseGuards(JwtAuthGuard, AdminAccessGuard)

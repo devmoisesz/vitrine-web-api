@@ -6,25 +6,33 @@ export class AddressInMemoryRepository implements AddressRepository {
   public items: Address[] = [];
 
   async findById(id: string): Promise<Address | null> {
-    const address = this.items.find((item) => item.id === id)
+    const address = this.items.find((item) => item.id === id);
 
-    if (!address) return null
+    if (!address) return null;
 
-    return address
+    return address;
   }
 
   async findByUserId(userId: string): Promise<Address[]> {
-    const user = this.items.filter((item) => item.userId === userId)
+    const address = this.items.filter((item) => item.userId === userId);
 
-    return user 
+    return address;
+  }
+
+  async findManyByUserId(userId: string, page: number): Promise<Address[]> {
+    const address = this.items
+    .filter((item) => item.userId === userId)
+    .slice((page -1) * 5)
+
+    return address;
   }
 
   async findByStoreId(storeId: string): Promise<Address | null> {
-    const store = this.items.find((item) => item.storeId === storeId)
+    const store = this.items.find((item) => item.storeId === storeId);
 
-    if(!store) return null
+    if (!store) return null;
 
-    return store 
+    return store;
   }
 
   async create(data: Prisma.AddressUncheckedCreateInput): Promise<Address> {
@@ -40,11 +48,20 @@ export class AddressInMemoryRepository implements AddressRepository {
       neighborhood: data.neighborhood,
       street: data.street || null,
       complement: data.complement || null,
-      createdAt: new Date()
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
 
-    this.items.push(address)
+    this.items.push(address);
 
-    return address
+    return address;
+  }
+
+  async save(address: Address): Promise<Address> {
+    const itemIndex = this.items.findIndex((item) => item.id === address.id);
+
+    this.items[itemIndex] = address;
+
+    return address;
   }
 }

@@ -1,9 +1,6 @@
 import { Public } from '@/auth/public';
 import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
-import {
-  type CreateAccountBodySchema,
-  createAccountBodySchema,
-} from '@/http/zod/schema-zod';
+import { type CreateAccountBodySchema, createAccountBodySchema } from '@/http/zod/schema/users';
 import { CreateAccountService } from '@/use-cases/services/users/create-account.service';
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 

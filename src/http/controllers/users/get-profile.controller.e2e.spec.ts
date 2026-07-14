@@ -12,7 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
 
-describe('Register collaborator (E2E)', () => {
+describe('Get Profile (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;

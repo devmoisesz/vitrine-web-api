@@ -9,17 +9,17 @@ import { PrismaClient } from '@prisma/client';
 import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { DatabaseModule } from '@/database/database.module';
-import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
+import cookieParser from 'cookie-parser';
+import { faker } from '@faker-js/faker';
 
-describe('Register Store (E2E)', () => {
+describe('Update User Address (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule, DatabaseModule],
+      imports: [AppModule],
     })
       .overrideProvider(PrismaService)
       .useFactory({
@@ -42,6 +42,9 @@ describe('Register Store (E2E)', () => {
       .compile();
 
     app = moduleRef.createNestApplication();
+
+    app.use(cookieParser());
+
     prisma = app.get(PrismaService);
     jwt = moduleRef.get(JwtService);
 
@@ -54,40 +57,43 @@ describe('Register Store (E2E)', () => {
     await app.close();
   });
 
-  test('[POST] /store/', async () => {
+  test('[PUT] /me/addressess/:addressId', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
       data: {
-        name: 'John doe',
+        name: 'fulano',
         email: uniqueEmail,
         password: await hash('123456', 8),
-        role: 'Admin'
+      },
+    });
+
+    const address = await prisma.address.create({
+      data: {
+        userId: user.id,
+        city: 'Miami',
+        neighborhood: 'Mid Beach',
+        state: faker.location.state(),
       },
     });
 
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
-    const uniqueWhatsapp = makeWhatsapp()
-
     const response = await request(app.getHttpServer())
-      .post(`/store`)
+      .put(`/me/addressess/${address.id}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        store_name: 'store',
-        store_email: 'store@example.com',
-        owner_email: uniqueEmail,
-        whatsapp: uniqueWhatsapp
+        neighborhood: 'Long Beach',
       });
 
-    expect(response.statusCode).toBe(201);
+    expect(response.statusCode).toBe(204);
 
-    const storeOnDatabase = await prisma.store.findUnique({
+    const addressOnDatabase = await prisma.address.findFirst({
       where: {
-        whatsapp: uniqueWhatsapp
+        neighborhood: 'Long Beach',
       },
     });
 
-    expect(storeOnDatabase).toBeTruthy();
+    expect(addressOnDatabase).toBeTruthy();
   });
 });
