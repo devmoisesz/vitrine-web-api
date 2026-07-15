@@ -53,14 +53,14 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 - [x] Deve ser possível cadastrar funcionários e vinculá-los à própria loja
 - [x] Deve ser possível cadastrar endereço da loja
-- [ ] Deve ser possível editar os dados da própria loja
+- [x] Deve ser possível editar os dados da própria loja
 - [ ] Deve ser possível desativar funcionários da própria loja
 
 ## Admin da Plataforma
 
 - [x] Deve ser possível cadastrar lojas 
 - [x] Deve ser possível cadastrar o Dono de uma loja e vinculá-lo a ela
-- [ ] Deve ser possível desativar e reativar lojas
+- [x] Deve ser possível desativar e reativar lojas
 - [ ] Deve ser possível desativar qualquer produto da plataforma
 - [ ] Deve ser possível visualizar todas as lojas cadastradas na plataforma
 - [ ] Deve ser possível cadastrar categorias principais na plataforma
@@ -114,7 +114,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 - [ ] Um produto desativado não pode aparecer em nenhuma busca.
 - [x] Uma loja só pode ter um endereço cadastrado
-- [ ] Apenas o Admin pode cadastrar e desativar lojas
+- [x] Apenas o Admin pode cadastrar e desativar lojas
 - [ ] Uma loja desativada não aparece nos resultados de busca global e sua rota de vitrine exclusiva fica inacessível
 - [ ] Caso uma loja seja desativada, todos os seus produtos associados são ocultados da busca global automaticamente
 

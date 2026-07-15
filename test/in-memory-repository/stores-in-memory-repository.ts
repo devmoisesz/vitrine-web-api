@@ -15,6 +15,16 @@ export class StoresInMemoryRepository implements StoresRepository {
      store.status = 'Inativa'
   }
 
+  async activate(slug: string ): Promise<void> {
+     const store = this.items.find((item) => item.slug === slug && item.status === 'Inativa')
+
+    if(!store){
+      return
+    }
+
+     store.status = 'Ativa'
+  }
+
   async findByWhatsapp(whatsapp: string): Promise<Store | null> {
     const store = this.items.find((item) => item.whatsapp === whatsapp);
 

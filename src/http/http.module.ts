@@ -31,6 +31,8 @@ import { ListEmployeesController } from "./controllers/collaborators/list-employ
 import { ListEmployeeService } from "@/use-cases/services/collaborators/list-employee.service";
 import { DeactivateStoreController } from "./controllers/admin/deactivate-store.controller";
 import { DeactivateStoreService } from "@/use-cases/services/stores/deactivate-store.service";
+import { ActivateStoreController } from "./controllers/admin/activate-store.controller";
+import { ActivateStoreService } from "@/use-cases/services/stores/activate-store.service";
 
 @Module({
     imports: [DatabaseModule],
@@ -49,7 +51,8 @@ import { DeactivateStoreService } from "@/use-cases/services/stores/deactivate-s
         EditStoreDataController,
         UpdateStoreAddresController,
         ListEmployeesController,
-        DeactivateStoreController
+        DeactivateStoreController,
+        ActivateStoreController
     ],
     providers: [
         CreateAccountService,
@@ -67,7 +70,8 @@ import { DeactivateStoreService } from "@/use-cases/services/stores/deactivate-s
         EditStoreDataService,
         UpdateStoreAddressService,
         ListEmployeeService,
-        DeactivateStoreService
+        DeactivateStoreService,
+        ActivateStoreService
     ]
 })
 export class HttpModule{}
