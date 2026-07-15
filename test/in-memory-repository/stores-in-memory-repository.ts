@@ -5,14 +5,14 @@ import { randomUUID } from 'node:crypto';
 export class StoresInMemoryRepository implements StoresRepository {
   public items: Store[] = [];
 
-  async disable(id: string, status: 'Inativa'): Promise<void> {
+  async disable(id: string ): Promise<void> {
      const store = this.items.find((item) => item.id === id && item.status === 'Ativa')
 
     if(!store){
       return
     }
 
-     store.status = status
+     store.status = 'Inativa'
   }
 
   async findByWhatsapp(whatsapp: string): Promise<Store | null> {

@@ -24,6 +24,6 @@ export class DeactivateStoreService {
       );
     }
 
-    await this.storesRepository.disable(store.id, 'Inativa');
+    await this.storesRepository.disable(store.id);
   }
 }
