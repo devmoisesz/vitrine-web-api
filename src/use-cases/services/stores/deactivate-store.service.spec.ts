@@ -7,7 +7,7 @@ import { makeStore } from '../../../../test/factories/make-store';
 let storesRepository: StoresInMemoryRepository;
 let sut: DeactivateStoreService;
 
-describe('Create Account Service', () => {
+describe('Deactivate Store Service', () => {
   beforeEach(() => {
     storesRepository = new StoresInMemoryRepository();
     sut = new DeactivateStoreService(storesRepository);
