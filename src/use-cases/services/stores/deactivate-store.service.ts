@@ -24,6 +24,6 @@ export class DeactivateStoreService {
       );
     }
 
-    await this.storesRepository.disable(store.id);
+    await this.storesRepository.disable(slug);
   }
 }

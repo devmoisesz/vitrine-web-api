@@ -5,8 +5,8 @@ import { randomUUID } from 'node:crypto';
 export class StoresInMemoryRepository implements StoresRepository {
   public items: Store[] = [];
 
-  async disable(id: string ): Promise<void> {
-     const store = this.items.find((item) => item.id === id && item.status === 'Ativa')
+  async disable(slug: string ): Promise<void> {
+     const store = this.items.find((item) => item.slug === slug && item.status === 'Ativa')
 
     if(!store){
       return
