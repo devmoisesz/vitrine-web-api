@@ -22,7 +22,6 @@ import { UpdateUserAddresController } from "./controllers/users/update-user-addr
 import { UpdateUserAddressService } from "@/use-cases/services/address/update-user-address.service";
 import { ListUsersAddressesController } from "./controllers/users/list-users-addresses.controller";
 import { ListUserAddressesService } from "@/use-cases/services/address/list-user-addresses.service";
-import { SlugGeneratorService } from "@/use-cases/services/stores/utils/generate-slug.service";
 import { EditStoreDataController } from "./controllers/collaborators/edit-store-data.controller";
 import { EditStoreDataService } from "@/use-cases/services/stores/edit-store-data.service";
 import { UpdateStoreAddresController } from "./controllers/collaborators/update-store-address.controller";
@@ -33,6 +32,7 @@ import { DeactivateStoreController } from "./controllers/admin/deactivate-store.
 import { DeactivateStoreService } from "@/use-cases/services/stores/deactivate-store.service";
 import { ActivateStoreController } from "./controllers/admin/activate-store.controller";
 import { ActivateStoreService } from "@/use-cases/services/stores/activate-store.service";
+import { SlugGeneratorService } from "@/use-cases/utils/generate-slug.service";
 
 @Module({
     imports: [DatabaseModule],

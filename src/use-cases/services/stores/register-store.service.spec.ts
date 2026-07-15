@@ -8,7 +8,7 @@ import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { RegisterStoreService } from './register-store.service';
 import { faker } from '@faker-js/faker';
 import { makeEmail } from '../../../../test/factories/make-email';
-import { SlugGeneratorService } from './utils/generate-slug.service';
+import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
 
 let usersRepository: UsersInMemoryRepository;
 let collaboratorsRepository: CollaboratorsInMemoryRepository;
