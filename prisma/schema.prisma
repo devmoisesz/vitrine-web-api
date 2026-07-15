@@ -7,28 +7,28 @@ datasource db {
 }
 
 enum UserRole {
-  Usuário
-  Admin
+  USER
+  ADMIN
 }
 
 enum CollaboratorRole {
-  Proprietário
-  Funcionário
+  PROPRIETARIO
+  FUNCIONARIO
 }
 
 enum StatusStore {
-  Ativa
-  Inativa
+  ATIVA
+  INATIVA
 }
 
 enum StatusProduct {
-  Ativo
-  Inativo
+  ATIVO
+  INATIVO
 }
 
 enum StatusCart {
-  Ativo
-  Concluído
+  ATIVO
+  CONCLUIDO
 }
 
 model User {
@@ -36,7 +36,7 @@ model User {
   name        String
   email       String @unique
   password    String?
-  role        UserRole @default(Usuário)
+  role        UserRole @default(USER)
 
   collaborator Collaborator?
   addresses Address[]
@@ -50,7 +50,7 @@ model Collaborator {
   id          String @id @default(uuid())
   userId      String @unique @map("user_id")
   storeId     String @map("store_id")
-  role        CollaboratorRole @default(Funcionário)
+  role        CollaboratorRole @default(FUNCIONARIO)
   
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
@@ -67,7 +67,7 @@ model Store {
   whatsapp          String @unique
   cnpj              String? @unique
   cpf               String? @unique
-  status            StatusStore @default(Ativa)
+  status            StatusStore @default(ATIVA)
   logo_image_url    String?
   storage_public_id String?
 
@@ -104,23 +104,36 @@ model Address {
 model Product {
   id           String   @id @default(uuid())
   name         String
-  slug         String @unique
+  slug         String 
   description  String
   price        Decimal
   stock        Int
-  status       StatusProduct @default(Ativo)
+  status       StatusProduct @default(ATIVO)
   storeId      String @map("store_id")
+  categoryId   String @map("category_id")
   subcategoryId String @map("subcategory_id")
   createdAt    DateTime @default(now()) @map("created_at")
 
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   subcategory SubCategory @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
 
   products_images ProductImages[]
   cart_items CartItems[]
+  tags  Tag[]
 
+  @@unique([slug, storeId])
   @@index([storeId, subcategoryId])
   @@map("products")
+}
+
+model Tag {
+  id           String   @id @default(uuid())
+  name         String @unique
+
+  products Product[]
+
+  @@map("tags")
 }
 
 model ProductImages {
@@ -137,9 +150,11 @@ model ProductImages {
 
 model Category {
   id           String   @id @default(uuid())
-  name         String
+  name         String   @unique
+  slug         String   @unique
   createdAt    DateTime @default(now()) @map("created_at")
 
+  products  Product[]
   subcategories SubCategory[]
   
   @@map("categories")
@@ -147,13 +162,16 @@ model Category {
 
 model SubCategory {
   id           String   @id @default(uuid())
-  name         String
+  name         String 
+  slug         String 
   categoryId   String @map("category_id")
   createdAt    DateTime @default(now()) @map("created_at")
 
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   products Product[]
 
+  @@unique([name, categoryId])
+  @@unique([slug, categoryId])
   @@map("subcategories")
 }
 
@@ -161,7 +179,7 @@ model Cart {
   id           String   @id @default(uuid())
   userId      String @map("user_id")
   storeId      String  @map("store_id")
-  status       StatusCart @default(Ativo)
+  status       StatusCart @default(ATIVO)
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @default(now()) @map("updated_at")
 
