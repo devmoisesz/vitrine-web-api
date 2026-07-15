@@ -18,55 +18,55 @@
 -- AlterEnum
 BEGIN;
 CREATE TYPE "CollaboratorRole_new" AS ENUM ('PROPRIETARIO', 'FUNCIONARIO');
-ALTER TABLE "public"."collaborators" ALTER COLUMN "role" DROP DEFAULT;
+ALTER TABLE "collaborators" ALTER COLUMN "role" DROP DEFAULT;
 ALTER TABLE "collaborators" ALTER COLUMN "role" TYPE "CollaboratorRole_new" USING ("role"::text::"CollaboratorRole_new");
 ALTER TYPE "CollaboratorRole" RENAME TO "CollaboratorRole_old";
 ALTER TYPE "CollaboratorRole_new" RENAME TO "CollaboratorRole";
-DROP TYPE "public"."CollaboratorRole_old";
+DROP TYPE "CollaboratorRole_old";
 ALTER TABLE "collaborators" ALTER COLUMN "role" SET DEFAULT 'FUNCIONARIO';
 COMMIT;
 
 -- AlterEnum
 BEGIN;
 CREATE TYPE "StatusCart_new" AS ENUM ('ATIVO', 'CONCLUIDO');
-ALTER TABLE "public"."carts" ALTER COLUMN "status" DROP DEFAULT;
+ALTER TABLE "carts" ALTER COLUMN "status" DROP DEFAULT;
 ALTER TABLE "carts" ALTER COLUMN "status" TYPE "StatusCart_new" USING ("status"::text::"StatusCart_new");
 ALTER TYPE "StatusCart" RENAME TO "StatusCart_old";
 ALTER TYPE "StatusCart_new" RENAME TO "StatusCart";
-DROP TYPE "public"."StatusCart_old";
+DROP TYPE "StatusCart_old";
 ALTER TABLE "carts" ALTER COLUMN "status" SET DEFAULT 'ATIVO';
 COMMIT;
 
 -- AlterEnum
 BEGIN;
 CREATE TYPE "StatusProduct_new" AS ENUM ('ATIVO', 'INATIVO');
-ALTER TABLE "public"."products" ALTER COLUMN "status" DROP DEFAULT;
+ALTER TABLE "products" ALTER COLUMN "status" DROP DEFAULT;
 ALTER TABLE "products" ALTER COLUMN "status" TYPE "StatusProduct_new" USING ("status"::text::"StatusProduct_new");
 ALTER TYPE "StatusProduct" RENAME TO "StatusProduct_old";
 ALTER TYPE "StatusProduct_new" RENAME TO "StatusProduct";
-DROP TYPE "public"."StatusProduct_old";
+DROP TYPE "StatusProduct_old";
 ALTER TABLE "products" ALTER COLUMN "status" SET DEFAULT 'ATIVO';
 COMMIT;
 
 -- AlterEnum
 BEGIN;
 CREATE TYPE "StatusStore_new" AS ENUM ('ATIVA', 'INATIVA');
-ALTER TABLE "public"."stores" ALTER COLUMN "status" DROP DEFAULT;
+ALTER TABLE "stores" ALTER COLUMN "status" DROP DEFAULT;
 ALTER TABLE "stores" ALTER COLUMN "status" TYPE "StatusStore_new" USING ("status"::text::"StatusStore_new");
 ALTER TYPE "StatusStore" RENAME TO "StatusStore_old";
 ALTER TYPE "StatusStore_new" RENAME TO "StatusStore";
-DROP TYPE "public"."StatusStore_old";
+DROP TYPE "StatusStore_old";
 ALTER TABLE "stores" ALTER COLUMN "status" SET DEFAULT 'ATIVA';
 COMMIT;
 
 -- AlterEnum
 BEGIN;
 CREATE TYPE "UserRole_new" AS ENUM ('USER', 'ADMIN');
-ALTER TABLE "public"."users" ALTER COLUMN "role" DROP DEFAULT;
+ALTER TABLE "users" ALTER COLUMN "role" DROP DEFAULT;
 ALTER TABLE "users" ALTER COLUMN "role" TYPE "UserRole_new" USING ("role"::text::"UserRole_new");
 ALTER TYPE "UserRole" RENAME TO "UserRole_old";
 ALTER TYPE "UserRole_new" RENAME TO "UserRole";
-DROP TYPE "public"."UserRole_old";
+DROP TYPE "UserRole_old";
 ALTER TABLE "users" ALTER COLUMN "role" SET DEFAULT 'USER';
 COMMIT;
 

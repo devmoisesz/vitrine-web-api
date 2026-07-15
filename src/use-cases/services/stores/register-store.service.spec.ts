@@ -40,7 +40,7 @@ describe('Register Collaborator Service', () => {
     });
 
     expect(result.store.id).toEqual(expect.any(String));
-    expect(result.owner.role).toEqual('Proprietário');
+    expect(result.owner.role).toEqual('PROPRIETARIO');
     expect(storesRepository.items[0]).toEqual(result.store);
     expect(collaboratorsRepository.items[0]).toEqual(result.owner);
   });

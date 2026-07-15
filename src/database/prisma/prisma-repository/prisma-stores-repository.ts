@@ -30,7 +30,7 @@ export class PrismaStoresRepository implements StoresRepository {
         slug,
       },
       data: {
-        status: 'Inativa'
+        status: 'INATIVA'
       },
     });
   }
@@ -41,7 +41,7 @@ export class PrismaStoresRepository implements StoresRepository {
         slug,
       },
       data: {
-        status: 'Ativa'
+        status: 'ATIVA'
       },
     });
   }

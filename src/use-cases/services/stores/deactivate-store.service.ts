@@ -18,7 +18,7 @@ export class DeactivateStoreService {
       );
     }
 
-    if (store.status === 'Inativa') {
+    if (store.status === 'INATIVA') {
       throw new ConflictException(
         'Unable to complete the requested operation.',
       );

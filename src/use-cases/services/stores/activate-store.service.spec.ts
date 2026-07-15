@@ -16,17 +16,17 @@ describe('Activate Store Service', () => {
   it('should be possible to activate a store.', async () => {
     const store = await makeStore(storesRepository)
 
-    store.status = 'Inativa'
+    store.status = 'INATIVA'
 
     await sut.execute(store.slug);
 
-    expect(storesRepository.items[0].status).toEqual('Ativa')
+    expect(storesRepository.items[0].status).toEqual('ATIVA')
   });
 
   it('should not allow attempting to activate a store that is already deactivated.', async () => {
     const store = await makeStore(storesRepository)
 
-    store.status = 'Ativa'
+    store.status = 'ATIVA'
 
     await expect(() =>
       sut.execute(store.slug),

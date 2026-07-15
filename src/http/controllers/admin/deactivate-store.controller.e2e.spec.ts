@@ -66,7 +66,7 @@ describe('Deactivate Store (E2E)', () => {
         name: 'admin',
         email: userEmail,
         password: await hash('123456', 8),
-        role: 'Admin'
+        role: 'ADMIN'
       },
     });
 
@@ -95,6 +95,6 @@ describe('Deactivate Store (E2E)', () => {
     })
 
     expect(storeInativateOnDatabase).toBeTruthy()
-    expect(storeInativateOnDatabase?.status).toEqual('Inativa')
+    expect(storeInativateOnDatabase?.status).toEqual('INATIVA')
   });
 });

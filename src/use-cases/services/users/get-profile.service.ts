@@ -11,6 +11,7 @@ import {
 import { CollaboratorsRepository } from '@/database/repositories/collaborators-repository';
 import { AddressRepository } from '@/database/repositories/addresses-repository';
 import { StoresRepository } from '@/database/repositories/stores-repository';
+import { formatEnumLabel } from '@/use-cases/utils/format-enum-label';
 
 @Injectable()
 export class GetProfileService {
@@ -47,20 +48,24 @@ export class GetProfileService {
 
       const storeAddress = await this.addressRepository.findByStoreId(store.id);
 
+      const collaboratorRole = formatEnumLabel(isCollaborator.role)
+
       return {
         user_name: user.name,
         user_email: user.email,
-        user_role: isCollaborator.role,
+        user_role: collaboratorRole,
         store_name: store?.name,
         store_address: storeAddress ?? undefined,
         user_address: userAddress ?? null,
       };
     }
 
+    const userRole = formatEnumLabel(user.role)
+
     return {
       user_name: user.name,
       user_email: user.email,
-      user_role: user.role === 'Usuário' ? 'Cliente' : 'Admin',
+      user_role: userRole === 'Usuário' ? 'Cliente' : 'Admin',
       user_address: userAddress ?? null,
     };
   }

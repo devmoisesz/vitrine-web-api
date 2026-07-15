@@ -36,7 +36,7 @@ describe('Get Profile Service', () => {
       name: 'John Doe',
       email: uniqueEmail,
       password: await hash('123456', 8),
-      role: 'Usuário'
+      role: 'USER'
     });
 
     const result = await sut.execute({
@@ -52,7 +52,7 @@ describe('Get Profile Service', () => {
       name: 'John Doe',
       email: uniqueEmail,
       password: await hash('123456', 8),
-      role: 'Admin'
+      role: 'ADMIN'
     });
 
     const result = await sut.execute({
@@ -74,7 +74,7 @@ describe('Get Profile Service', () => {
     await collaboratorsRepository.create({
         userId: user.id,
         storeId: store.id,
-        role: 'Proprietário'
+        role: 'PROPRIETARIO'
     })
 
     const result = await sut.execute({

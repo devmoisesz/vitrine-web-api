@@ -77,7 +77,7 @@ describe('Edit Store Data (E2E)', () => {
         data: {
             userId: user.id,
             storeId: store.id,
-            role: 'Proprietário'
+            role: 'PROPRIETARIO'
         }
     })
 

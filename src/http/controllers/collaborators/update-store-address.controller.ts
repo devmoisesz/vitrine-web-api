@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 
 @Controller('/store/:slug/address')
-@RequireRoles('Proprietário')
+@RequireRoles('PROPRIETARIO')
 @UseGuards(JwtAuthGuard, StoreAccessGuard)
 export class UpdateStoreAddresController {
   constructor(private updateStoreAddressService: UpdateStoreAddressService) {}

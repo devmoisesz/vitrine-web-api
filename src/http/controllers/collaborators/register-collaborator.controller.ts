@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 
 @Controller('/stores/:storeId/collaborators')
-@RequireRoles('Proprietário')
+@RequireRoles('PROPRIETARIO')
 @UseGuards(JwtAuthGuard, StoreAccessGuard)
 export class RegisterCollaboratorController {
   constructor(

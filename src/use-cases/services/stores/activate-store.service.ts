@@ -18,7 +18,7 @@ export class ActivateStoreService {
       );
     }
 
-    if (store.status === 'Ativa') {
+    if (store.status === 'ATIVA') {
       throw new ConflictException(
         'Unable to complete the requested operation.',
       );

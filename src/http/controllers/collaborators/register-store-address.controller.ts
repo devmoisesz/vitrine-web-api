@@ -7,7 +7,7 @@ import { RegisterStoreAddressService } from '@/use-cases/services/address/regist
 import { Body, Controller, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 
 @Controller('/address/:slug/register/')
-@RequireRoles('Proprietário')
+@RequireRoles('PROPRIETARIO')
 @UseGuards(JwtAuthGuard, StoreAccessGuard)
 export class RegisterStoreAddressController {
   constructor(private registerStoreAddressService: RegisterStoreAddressService) {}

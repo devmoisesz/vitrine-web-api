@@ -18,13 +18,13 @@ describe('Deactivate Store Service', () => {
 
     await sut.execute(store.slug);
 
-    expect(storesRepository.items[0].status).toEqual('Inativa')
+    expect(storesRepository.items[0].status).toEqual('INATIVA')
   });
 
   it('should not allow attempting to deactivate a store that is already deactivated.', async () => {
     const store = await makeStore(storesRepository)
 
-    store.status = 'Inativa'
+    store.status = 'INATIVA'
 
     await expect(() =>
       sut.execute(store.slug),

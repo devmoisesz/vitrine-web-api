@@ -66,7 +66,7 @@ describe('Activate Store (E2E)', () => {
         name: 'admin',
         email: userEmail,
         password: await hash('123456', 8),
-        role: 'Admin'
+        role: 'ADMIN'
       },
     });
 
@@ -76,7 +76,7 @@ describe('Activate Store (E2E)', () => {
         slug: 'fake-store',
         email: storeEmail,
         whatsapp: '19876526587',
-        status: 'Inativa'
+        status: 'INATIVA'
       },
     });
 
@@ -96,6 +96,6 @@ describe('Activate Store (E2E)', () => {
     })
 
     expect(storeInativateOnDatabase).toBeTruthy()
-    expect(storeInativateOnDatabase?.status).toEqual('Ativa')
+    expect(storeInativateOnDatabase?.status).toEqual('ATIVA')
   });
 });

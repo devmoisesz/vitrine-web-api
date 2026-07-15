@@ -7,7 +7,7 @@ import { EditStoreDataService } from '@/use-cases/services/stores/edit-store-dat
 import { Body, Controller, HttpCode, Param, Put, UseGuards } from '@nestjs/common';
 
 @Controller('/store/:slug/edit')
-@RequireRoles('Proprietário')
+@RequireRoles('PROPRIETARIO')
 @UseGuards(JwtAuthGuard, StoreAccessGuard)
 export class EditStoreDataController {
   constructor(private editStoreDataService: EditStoreDataService) {}

@@ -6,7 +6,7 @@ export class CollaboratorsInMemoryRepository implements CollaboratorsRepository 
   public items: Collaborator[] = [];
 
   async findManyEmployee(storeId: string): Promise<Collaborator[]> {
-    return this.items.filter((item) => item.storeId === storeId && item.role === 'Funcionário')
+    return this.items.filter((item) => item.storeId === storeId && item.role === 'FUNCIONARIO')
   }
 
   async findById(id: string): Promise<Collaborator | null> {
@@ -30,7 +30,7 @@ export class CollaboratorsInMemoryRepository implements CollaboratorsRepository 
       id: data.id ?? randomUUID(),
       userId: data.userId,
       storeId: data.storeId,
-      role: data.role ?? 'Funcionário'
+      role: data.role ?? 'FUNCIONARIO'
     };
 
     this.items.push(collaborator)

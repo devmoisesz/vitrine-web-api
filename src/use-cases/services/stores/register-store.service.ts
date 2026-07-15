@@ -57,7 +57,7 @@ export class RegisterStoreService {
     const owner = await this.collaboratorsRepository.create({
       storeId: store.id,
       userId: user.id,
-      role: 'Proprietário',
+      role: 'PROPRIETARIO',
     });
 
     return {
