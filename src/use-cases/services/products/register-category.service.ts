@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CategoriesRepository } from '@/database/repositories/categories-repository';
 import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
 
@@ -13,7 +13,7 @@ export class RegisterCategoryService {
     const isCategoryExists = await this.categoriesRepository.findByName(name)
 
     if(isCategoryExists){
-        throw new BadRequestException('Category already registered')
+        throw new ConflictException('Category already registered')
     }
 
     const slug = await this.generatorSlugUnique.execute(name)

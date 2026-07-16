@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { BadRequestException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { RegisterCategoryService } from './register-category.service';
 import { CategoriesInMemoryRepository } from '../../../../test/in-memory-repository/categories-in-memory-repository';
 import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
@@ -11,7 +11,7 @@ let generatorSlugUnique: SlugGeneratorService;
 let storesRepository: StoresInMemoryRepository;
 let sut: RegisterCategoryService;
 
-describe('Register User Address Service', () => {
+describe('Register Category Service', () => {
   beforeEach(() => {
     categoriesRepository = new CategoriesInMemoryRepository();
     storesRepository = new StoresInMemoryRepository();
@@ -34,6 +34,6 @@ describe('Register User Address Service', () => {
 
     await expect(() =>
       sut.execute(category.name),
-    ).rejects.toBeInstanceOf(BadRequestException);
+    ).rejects.toBeInstanceOf(ConflictException);
   });
 });
