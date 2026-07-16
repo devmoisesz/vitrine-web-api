@@ -29,4 +29,16 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
 
     return category;
   }
+
+  async findBySlug(slug: string): Promise<Category | null> {
+    const category = await this.prisma.category.findUnique({
+      where: {
+        slug,
+      },
+    });
+
+    if (!category) return null;
+
+    return category;
+  }
 }

@@ -35,6 +35,8 @@ import { ActivateStoreService } from "@/use-cases/services/stores/activate-store
 import { SlugGeneratorService } from "@/use-cases/utils/generate-slug.service";
 import { RegisterCategoryController } from "./controllers/admin/register-category.controller";
 import { RegisterCategoryService } from "@/use-cases/services/products/register-category.service";
+import { RegisterSubcategoryController } from "./controllers/admin/register-subcategory.controller";
+import { RegisterSubcategoryService } from "@/use-cases/services/products/register-subcategory.service";
 
 @Module({
     imports: [DatabaseModule],
@@ -55,7 +57,8 @@ import { RegisterCategoryService } from "@/use-cases/services/products/register-
         ListEmployeesController,
         DeactivateStoreController,
         ActivateStoreController,
-        RegisterCategoryController
+        RegisterCategoryController,
+        RegisterSubcategoryController
     ],
     providers: [
         CreateAccountService,
@@ -75,7 +78,8 @@ import { RegisterCategoryService } from "@/use-cases/services/products/register-
         ListEmployeeService,
         DeactivateStoreService,
         ActivateStoreService,
-        RegisterCategoryService
+        RegisterCategoryService,
+        RegisterSubcategoryService
     ]
 })
 export class HttpModule{}

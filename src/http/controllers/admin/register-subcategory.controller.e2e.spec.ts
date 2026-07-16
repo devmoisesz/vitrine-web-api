@@ -11,7 +11,7 @@ import { hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
 
-describe('Register Category (E2E)', () => {
+describe('Register Subcategory (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
@@ -53,7 +53,7 @@ describe('Register Category (E2E)', () => {
     await app.close();
   });
 
-  test('[POST] /categories', async () => {
+  test('[POST] /categories/:slug/subcategory', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
@@ -65,23 +65,30 @@ describe('Register Category (E2E)', () => {
       },
     });
 
+    const category = await prisma.category.create({
+        data: {
+            name: 'new category',
+            slug: 'new-category'
+        }
+    })
+
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
     const response = await request(app.getHttpServer())
-      .post(`/categories`)
+      .post(`/categories/${category.slug}/subcategory`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        name: 'New Category'
+        name: 'New SubCategory'
       });
 
     expect(response.statusCode).toBe(201);
 
-    const categoryOnDatabase = await prisma.category.findUnique({
+    const subcategoryOnDatabase = await prisma.subCategory.findMany({
       where: {
-        name: 'New Category'
+        slug: 'new-subcategory'
       },
     });
 
-    expect(categoryOnDatabase).toBeTruthy();
+    expect(subcategoryOnDatabase).toBeTruthy();
   });
 });
