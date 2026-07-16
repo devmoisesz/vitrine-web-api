@@ -44,6 +44,8 @@ import { EditSubcategoryService } from "@/use-cases/services/products/edit-subca
 import { DeleteEmployeeController } from "./controllers/collaborators/delete-employee.controller";
 import { DeleteEmployeeService } from "@/use-cases/services/collaborators/delete-employee.service";
 import { StorageModule } from "@/storage/storage.module";
+import { RegisterProductController } from "./controllers/collaborators/register-product.controller";
+import { RegisterProductService } from "@/use-cases/services/products/register-product.service";
 
 @Module({
     imports: [DatabaseModule, StorageModule],
@@ -68,7 +70,8 @@ import { StorageModule } from "@/storage/storage.module";
         RegisterSubcategoryController,
         EditCategoryController,
         EditSubcategoryController,
-        DeleteEmployeeController
+        DeleteEmployeeController,
+        RegisterProductController
     ],
     providers: [
         CreateAccountService,
@@ -92,7 +95,8 @@ import { StorageModule } from "@/storage/storage.module";
         RegisterSubcategoryService,
         EditCategoryService,
         EditSubcategoryService,
-        DeleteEmployeeService
+        DeleteEmployeeService,
+        RegisterProductService
     ]
 })
 export class HttpModule{}
