@@ -43,9 +43,10 @@ import { EditSubcategoryController } from "./controllers/admin/edit-subcategory.
 import { EditSubcategoryService } from "@/use-cases/services/products/edit-subcategory.service";
 import { DeleteEmployeeController } from "./controllers/collaborators/delete-employee.controller";
 import { DeleteEmployeeService } from "@/use-cases/services/collaborators/delete-employee.service";
+import { StorageModule } from "@/storage/storage.module";
 
 @Module({
-    imports: [DatabaseModule],
+    imports: [DatabaseModule, StorageModule],
     controllers: [
         CreateAccountController,
         AuthenticateController,

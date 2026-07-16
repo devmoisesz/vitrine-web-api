@@ -4,6 +4,9 @@ export const envSchema = z.object({
     DATABASE_URL: z.string().url(),
     JWT_PRIVATE_KEY: z.string(),
     JWT_PUBLIC_KEY: z.string(),
+    CLOUDINARY_CLOUD_NAME: z.string(),
+    CLOUDINARY_API_KEY: z.string(),
+    CLOUDINARY_API_SECRET: z.string(),
     PORT: z.coerce.number().optional().default(3333),
 })
 
