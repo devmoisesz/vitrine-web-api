@@ -6,6 +6,20 @@ import { Decimal } from '@prisma/client/runtime/client';
 export class ProductsInMemoryRepository implements ProductsRepository {
   public items: Product[] = [];
   public tags: Tag[] = [];
+
+  async findById(id: string): Promise<Product | null> {
+    const product = this.items.find((item) => item.id === id)
+
+    if(!product) return null
+
+    return product
+  }
+
+  async activateProduct(productId: string, status: 'ATIVO'): Promise<void> {
+    const product = this.items.find((item) => item.id === productId)
+
+    product!.status = status
+  }
   
   public productTags: { productId: string; tagId: string }[] = [];
 
