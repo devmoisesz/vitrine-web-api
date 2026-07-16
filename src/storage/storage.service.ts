@@ -1,4 +1,11 @@
+export interface UploadParams {
+  body: Buffer;
+  fileName: string;
+  contentType?: string;
+  folder?: string;
+}
+
 export abstract class StorageService {
-  abstract upload(file: Express.Multer.File, folder?: string): Promise<{ url: string; id: string }>;
+  abstract upload(params: UploadParams): Promise<{ url: string; public_id: string }>;
   abstract delete(id: string): Promise<void>;
 }

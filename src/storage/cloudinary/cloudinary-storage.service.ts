@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
 import * as streamifier from 'streamifier';
-import { StorageService } from '../storage.service';
+import { StorageService, UploadParams } from '../storage.service';
 import { EnvService } from '@/env/env.service';
 
 @Injectable()
@@ -19,16 +19,9 @@ export class CloudinaryStorageService implements StorageService {
     });
   }
 
-  async upload(
-    file: Express.Multer.File,
-    folder = 'vitrine-web',
-  ): Promise<{ url: string; id: string }> {
-    if (!file || !file.buffer) {
-      throw new BadRequestException('Arquivo inválido ou vazio.');
-    }
-
-    if (!file.mimetype.startsWith('image/')) {
-      throw new BadRequestException('Apenas arquivos de imagem são aceitos.');
+  async upload({body, fileName, folder = 'vitrine-web'}: UploadParams): Promise<{ url: string; public_id: string }> {
+    if (!body) {
+      throw new BadRequestException('O buffer do arquivo está vazio ou inválido.');
     }
 
     return new Promise((resolve, reject) => {
@@ -37,6 +30,7 @@ export class CloudinaryStorageService implements StorageService {
           folder,
           resource_type: 'image', 
           allowed_formats: ['jpg', 'jpeg', 'png', 'webp'], 
+          public_id: fileName ? fileName.split('.')[0] : undefined
         },
         (error, result) => {
           if (error || !result) {
@@ -49,12 +43,12 @@ export class CloudinaryStorageService implements StorageService {
 
           resolve({
             url: result.secure_url,
-            id: result.public_id,
+            public_id: result.public_id,
           });
         },
       );
 
-      streamifier.createReadStream(file.buffer).pipe(uploadStream);
+      streamifier.createReadStream(body).pipe(uploadStream);
     });
   }
 
