@@ -62,7 +62,7 @@ describe('Register Store (E2E)', () => {
         name: 'John doe',
         email: uniqueEmail,
         password: await hash('123456', 8),
-        role: 'Admin'
+        role: 'ADMIN'
       },
     });
 

@@ -10,7 +10,7 @@ export class AdminAccessGuard implements CanActivate {
             throw new UnauthorizedException('Unauthorized.')
         }
 
-        if(user.role !== 'Admin'){
+        if(user.role !== 'ADMIN'){
             throw new ForbiddenException('You do not have permission to perform this action.')
         }
 

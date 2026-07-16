@@ -10,7 +10,7 @@ import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
-import { SlugGeneratorService } from '@/use-cases/services/stores/utils/generate-slug.service';
+import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
 
 describe('Register collaborator (E2E)', () => {
   let app: INestApplication;
@@ -80,7 +80,7 @@ describe('Register collaborator (E2E)', () => {
         data: {
             userId: user.id,
             storeId: store.id,
-            role: 'Proprietário'
+            role: 'PROPRIETARIO'
         }
     })
 

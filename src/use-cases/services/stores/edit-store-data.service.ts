@@ -8,7 +8,7 @@ import {
   OutputEditDataStoreDto,
 } from './dtos/edit-data-store.dto';
 import { StoresRepository } from '@/database/repositories/stores-repository';
-import { SlugGeneratorService } from './utils/generate-slug.service';
+import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
 
 @Injectable()
 export class EditStoreDataService {

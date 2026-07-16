@@ -48,7 +48,7 @@ describe('StoreAccessGuard', () => {
   }
 
   it('must allow direct access if the user is a Global Admin', async () => {
-    const context = createMockContext({ id: 'admin-id', role: 'Admin' }, 'store-id');
+    const context = createMockContext({ id: 'admin-id', role: 'ADMIN' }, 'store-id');
 
     const result = await guard.canActivate(context);
 

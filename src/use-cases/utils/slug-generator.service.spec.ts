@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { SlugGeneratorService } from './generate-slug.service';
-import { StoresInMemoryRepository } from '../../../../../test/in-memory-repository/stores-in-memory-repository';
-import { makeStore } from '../../../../../test/factories/make-store';
 import { randomUUID } from 'node:crypto';
 import { faker } from '@faker-js/faker';
+import { StoresInMemoryRepository } from '../../../test/in-memory-repository/stores-in-memory-repository';
+import { makeStore } from '../../../test/factories/make-store';
 
 let storesRepository: StoresInMemoryRepository;
 let sut: SlugGeneratorService;

@@ -24,6 +24,28 @@ export class PrismaStoresRepository implements StoresRepository {
     });
   }
 
+  async disable(slug: string): Promise<void> {
+    await this.prisma.store.update({
+      where: {
+        slug,
+      },
+      data: {
+        status: 'INATIVA'
+      },
+    });
+  }
+
+  async activate(slug: string): Promise<void> {
+    await this.prisma.store.update({
+      where: {
+        slug,
+      },
+      data: {
+        status: 'ATIVA'
+      },
+    });
+  }
+
   async findByWhatsapp(whatsapp: string): Promise<Store | null> {
     const store = await this.prisma.store.findUnique({
       where: {

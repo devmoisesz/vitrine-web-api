@@ -7,7 +7,7 @@ import { UsersRepository } from '@/database/repositories/users-repository';
 import { CollaboratorsRepository } from '@/database/repositories/collaborators-repository';
 import { InputRegisterStroreDto } from './dtos/register-store.dto';
 import { StoresRepository } from '@/database/repositories/stores-repository';
-import { SlugGeneratorService } from './utils/generate-slug.service';
+import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
 
 @Injectable()
 export class RegisterStoreService {
@@ -57,7 +57,7 @@ export class RegisterStoreService {
     const owner = await this.collaboratorsRepository.create({
       storeId: store.id,
       userId: user.id,
-      role: 'Proprietário',
+      role: 'PROPRIETARIO',
     });
 
     return {

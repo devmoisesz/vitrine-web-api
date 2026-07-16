@@ -8,7 +8,7 @@ import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { RegisterStoreService } from './register-store.service';
 import { faker } from '@faker-js/faker';
 import { makeEmail } from '../../../../test/factories/make-email';
-import { SlugGeneratorService } from './utils/generate-slug.service';
+import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
 
 let usersRepository: UsersInMemoryRepository;
 let collaboratorsRepository: CollaboratorsInMemoryRepository;
@@ -40,7 +40,7 @@ describe('Register Collaborator Service', () => {
     });
 
     expect(result.store.id).toEqual(expect.any(String));
-    expect(result.owner.role).toEqual('Proprietário');
+    expect(result.owner.role).toEqual('PROPRIETARIO');
     expect(storesRepository.items[0]).toEqual(result.store);
     expect(collaboratorsRepository.items[0]).toEqual(result.owner);
   });

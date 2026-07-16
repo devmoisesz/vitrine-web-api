@@ -8,7 +8,7 @@ import { ListEmployeeService } from '@/use-cases/services/collaborators/list-emp
 import { Controller, Get, HttpCode, Param, Query, UseGuards } from '@nestjs/common';
 
 @Controller('/store/:slug/employees')
-@RequireRoles('Proprietário')
+@RequireRoles('PROPRIETARIO')
 @UseGuards(JwtAuthGuard, StoreAccessGuard)
 export class ListEmployeesController {
   constructor(private listEmployeesService: ListEmployeeService) {}

@@ -1,5 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { CollaboratorsRepository } from '@/database/repositories/collaborators-repository';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { StoresRepository } from '@/database/repositories/stores-repository';
 import { OutputListEmployee } from './dtos/output-list-employee.dto';
 import { UsersRepository } from '@/database/repositories/users-repository';
@@ -8,7 +7,6 @@ import { UsersRepository } from '@/database/repositories/users-repository';
 export class ListEmployeeService {
   constructor(
     private usersRepository: UsersRepository,
-    private collaboratorsRepository: CollaboratorsRepository,
     private storesRepository: StoresRepository,
   ) {}
 
@@ -16,20 +14,17 @@ export class ListEmployeeService {
     const store = await this.storesRepository.findBySlug(slug);
 
     if (!store) {
-      throw new UnauthorizedException('Invalid authentication credentials.');
+      throw new NotFoundException('Resource Not Found.');
     }
 
-    const employees = await this.collaboratorsRepository.findManyEmployee(
+    const employees = await this.usersRepository.findEmployeesByStoreId(
       store.id,
+      page
     );
 
-    const employeeUserId = employees.map((employee) => employee.userId);
-
-    const users = await this.usersRepository.findManyById(employeeUserId, page);
-
-    return users.map((user) => ({
-      name: user.name,
-      email: user.email,
+    return employees.map((employee) => ({
+      name: employee.name,
+      email: employee.email,
     }));
   }
 }

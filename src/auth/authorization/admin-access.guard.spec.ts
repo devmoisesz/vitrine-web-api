@@ -19,7 +19,7 @@ describe('Admin Access Guard', () => {
   }
 
   it('must allow access if the user is an Admin', () => {
-    const context = createMockContext({ id: 'user-1', role: 'Admin' });
+    const context = createMockContext({ id: 'user-1', role: 'ADMIN' });
 
     const result = guard.canActivate(context);
 

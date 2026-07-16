@@ -41,7 +41,7 @@ export class StoreAccessGuard implements CanActivate {
       throw new NotFoundException('Resource not found.');
     }
 
-    if (user.role === 'Admin') {
+    if (user.role === 'ADMIN') {
       return true;
     }
 

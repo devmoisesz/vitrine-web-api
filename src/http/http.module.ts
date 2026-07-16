@@ -22,13 +22,27 @@ import { UpdateUserAddresController } from "./controllers/users/update-user-addr
 import { UpdateUserAddressService } from "@/use-cases/services/address/update-user-address.service";
 import { ListUsersAddressesController } from "./controllers/users/list-users-addresses.controller";
 import { ListUserAddressesService } from "@/use-cases/services/address/list-user-addresses.service";
-import { SlugGeneratorService } from "@/use-cases/services/stores/utils/generate-slug.service";
 import { EditStoreDataController } from "./controllers/collaborators/edit-store-data.controller";
 import { EditStoreDataService } from "@/use-cases/services/stores/edit-store-data.service";
 import { UpdateStoreAddresController } from "./controllers/collaborators/update-store-address.controller";
 import { UpdateStoreAddressService } from "@/use-cases/services/address/update-store-address.service";
 import { ListEmployeesController } from "./controllers/collaborators/list-employees.controller";
 import { ListEmployeeService } from "@/use-cases/services/collaborators/list-employee.service";
+import { DeactivateStoreController } from "./controllers/admin/deactivate-store.controller";
+import { DeactivateStoreService } from "@/use-cases/services/stores/deactivate-store.service";
+import { ActivateStoreController } from "./controllers/admin/activate-store.controller";
+import { ActivateStoreService } from "@/use-cases/services/stores/activate-store.service";
+import { SlugGeneratorService } from "@/use-cases/utils/generate-slug.service";
+import { RegisterCategoryController } from "./controllers/admin/register-category.controller";
+import { RegisterCategoryService } from "@/use-cases/services/products/register-category.service";
+import { RegisterSubcategoryController } from "./controllers/admin/register-subcategory.controller";
+import { RegisterSubcategoryService } from "@/use-cases/services/products/register-subcategory.service";
+import { EditCategoryController } from "./controllers/admin/edit-category.controller";
+import { EditCategoryService } from "@/use-cases/services/products/edit-category.service";
+import { EditSubcategoryController } from "./controllers/admin/edit-subcategory.controller";
+import { EditSubcategoryService } from "@/use-cases/services/products/edit-subcategory.service";
+import { DeleteEmployeeController } from "./controllers/collaborators/delete-employee.controller";
+import { DeleteEmployeeService } from "@/use-cases/services/collaborators/delete-employee.service";
 
 @Module({
     imports: [DatabaseModule],
@@ -46,7 +60,14 @@ import { ListEmployeeService } from "@/use-cases/services/collaborators/list-emp
         ListUsersAddressesController,
         EditStoreDataController,
         UpdateStoreAddresController,
-        ListEmployeesController
+        ListEmployeesController,
+        DeactivateStoreController,
+        ActivateStoreController,
+        RegisterCategoryController,
+        RegisterSubcategoryController,
+        EditCategoryController,
+        EditSubcategoryController,
+        DeleteEmployeeController
     ],
     providers: [
         CreateAccountService,
@@ -63,7 +84,14 @@ import { ListEmployeeService } from "@/use-cases/services/collaborators/list-emp
         SlugGeneratorService,
         EditStoreDataService,
         UpdateStoreAddressService,
-        ListEmployeeService
+        ListEmployeeService,
+        DeactivateStoreService,
+        ActivateStoreService,
+        RegisterCategoryService,
+        RegisterSubcategoryService,
+        EditCategoryService,
+        EditSubcategoryService,
+        DeleteEmployeeService
     ]
 })
 export class HttpModule{}

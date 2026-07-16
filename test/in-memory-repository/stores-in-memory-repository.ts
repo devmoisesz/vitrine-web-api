@@ -5,6 +5,26 @@ import { randomUUID } from 'node:crypto';
 export class StoresInMemoryRepository implements StoresRepository {
   public items: Store[] = [];
 
+  async disable(slug: string ): Promise<void> {
+     const store = this.items.find((item) => item.slug === slug && item.status === 'ATIVA')
+
+    if(!store){
+      return
+    }
+
+     store.status = 'INATIVA'
+  }
+
+  async activate(slug: string ): Promise<void> {
+     const store = this.items.find((item) => item.slug === slug && item.status === 'INATIVA')
+
+    if(!store){
+      return
+    }
+
+     store.status = 'ATIVA'
+  }
+
   async findByWhatsapp(whatsapp: string): Promise<Store | null> {
     const store = this.items.find((item) => item.whatsapp === whatsapp);
 
@@ -54,7 +74,7 @@ export class StoresInMemoryRepository implements StoresRepository {
       whatsapp: data.whatsapp,
       cnpj: data.cnpj || null,
       cpf: data.cpf || null,
-      status: data.status ?? 'Ativa',
+      status: data.status ?? 'ATIVA',
       logo_image_url: data.logo_image_url || null,
       storage_public_id: data.storage_public_id || null,
     };

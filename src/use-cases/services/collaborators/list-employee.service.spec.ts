@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UsersInMemoryRepository } from '../../../../test/in-memory-repository/users-in-memory-repository';
-import { UnauthorizedException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { ListEmployeeService } from './list-employee.service';
 import { CollaboratorsInMemoryRepository } from '../../../../test/in-memory-repository/collaborators-in-memory-repository';
 import { StoresInMemoryRepository } from '../../../../test/in-memory-repository/stores-in-memory-repository';
@@ -14,12 +14,11 @@ let sut: ListEmployeeService;
 
 describe('List Employee Service', () => {
   beforeEach(() => {
-    usersRepository = new UsersInMemoryRepository();
     collaboratorsRepository = new CollaboratorsInMemoryRepository();
+    usersRepository = new UsersInMemoryRepository(collaboratorsRepository);
     storesRepository = new StoresInMemoryRepository();
     sut = new ListEmployeeService(
       usersRepository,
-      collaboratorsRepository,
       storesRepository,
     );
   });
@@ -34,19 +33,19 @@ describe('List Employee Service', () => {
     await collaboratorsRepository.create({
         userId: user1.id,
         storeId: store.id,
-        role: 'Funcionário'
+        role: 'FUNCIONARIO'
     }),
 
     await collaboratorsRepository.create({
         userId: user2.id,
         storeId: store.id,
-        role: 'Funcionário'
+        role: 'FUNCIONARIO'
     }),
 
     await collaboratorsRepository.create({
         userId: user3.id,
         storeId: store.id,
-        role: 'Funcionário'
+        role: 'FUNCIONARIO'
     })
 
     const page = 1
@@ -69,37 +68,37 @@ describe('List Employee Service', () => {
     await collaboratorsRepository.create({
         userId: user1.id,
         storeId: store.id,
-        role: 'Funcionário'
+        role: 'FUNCIONARIO'
     }),
 
     await collaboratorsRepository.create({
         userId: user2.id,
         storeId: store.id,
-        role: 'Funcionário'
+        role: 'FUNCIONARIO'
     }),
 
     await collaboratorsRepository.create({
         userId: user3.id,
         storeId: store.id,
-        role: 'Funcionário'
+        role: 'FUNCIONARIO'
     }),
 
     await collaboratorsRepository.create({
         userId: user4.id,
         storeId: store.id,
-        role: 'Funcionário'
+        role: 'FUNCIONARIO'
     }),
 
     await collaboratorsRepository.create({
         userId: user5.id,
         storeId: store.id,
-        role: 'Funcionário'
+        role: 'FUNCIONARIO'
     }),
 
     await collaboratorsRepository.create({
         userId: user6.id,
         storeId: store.id,
-        role: 'Funcionário'
+        role: 'FUNCIONARIO'
     })
 
     const page = 2
@@ -119,19 +118,19 @@ describe('List Employee Service', () => {
     await collaboratorsRepository.create({
         userId: user1.id,
         storeId: store.id,
-        role: 'Funcionário'
+        role: 'FUNCIONARIO'
     }),
 
     await collaboratorsRepository.create({
         userId: user2.id,
         storeId: store.id,
-        role: 'Proprietário'
+        role: 'PROPRIETARIO'
     }),
 
     await collaboratorsRepository.create({
         userId: user3.id,
         storeId: store.id,
-        role: 'Proprietário'
+        role: 'PROPRIETARIO'
     })
 
     const page = 1
@@ -149,7 +148,7 @@ describe('List Employee Service', () => {
     await collaboratorsRepository.create({
         userId: user.id,
         storeId: store.id,
-        role: 'Proprietário'
+        role: 'PROPRIETARIO'
     })
 
     const page = 1
@@ -164,6 +163,6 @@ describe('List Employee Service', () => {
 
     await expect(() =>
       sut.execute('not exists', page),
-    ).rejects.toBeInstanceOf(UnauthorizedException);
+    ).rejects.toBeInstanceOf(NotFoundException);
   });
 });

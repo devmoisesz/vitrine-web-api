@@ -83,7 +83,7 @@ describe('Register Store Address (E2E)', () => {
         data: {
             userId: user.id,
             storeId: store.id,
-            role: 'Proprietário'
+            role: 'PROPRIETARIO'
         }
     })
 
