@@ -13,7 +13,7 @@ export class RegisterCategoryService {
     const isCategoryExists = await this.categoriesRepository.findByName(name)
 
     if(isCategoryExists){
-        throw new BadRequestException('')
+        throw new BadRequestException('Category already registered')
     }
 
     const slug = await this.generatorSlugUnique.execute(name)

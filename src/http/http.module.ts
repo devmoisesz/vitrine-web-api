@@ -33,6 +33,8 @@ import { DeactivateStoreService } from "@/use-cases/services/stores/deactivate-s
 import { ActivateStoreController } from "./controllers/admin/activate-store.controller";
 import { ActivateStoreService } from "@/use-cases/services/stores/activate-store.service";
 import { SlugGeneratorService } from "@/use-cases/utils/generate-slug.service";
+import { RegisterCategoryController } from "./controllers/admin/register-category.controller";
+import { RegisterCategoryService } from "@/use-cases/services/products/register-category.service";
 
 @Module({
     imports: [DatabaseModule],
@@ -52,7 +54,8 @@ import { SlugGeneratorService } from "@/use-cases/utils/generate-slug.service";
         UpdateStoreAddresController,
         ListEmployeesController,
         DeactivateStoreController,
-        ActivateStoreController
+        ActivateStoreController,
+        RegisterCategoryController
     ],
     providers: [
         CreateAccountService,
@@ -71,7 +74,8 @@ import { SlugGeneratorService } from "@/use-cases/utils/generate-slug.service";
         UpdateStoreAddressService,
         ListEmployeeService,
         DeactivateStoreService,
-        ActivateStoreService
+        ActivateStoreService,
+        RegisterCategoryService
     ]
 })
 export class HttpModule{}
