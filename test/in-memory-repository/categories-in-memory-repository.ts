@@ -5,6 +5,14 @@ import { CategoriesRepository } from '@/database/repositories/categories-reposit
 export class CategoriesInMemoryRepository implements CategoriesRepository {
   public items: Category[] = [];
 
+  async save(category: Category): Promise<Category> {
+    const itemIndex = this.items.findIndex((item) => item.id === category.id);
+
+    this.items[itemIndex] = category;
+
+    return category;
+  }
+
   async create(data: Prisma.CategoryUncheckedCreateInput): Promise<Category> {
     const category = {
       id: data.id ?? randomUUID(),

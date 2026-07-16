@@ -8,6 +8,6 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./test/setup-e2e.ts'], // Caminho para o arquivo de setup
     fileParallelism: false,
-    hookTimeout: 60000, // Um fôlego extra caso o Docker demore no primeiro migrate
+    hookTimeout: 60000, 
   },
 });

@@ -63,8 +63,8 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível desativar e reativar lojas
 - [ ] Deve ser possível desativar qualquer produto da plataforma
 - [ ] Deve ser possível visualizar todas as lojas cadastradas na plataforma
-- [ ] Deve ser possível cadastrar categorias principais na plataforma
-- [ ] Deve ser possível cadastrar subcategorias dentro de uma categoria principal
+- [x] Deve ser possível cadastrar categorias principais na plataforma
+- [x] Deve ser possível cadastrar subcategorias dentro de uma categoria principal
 - [ ] Deve ser possível editar nomes de categorias e subcategorias
 
 ---

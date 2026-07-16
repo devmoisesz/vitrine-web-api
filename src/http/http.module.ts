@@ -37,6 +37,8 @@ import { RegisterCategoryController } from "./controllers/admin/register-categor
 import { RegisterCategoryService } from "@/use-cases/services/products/register-category.service";
 import { RegisterSubcategoryController } from "./controllers/admin/register-subcategory.controller";
 import { RegisterSubcategoryService } from "@/use-cases/services/products/register-subcategory.service";
+import { EditCategoryController } from "./controllers/admin/edit-category.controller";
+import { EditCategoryService } from "@/use-cases/services/products/edit-category.service";
 
 @Module({
     imports: [DatabaseModule],
@@ -58,7 +60,8 @@ import { RegisterSubcategoryService } from "@/use-cases/services/products/regist
         DeactivateStoreController,
         ActivateStoreController,
         RegisterCategoryController,
-        RegisterSubcategoryController
+        RegisterSubcategoryController,
+        EditCategoryController
     ],
     providers: [
         CreateAccountService,
@@ -79,7 +82,8 @@ import { RegisterSubcategoryService } from "@/use-cases/services/products/regist
         DeactivateStoreService,
         ActivateStoreService,
         RegisterCategoryService,
-        RegisterSubcategoryService
+        RegisterSubcategoryService,
+        EditCategoryService
     ]
 })
 export class HttpModule{}
