@@ -7,6 +7,30 @@ import { SubcategoriesRepository } from '@/database/repositories/subcategories-r
 export class PrismaSubcategoriesRepository implements SubcategoriesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async save(subcategory: SubCategory): Promise<SubCategory> {
+    return await this.prisma.subCategory.update({
+      where: {
+        id: subcategory.id
+      },
+      data: {
+        name: subcategory.name,
+        slug: subcategory.slug
+      }
+    })
+  }
+
+  async findById(id: string): Promise<SubCategory | null> {
+    const subcategory = await this.prisma.subCategory.findUnique({
+      where: {
+        id
+      }
+    })
+
+    if(!subcategory) return null
+
+    return subcategory
+  }
+
   async create(
     data: Prisma.SubCategoryUncheckedCreateInput,
   ): Promise<SubCategory> {

@@ -65,7 +65,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [ ] Deve ser possível visualizar todas as lojas cadastradas na plataforma
 - [x] Deve ser possível cadastrar categorias principais na plataforma
 - [x] Deve ser possível cadastrar subcategorias dentro de uma categoria principal
-- [ ] Deve ser possível editar nomes de categorias e subcategorias
+- [x] Deve ser possível editar nomes de categorias e subcategorias
 
 ---
 
@@ -104,10 +104,8 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Categorias
 
-- [ ] Categorias e subcategorias são criadas e gerenciadas exclusivamente pelo Admin
-- [ ] Uma subcategoria deve pertencer obrigatoriamente a uma categoria principal
-- [ ] Uma categoria principal não pode ser excluída se houver subcategorias vinculadas
-- [ ] Uma subcategoria não pode ser excluída se houver produtos vinculados a ela
+- [x] Categorias e subcategorias são criadas e gerenciadas exclusivamente pelo Admin
+- [x] Uma subcategoria deve pertencer obrigatoriamente a uma categoria principal
 - [ ] O vendedor seleciona a categoria principal e a subcategoria ao cadastrar um produto através de menus de seleção encadeados no frontend, sem poder criar categorias livres
 
 ## Lojas
