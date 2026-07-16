@@ -5,6 +5,12 @@ import { randomUUID } from 'node:crypto';
 export class CollaboratorsInMemoryRepository implements CollaboratorsRepository {
   public items: Collaborator[] = [];
 
+  async delete(userId: string): Promise<void> {
+    const employee = this.items.findIndex((item) => item.userId === userId)
+
+    this.items.splice(employee, 1)
+  }
+
   async findManyEmployee(storeId: string): Promise<Collaborator[]> {
     return this.items.filter((item) => item.storeId === storeId && item.role === 'FUNCIONARIO')
   }

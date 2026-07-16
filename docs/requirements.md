@@ -54,7 +54,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível cadastrar funcionários e vinculá-los à própria loja
 - [x] Deve ser possível cadastrar endereço da loja
 - [x] Deve ser possível editar os dados da própria loja
-- [ ] Deve ser possível desativar funcionários da própria loja
+- [x] Deve ser possível desativar funcionários da própria loja
 
 ## Admin da Plataforma
 
@@ -62,7 +62,6 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível cadastrar o Dono de uma loja e vinculá-lo a ela
 - [x] Deve ser possível desativar e reativar lojas
 - [ ] Deve ser possível desativar qualquer produto da plataforma
-- [ ] Deve ser possível visualizar todas as lojas cadastradas na plataforma
 - [x] Deve ser possível cadastrar categorias principais na plataforma
 - [x] Deve ser possível cadastrar subcategorias dentro de uma categoria principal
 - [x] Deve ser possível editar nomes de categorias e subcategorias
@@ -106,7 +105,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 - [x] Categorias e subcategorias são criadas e gerenciadas exclusivamente pelo Admin
 - [x] Uma subcategoria deve pertencer obrigatoriamente a uma categoria principal
-- [ ] O vendedor seleciona a categoria principal e a subcategoria ao cadastrar um produto através de menus de seleção encadeados no frontend, sem poder criar categorias livres
+- [ ] O vendedor seleciona a categoria principal e a subcategoria ao cadastrar um produto através de menus de seleção encadeados na interface, sem poder criar categorias livres
 
 ## Lojas
 

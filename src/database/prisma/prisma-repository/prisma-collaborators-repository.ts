@@ -7,6 +7,14 @@ import { CollaboratorsRepository } from '@/database/repositories/collaborators-r
 export class PrismaCollaboratorsRepository implements CollaboratorsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async delete(id: string): Promise<void> {
+    await this.prisma.collaborator.delete({
+      where: {
+        id
+      }
+    }) 
+  }
+
   async create(
     data: Prisma.CollaboratorUncheckedCreateInput,
   ): Promise<Collaborator> {
