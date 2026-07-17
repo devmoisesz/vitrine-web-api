@@ -1,21 +1,26 @@
-import { StorageService, UploadParams } from "@/storage/storage.service";
-import { BadRequestException, NotFoundException } from "@nestjs/common";
+import { StorageService, UploadParams } from '@/storage/storage.service';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 export class StorageInMemory implements StorageService {
-    public items: Map<string, { url: string; public_id: string }> = new Map();
+  public items: Map<string, { url: string; public_id: string }> = new Map();
 
-  async upload({body, folder = 'root'}: UploadParams): Promise<{ url: string; public_id: string }> {
+  async upload({
+    body,
+    folder = 'root',
+  }: UploadParams): Promise<{ url: string; public_id: string }> {
     if (!body) {
-      throw new BadRequestException('O buffer do arquivo está vazio ou inválido.');
+      throw new BadRequestException(
+        'O buffer do arquivo está vazio ou inválido.',
+      );
     }
 
     const public_id = `mock-folder/${folder}/file-${Math.random().toString(36).substring(7)}`;
     const url = `https://res.cloudinary.com/mock-cloud/image/upload/${public_id}.jpg`;
 
-    const fileData = { 
-      url, 
+    const fileData = {
+      url,
       id: public_id,
-      public_id
+      public_id,
     };
     this.items.set(public_id, fileData);
 
@@ -38,6 +43,10 @@ export class StorageInMemory implements StorageService {
   }
 
   async delete(id: string): Promise<void> {
-    this.items.delete(id);
+    const deleted = this.items.delete(id);
+
+    if (!deleted) {
+      throw new NotFoundException('Imagem não encontrada.');
+    }
   }
 }

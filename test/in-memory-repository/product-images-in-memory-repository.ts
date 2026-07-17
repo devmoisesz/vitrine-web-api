@@ -4,7 +4,20 @@ import { ProductsImagesRepository } from '@/database/repositories/products-image
 
 export class ProductsImagesInMemoryRepository implements ProductsImagesRepository {
   public items: ProductImages[] = [];
-  public productTags: { productId: string; tagId: string }[] = [];
+  
+  async findById(id: string): Promise<ProductImages | null> {
+    const image = this.items.find((item) => item.id === id)
+
+    if(!image) return null
+
+    return image
+  }
+
+  async remove(id: string): Promise<void> {
+    const indexImage = this.items.findIndex((item) => item.id === id)
+
+    this.items.splice(indexImage, 1)
+  }
 
   async findManyByProductId(productId: string): Promise<ProductImages[]> {
     return this.items.filter((item) => item.productId === productId);

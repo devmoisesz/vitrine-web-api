@@ -13,12 +13,15 @@ import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 import path from 'node:path';
-import fs from 'node:fs'
+import fs from 'node:fs';
+import { StorageService } from '@/storage/storage.service';
 
 describe('Register Product Image (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
+  let storage: StorageService;
+  let uploadedPublicId: string | null = null;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -50,17 +53,22 @@ describe('Register Product Image (E2E)', () => {
 
     prisma = app.get(PrismaService);
     jwt = moduleRef.get(JwtService);
+    storage = app.get(StorageService);
 
     await app.init();
     await prisma.$connect();
   });
 
   afterAll(async () => {
+    if (uploadedPublicId) {
+      await storage.delete(uploadedPublicId);
+    }
+
     await prisma.$disconnect();
     await app.close();
   });
 
-  test.skip('[POST] stores/:slug/productsimages/:productId', async () => {
+  test('[POST] stores/:slug/productsimages/:productId', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
@@ -122,7 +130,7 @@ describe('Register Product Image (E2E)', () => {
 
     const realImagePath = path.resolve(
       __dirname,
-      '../../../../img/logo-vitrine-web.png',
+      '../../../../img/apenas-a-logo.png',
     );
 
     const realImageBuffer = fs.readFileSync(realImagePath);
@@ -131,7 +139,7 @@ describe('Register Product Image (E2E)', () => {
       .post(`/stores/${store.slug}/productimages/${product.id}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .attach('file', realImageBuffer, {
-        filename: 'logo-vitrine-web.png',
+        filename: 'apenas-a-logo.png',
         contentType: 'image/png',
       });
 
@@ -150,6 +158,9 @@ describe('Register Product Image (E2E)', () => {
         productId: product.id,
       },
     });
+
+    //Usado para deletar a imagem após o teste
+    uploadedPublicId = imageOnDatabase?.storage_public_id ?? null;
 
     expect(imageOnDatabase).toBeTruthy();
     expect(imageOnDatabase?.is_main).toBe(true);
