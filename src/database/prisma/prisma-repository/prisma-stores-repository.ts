@@ -24,6 +24,18 @@ export class PrismaStoresRepository implements StoresRepository {
     });
   }
 
+  async saveImage(id: string, url: string, public_id: string): Promise<void> {
+    await this.prisma.store.update({
+      where: {
+        id,
+      },
+      data: {
+        logo_image_url: url,
+        storage_public_id: public_id
+      },
+    });
+  }
+
   async disable(slug: string): Promise<void> {
     await this.prisma.store.update({
       where: {
