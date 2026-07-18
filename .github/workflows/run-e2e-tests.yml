@@ -43,3 +43,6 @@ jobs:
           JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
           JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/vitrine_e2e_test
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
