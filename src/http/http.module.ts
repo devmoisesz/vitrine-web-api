@@ -48,6 +48,8 @@ import { RegisterProductController } from "./controllers/collaborators/register-
 import { RegisterProductService } from "@/use-cases/services/products/register-product.service";
 import { UploadProductImageController } from "./controllers/collaborators/upload-product-image.controller";
 import { UploadProductImagesService } from "@/use-cases/services/products/upload-product-image.service";
+import { ChangeProductImageController } from "./controllers/collaborators/change-product-image.controller";
+import { ChangeProductImageService } from "@/use-cases/services/products/change-product-image.service";
 
 @Module({
     imports: [DatabaseModule, StorageModule],
@@ -74,7 +76,8 @@ import { UploadProductImagesService } from "@/use-cases/services/products/upload
         EditSubcategoryController,
         DeleteEmployeeController,
         RegisterProductController,
-        UploadProductImageController
+        UploadProductImageController,
+        ChangeProductImageController
     ],
     providers: [
         CreateAccountService,
@@ -100,7 +103,8 @@ import { UploadProductImagesService } from "@/use-cases/services/products/upload
         EditSubcategoryService,
         DeleteEmployeeService,
         RegisterProductService,
-        UploadProductImagesService
+        UploadProductImagesService,
+        ChangeProductImageService
     ]
 })
 export class HttpModule{}

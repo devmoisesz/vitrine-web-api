@@ -7,6 +7,28 @@ import { ProductsImagesRepository } from '@/database/repositories/products-image
 export class PrismaProductsImagesRepository implements ProductsImagesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+    async findById(id: string): Promise<ProductImages | null> {
+        const image = await this.prisma.productImages.findUnique({
+            where: {
+                id
+            }
+        })
+
+        if(!image){
+            throw new Error('Image Not Found')
+        }
+
+        return image
+    }
+
+    async remove(id: string): Promise<void> {
+        await this.prisma.productImages.delete({
+            where: {
+                id
+            }
+        })
+    }
+
     async create(data: Prisma.ProductImagesUncheckedCreateInput): Promise<ProductImages> {
         return await this.prisma.productImages.create({
             data: {
