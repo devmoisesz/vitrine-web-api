@@ -56,6 +56,8 @@ import { ChangeStoreLogoController } from "./controllers/collaborators/change-st
 import { ChangeStoreLogoService } from "@/use-cases/services/stores/change-store-logo.service";
 import { DeleteProductImageController } from "./controllers/collaborators/delete-product-image.controller";
 import { DeleteProductImageService } from "@/use-cases/services/products/delete-product-image.service";
+import { DeleteStoreLogoController } from "./controllers/collaborators/delete-store-logo.controller";
+import { DeleteStoreLogoService } from "@/use-cases/services/stores/delete-store-logo.service";
 
 @Module({
     imports: [DatabaseModule, StorageModule],
@@ -86,7 +88,8 @@ import { DeleteProductImageService } from "@/use-cases/services/products/delete-
         ChangeProductImageController,
         UploadStoreLogoController,
         ChangeStoreLogoController,
-        DeleteProductImageController
+        DeleteProductImageController,
+        DeleteStoreLogoController
     ],
     providers: [
         CreateAccountService,
@@ -116,7 +119,8 @@ import { DeleteProductImageService } from "@/use-cases/services/products/delete-
         ChangeProductImageService,
         UploadStoreLogoService,
         ChangeStoreLogoService,
-        DeleteProductImageService
+        DeleteProductImageService,
+        DeleteStoreLogoService
     ]
 })
 export class HttpModule{}

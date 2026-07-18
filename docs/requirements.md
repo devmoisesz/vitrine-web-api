@@ -46,7 +46,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível adicionar produtos à loja vinculada (nome, descrição, preço, categoria, subcategoria, estoque e imagem)
 - [x] Deve ser possível escolher qual imagem do produto é a principal
 - [x] Deve ser possível trocar imagem do produto
-- [ ] Deve ser possível deletar imagem do produto
+- [x] Deve ser possível deletar imagem do produto
 - [ ] Deve ser possível editar produtos da própria loja
 - [ ] Deve ser possível desativar um produto da própria loja
 - [ ] Deve ser possível remover um produto da própria loja
@@ -55,7 +55,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 ## Dono da Loja (permissões do Funcionário, mais as abaixo)
 
 - [x] Deve ser possível fazer upload do logo da loja
-- [ ] Deve ser possível deletar logo da loja
+- [x] Deve ser possível deletar logo da loja
 - [x] Deve ser possível trocar logo da loja
 - [x] Deve ser possível cadastrar funcionários e vinculá-los à própria loja
 - [x] Deve ser possível cadastrar endereço da loja
