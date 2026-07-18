@@ -16,7 +16,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { StorageService } from '@/storage/storage.service';
 
-describe('Register Product Image (E2E)', () => {
+describe('Upload Product Image (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
@@ -128,19 +128,19 @@ describe('Register Product Image (E2E)', () => {
 
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
-    const realImagePath = path.resolve(
+    const ImagePath = path.resolve(
       __dirname,
-      '../../../../img/apenas-a-logo.png',
+      '../../../../img/logo-vitrine-web.jpg',
     );
 
-    const realImageBuffer = fs.readFileSync(realImagePath);
+    const ImageBuffer = fs.readFileSync(ImagePath);
 
     const response = await request(app.getHttpServer())
       .post(`/stores/${store.slug}/productimages/${product.id}`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .attach('file', realImageBuffer, {
-        filename: 'apenas-a-logo.png',
-        contentType: 'image/png',
+      .attach('file', ImageBuffer, {
+        filename: 'logo-vitrine-web.jpg',
+        contentType: 'image/jpg',
       });
 
     expect(response.statusCode).toBe(201);
