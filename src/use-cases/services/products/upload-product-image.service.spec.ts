@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { StorageInMemory } from '../../../../test/in-memory-repository/storage-in-memory';
 import { ProductsInMemoryRepository } from '../../../../test/in-memory-repository/product-in-memory-repository';
 import { StoresInMemoryRepository } from '../../../../test/in-memory-repository/stores-in-memory-repository';
@@ -130,8 +130,7 @@ describe('Register Product Images Service', () => {
     ).rejects.toBeInstanceOf(BadRequestException);
   });
 
-  it('should not allow defining a second main image if one already exists', async () => {
-    const store = await makeStore(storesRepository);
+  it('should not allow more than 5 images per product', async () => {
     const category = await makeCategory(categoriesRepository);
     const subcategory = await makeSubCategory(
       subcategoriesRepository,
@@ -139,20 +138,22 @@ describe('Register Product Images Service', () => {
     );
     const product = await makeProducts(
       productsRepository,
-      store.id,
+      'not exists',
       category.id,
       subcategory.id,
     );
 
-    await makeProductImage(productsImagesRepository, {
-      productId: product.id,
-      is_main: true,
-    });
+    for (let i = 0; i < 5; i++) {
+      await makeProductImage(productsImagesRepository, {
+        productId: product.id,
+        is_main: i === 0, 
+      });
+    }
 
-    const fakeFile = makeFakeMulterFile('nova-principal.jpg');
+    const fakeFile = makeFakeMulterFile('imagem-6.jpg');
 
     await expect(() =>
-      sut.execute(store.slug, product.id, fakeFile, true),
-    ).rejects.toBeInstanceOf(BadRequestException);
+      sut.execute('not exist', product.id, fakeFile),
+    ).rejects.toBeInstanceOf(ConflictException);
   });
 });

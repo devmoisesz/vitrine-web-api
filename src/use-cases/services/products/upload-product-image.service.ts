@@ -32,24 +32,21 @@ export class UploadProductImagesService {
     const existingImages = await this.productsImagesRepository.findManyByProductId(productId);
     
     if (existingImages.length >= 5) {
-      throw new BadRequestException('This product has already reached the maximum limit of 5 images..');
+      throw new BadRequestException('This product has already reached the maximum limit of 5 images.');
     }
 
     let isMain = false;
 
     if (existingImages.length === 0) {
       isMain = true;
-    } else {
-      const alreadyHasMain = existingImages.some((img) => img.is_main === true);
+    } else if (isMainRequested) {
+      const currentMainImage = existingImages.find((img) => img.is_main === true);
 
-      if (isMainRequested) {
-        if (alreadyHasMain) {
-          throw new BadRequestException(
-            'This product already has an active main image. Uncheck it first to set another one..',
-          );
-        }
-        isMain = true;
+      if (currentMainImage) {
+        await this.productsImagesRepository.updateIsMain(currentMainImage.id, false);
       }
+      
+      isMain = true;
     }
 
     const image = await this.storageService.upload({
@@ -67,6 +64,5 @@ export class UploadProductImagesService {
       productId,
       is_main: isMain, 
     });
-
   }
 }
