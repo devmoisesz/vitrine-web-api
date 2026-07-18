@@ -16,7 +16,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { StorageService } from '@/storage/storage.service';
 
-describe('Change Product Image (E2E)', () => {
+describe('Change Store Logo (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;

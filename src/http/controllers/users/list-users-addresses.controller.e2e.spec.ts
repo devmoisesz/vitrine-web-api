@@ -13,7 +13,7 @@ import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
 import { faker } from '@faker-js/faker';
 
-describe('List Users (E2E)', () => {
+describe('List Users Addresses (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
