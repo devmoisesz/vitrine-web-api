@@ -7,44 +7,69 @@ import { ProductsImagesRepository } from '@/database/repositories/products-image
 export class PrismaProductsImagesRepository implements ProductsImagesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-    async findById(id: string): Promise<ProductImages | null> {
-        const image = await this.prisma.productImages.findUnique({
-            where: {
-                id
-            }
-        })
+  async updateIsMain(id: string, is_main: boolean): Promise<void> {
+    await this.prisma.productImages.update({
+      where: {
+        id,
+      },
+      data: {
+        is_main
+      }
+    });
+  }
 
-        if(!image){
-            throw new Error('Image Not Found')
-        }
+  async updateToMain(id: string): Promise<void> {
+    await this.prisma.productImages.update({
+      where: {
+        id,
+        is_main: false
+      },
+      data: {
+        is_main: true
+      }
+    });
+  }
 
-        return image
+  async findById(id: string): Promise<ProductImages | null> {
+    const image = await this.prisma.productImages.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!image) {
+      throw new Error('Image Not Found');
     }
 
-    async remove(id: string): Promise<void> {
-        await this.prisma.productImages.delete({
-            where: {
-                id
-            }
-        })
-    }
+    return image;
+  }
 
-    async create(data: Prisma.ProductImagesUncheckedCreateInput): Promise<ProductImages> {
-        return await this.prisma.productImages.create({
-            data: {
-                image_url: data.image_url,
-                storage_public_id: data.storage_public_id,
-                productId: data.productId,
-                is_main: data.is_main
-            }
-        })
-    }
+  async remove(id: string): Promise<void> {
+    await this.prisma.productImages.delete({
+      where: {
+        id,
+      },
+    });
+  }
 
-    async findManyByProductId(productId: string): Promise<ProductImages[]> {
-        return await this.prisma.productImages.findMany({
-            where: {
-                productId
-            }
-        })
-    }
+  async create(
+    data: Prisma.ProductImagesUncheckedCreateInput,
+  ): Promise<ProductImages> {
+    return await this.prisma.productImages.create({
+      data: {
+        image_url: data.image_url,
+        storage_public_id: data.storage_public_id,
+        productId: data.productId,
+        is_main: data.is_main,
+      },
+    });
+  }
+
+  async findManyByProductId(productId: string): Promise<ProductImages[]> {
+    return await this.prisma.productImages.findMany({
+      where: {
+        productId,
+      },
+    });
+  }
 }

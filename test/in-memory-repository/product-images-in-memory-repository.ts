@@ -4,6 +4,24 @@ import { ProductsImagesRepository } from '@/database/repositories/products-image
 
 export class ProductsImagesInMemoryRepository implements ProductsImagesRepository {
   public items: ProductImages[] = [];
+
+  async updateIsMain(id: string, is_main: boolean): Promise<void> {
+    const image = await this.items.find((image) => image.id === id)
+
+    if(!image) return
+
+    image.is_main = is_main
+  }
+
+  async updateToMain(id: string): Promise<void> {
+    const image = this.items.find((item) => item.id === id && item.is_main === false)
+
+    if(!image) {
+      return;
+    }
+
+    image.is_main = true
+  }
   
   async findById(id: string): Promise<ProductImages | null> {
     const image = this.items.find((item) => item.id === id)

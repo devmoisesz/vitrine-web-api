@@ -5,4 +5,6 @@ export abstract class ProductsImagesRepository {
     abstract findManyByProductId(productId: string): Promise<ProductImages[]>
     abstract findById(id: string): Promise<ProductImages | null>
     abstract remove(id: string): Promise<void>
+    abstract updateIsMain(id: string, is_main: boolean): Promise<void>
+    abstract updateToMain(id: string): Promise<void>
 }
