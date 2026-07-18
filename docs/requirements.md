@@ -43,7 +43,10 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Funcionário
 
-- [ ] Deve ser possível adicionar produtos à loja vinculada (nome, descrição, preço, categoria, subcategoria, estoque e imagem)
+- [x] Deve ser possível adicionar produtos à loja vinculada (nome, descrição, preço, categoria, subcategoria, estoque e imagem)
+- [x] Deve ser possível escolher qual imagem do produto é a principal
+- [x] Deve ser possível trocar imagem do produto
+- [ ] Deve ser possível deletar imagem do produto
 - [ ] Deve ser possível editar produtos da própria loja
 - [ ] Deve ser possível desativar um produto da própria loja
 - [ ] Deve ser possível remover um produto da própria loja
@@ -51,6 +54,9 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Dono da Loja (permissões do Funcionário, mais as abaixo)
 
+- [x] Deve ser possível fazer upload do logo da loja
+- [ ] Deve ser possível deletar logo da loja
+- [x] Deve ser possível trocar logo da loja
 - [x] Deve ser possível cadastrar funcionários e vinculá-los à própria loja
 - [x] Deve ser possível cadastrar endereço da loja
 - [x] Deve ser possível editar os dados da própria loja
@@ -61,7 +67,6 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível cadastrar lojas 
 - [x] Deve ser possível cadastrar o Dono de uma loja e vinculá-lo a ela
 - [x] Deve ser possível desativar e reativar lojas
-- [ ] Deve ser possível desativar qualquer produto da plataforma
 - [x] Deve ser possível cadastrar categorias principais na plataforma
 - [x] Deve ser possível cadastrar subcategorias dentro de uma categoria principal
 - [x] Deve ser possível editar nomes de categorias e subcategorias
@@ -94,11 +99,11 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Produtos
 
-- [ ] Um produto deve pertencer obrigatoriamente a uma loja
+- [x] Um produto deve pertencer obrigatoriamente a uma loja
 - [ ] Um produto desativado não pode aparecer em nenhuma busca.
-- [ ] Um produto deve obrigatoriamente possuir categoria e subcategoria
-- [ ] Um produto só pode ser publicado com nome, preço, categoria, subcategoria, estoque e pelo menos uma imagem
-- [ ] Um produto deve possuir pelo menos uma imagem e no máximo 5 imagens.
+- [x] Um produto deve obrigatoriamente possuir categoria e subcategoria
+- [x] Um produto só pode ser publicado com nome, preço, categoria, subcategoria, estoque e pelo menos uma imagem
+- [x] Um produto deve possuir pelo menos uma imagem e no máximo 5 imagens.
 - [ ] Na listagem geral e resultados de busca, os cards dos produtos devem exibir claramente a identificação da loja à qual pertencem
 
 ## Categorias
