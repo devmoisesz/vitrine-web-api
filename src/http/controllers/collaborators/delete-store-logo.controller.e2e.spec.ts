@@ -11,9 +11,11 @@ import { hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
-import { faker } from '@faker-js/faker';
+import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
+import path from 'node:path';
+import fs from 'node:fs';
 
-describe('List Users Addresses (E2E)', () => {
+describe('Delete Store Logo (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
@@ -58,7 +60,7 @@ describe('List Users Addresses (E2E)', () => {
     await app.close();
   });
 
-  test('[GET] /me/addresses', async () => {
+  test('[DELETE] /stores/:slug/logo/delete', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
@@ -69,31 +71,68 @@ describe('List Users Addresses (E2E)', () => {
       },
     });
 
-    for (let i = 0; i <= 6; i++) {
-      await prisma.address.create({
-        data: {
-          userId: user.id,
-          city: 'Miami',
-          neighborhood: 'Long Beach',
-          state: faker.location.state(),
-        },
-      });
-    }
+    const uniqueWhatsapp = makeWhatsapp();
+
+    const store = await prisma.store.create({
+      data: {
+        name: 'store 013',
+        slug: 'store-013',
+        whatsapp: uniqueWhatsapp,
+      },
+    });
+
+    await prisma.collaborator.create({
+      data: {
+        userId: user.id,
+        storeId: store.id,
+        role: 'PROPRIETARIO',
+      },
+    });
 
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
-    const response = await request(app.getHttpServer())
-      .get(`/me/addresses`)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send();
-
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          city: 'Miami',
-        }),
-      ]),
+    const ImagePathDelete = path.resolve(
+      __dirname,
+      '../../../../img/white-logo.png',
     );
+
+    const ImageBufferDelete = fs.readFileSync(ImagePathDelete);
+
+    //requisição feita para fazer upload da imagem que depois será deletada
+    const res = await request(app.getHttpServer())
+      .post(`/stores/${store.slug}/logo`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .attach('file', ImageBufferDelete, {
+        filename: 'white-logo.png',
+        contentType: 'image/png',
+      });
+
+    expect(res.statusCode).toEqual(201);
+
+    const logo = await prisma.store.findUnique({
+      where: {
+        id: store.id,
+      },
+    });
+
+    if (!logo?.storage_public_id) {
+      throw new Error('Image not found, test request failed.');
+    }
+
+    const response = await request(app.getHttpServer())
+      .delete(`/stores/${store.slug}/logo/delete`)
+      .set('Authorization', `Bearer ${accessToken}`)
+
+    expect(response.statusCode).toBe(204);
+
+    const imageOnDatabase = await prisma.store.findUnique({
+      where: {
+        id: store.id,
+      },
+    });
+
+    //verifica se a imagem antiga foi deletada
+    expect(imageOnDatabase!.logo_image_url).toBeNull()
+    expect(imageOnDatabase!.storage_public_id).toBeNull()
   });
 });

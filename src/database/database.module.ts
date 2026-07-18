@@ -12,6 +12,10 @@ import { CategoriesRepository } from "./repositories/categories-repository";
 import { PrismaCategoriesRepository } from "./prisma/prisma-repository/prisma-categories-repository";
 import { SubcategoriesRepository } from "./repositories/subcategories-repository";
 import { PrismaSubcategoriesRepository } from "./prisma/prisma-repository/prisma-subcategories-repository";
+import { ProductsRepository } from "./repositories/products-repository";
+import { PrismaProductsRepository } from "./prisma/prisma-repository/prisma-product-repository";
+import { ProductsImagesRepository } from "./repositories/products-images-repository";
+import { PrismaProductsImagesRepository } from "./prisma/prisma-repository/prisma-product-image-repository";
 
 @Module({
     imports: [],
@@ -41,6 +45,14 @@ import { PrismaSubcategoriesRepository } from "./prisma/prisma-repository/prisma
             provide: SubcategoriesRepository,
             useClass: PrismaSubcategoriesRepository
         },
+        {
+            provide: ProductsRepository,
+            useClass: PrismaProductsRepository
+        },
+        {
+            provide: ProductsImagesRepository,
+            useClass: PrismaProductsImagesRepository
+        },
     ],
     exports: [
         PrismaService,
@@ -49,7 +61,9 @@ import { PrismaSubcategoriesRepository } from "./prisma/prisma-repository/prisma
         StoresRepository,
         AddressRepository,
         CategoriesRepository,
-        SubcategoriesRepository
+        SubcategoriesRepository,
+        ProductsRepository,
+        ProductsImagesRepository
     ]
 })
 export class DatabaseModule {}

@@ -9,5 +9,6 @@ export default defineConfig({
     setupFiles: ['./test/setup-e2e.ts'], // Caminho para o arquivo de setup
     fileParallelism: false,
     hookTimeout: 60000, 
+    testTimeout: 60000,
   },
 });

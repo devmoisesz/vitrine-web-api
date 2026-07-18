@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto"
 import { faker } from '@faker-js/faker'
-import { SubCategoriesInMemoryRepository } from "../in-memory-repository/subcategories-in-memory-repository"
+import { SubcategoriesInMemoryRepository } from "../in-memory-repository/subcategories-in-memory-repository"
 
 export function makeSubCategory(
-    inMemorySubCategoriesRepository: SubCategoriesInMemoryRepository,
+    inMemorySubCategoriesRepository: SubcategoriesInMemoryRepository,
     categoryId: string
 ){
     return inMemorySubCategoriesRepository.create({

@@ -91,4 +91,13 @@ export class StoresInMemoryRepository implements StoresRepository {
 
     return store;
   }
+
+  async saveImage(id: string, url: string, public_id: string): Promise<void> {
+    const store = this.items.find((item) => item.id === id);
+
+    if(!store) return
+
+    store.logo_image_url = url
+    store.storage_public_id = public_id
+  }
 }

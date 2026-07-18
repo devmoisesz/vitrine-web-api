@@ -43,9 +43,24 @@ import { EditSubcategoryController } from "./controllers/admin/edit-subcategory.
 import { EditSubcategoryService } from "@/use-cases/services/products/edit-subcategory.service";
 import { DeleteEmployeeController } from "./controllers/collaborators/delete-employee.controller";
 import { DeleteEmployeeService } from "@/use-cases/services/collaborators/delete-employee.service";
+import { StorageModule } from "@/storage/storage.module";
+import { RegisterProductController } from "./controllers/collaborators/register-product.controller";
+import { RegisterProductService } from "@/use-cases/services/products/register-product.service";
+import { UploadProductImageController } from "./controllers/collaborators/upload-product-image.controller";
+import { UploadProductImagesService } from "@/use-cases/services/products/upload-product-image.service";
+import { ChangeProductImageController } from "./controllers/collaborators/change-product-image.controller";
+import { ChangeProductImageService } from "@/use-cases/services/products/change-product-image.service";
+import { UploadStoreLogoService } from "@/use-cases/services/stores/upload-store-logo.service";
+import { UploadStoreLogoController } from "./controllers/collaborators/upload-store-logo.controller";
+import { ChangeStoreLogoController } from "./controllers/collaborators/change-store-logo.controller";
+import { ChangeStoreLogoService } from "@/use-cases/services/stores/change-store-logo.service";
+import { DeleteProductImageController } from "./controllers/collaborators/delete-product-image.controller";
+import { DeleteProductImageService } from "@/use-cases/services/products/delete-product-image.service";
+import { DeleteStoreLogoController } from "./controllers/collaborators/delete-store-logo.controller";
+import { DeleteStoreLogoService } from "@/use-cases/services/stores/delete-store-logo.service";
 
 @Module({
-    imports: [DatabaseModule],
+    imports: [DatabaseModule, StorageModule],
     controllers: [
         CreateAccountController,
         AuthenticateController,
@@ -67,7 +82,14 @@ import { DeleteEmployeeService } from "@/use-cases/services/collaborators/delete
         RegisterSubcategoryController,
         EditCategoryController,
         EditSubcategoryController,
-        DeleteEmployeeController
+        DeleteEmployeeController,
+        RegisterProductController,
+        UploadProductImageController,
+        ChangeProductImageController,
+        UploadStoreLogoController,
+        ChangeStoreLogoController,
+        DeleteProductImageController,
+        DeleteStoreLogoController
     ],
     providers: [
         CreateAccountService,
@@ -91,7 +113,14 @@ import { DeleteEmployeeService } from "@/use-cases/services/collaborators/delete
         RegisterSubcategoryService,
         EditCategoryService,
         EditSubcategoryService,
-        DeleteEmployeeService
+        DeleteEmployeeService,
+        RegisterProductService,
+        UploadProductImagesService,
+        ChangeProductImageService,
+        UploadStoreLogoService,
+        ChangeStoreLogoService,
+        DeleteProductImageService,
+        DeleteStoreLogoService
     ]
 })
 export class HttpModule{}

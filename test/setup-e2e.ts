@@ -2,8 +2,13 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { execSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import 'dotenv/config';
 import { afterAll, beforeAll } from 'vitest';
+import dotenv from 'dotenv';
+
+dotenv.config({
+  path: ['.env.test', '.env'],
+  override: false,
+});
 
 function generateUniqueDatabaseURL(schemaId: string) {
   if (!process.env.DATABASE_URL) {
@@ -12,10 +17,10 @@ function generateUniqueDatabaseURL(schemaId: string) {
 
   const url = new URL(process.env.DATABASE_URL);
   const schemaName = `test_${schemaId.replace(/-/g, '_')}`;
-  
+
   // Para o Prisma CLI saber onde criar as tabelas
   url.searchParams.set('schema', schemaName);
-  
+
   // Força o driver do Node.js usar o schema correto
   url.searchParams.set('options', `-c search_path=${schemaName}`);
 
@@ -46,6 +51,8 @@ beforeAll(async () => {
 afterAll(async () => {
   const schemaName = `test_${schemaId.replace(/-/g, '_')}`;
 
-  await prisma.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`);
+  await prisma.$executeRawUnsafe(
+    `DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`,
+  );
   await prisma.$disconnect();
 });

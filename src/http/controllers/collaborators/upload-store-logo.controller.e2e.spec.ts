@@ -11,12 +11,17 @@ import { hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
-import { faker } from '@faker-js/faker';
+import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
+import path from 'node:path';
+import fs from 'node:fs';
+import { StorageService } from '@/storage/storage.service';
 
-describe('List Users Addresses (E2E)', () => {
+describe('Upload Store Logo (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
+  let storage: StorageService;
+  let uploadedPublicId: string | null = null;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -48,17 +53,22 @@ describe('List Users Addresses (E2E)', () => {
 
     prisma = app.get(PrismaService);
     jwt = moduleRef.get(JwtService);
+    storage = app.get(StorageService);
 
     await app.init();
     await prisma.$connect();
   });
 
   afterAll(async () => {
+    if (uploadedPublicId) {
+      await storage.delete(uploadedPublicId);
+    }
+
     await prisma.$disconnect();
     await app.close();
   });
 
-  test('[GET] /me/addresses', async () => {
+  test('[POST] stores/:slug/logo', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
@@ -69,31 +79,52 @@ describe('List Users Addresses (E2E)', () => {
       },
     });
 
-    for (let i = 0; i <= 6; i++) {
-      await prisma.address.create({
-        data: {
-          userId: user.id,
-          city: 'Miami',
-          neighborhood: 'Long Beach',
-          state: faker.location.state(),
-        },
-      });
-    }
+    const uniqueWhatsapp = makeWhatsapp();
+
+    const store = await prisma.store.create({
+      data: {
+        name: 'store 013',
+        slug: 'store-013',
+        whatsapp: uniqueWhatsapp,
+      },
+    });
+
+    await prisma.collaborator.create({
+      data: {
+        userId: user.id,
+        storeId: store.id,
+        role: 'PROPRIETARIO',
+      },
+    });
 
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
-    const response = await request(app.getHttpServer())
-      .get(`/me/addresses`)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send();
-
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          city: 'Miami',
-        }),
-      ]),
+    const ImagePath = path.resolve(
+      __dirname,
+      '../../../../img/logo-vitrine-web.jpg',
     );
+
+    const ImageBuffer = fs.readFileSync(ImagePath);
+
+    const response = await request(app.getHttpServer())
+      .post(`/stores/${store.slug}/logo`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .attach('file', ImageBuffer, {
+        filename: 'logo-vitrine-web.jpg',
+        contentType: 'image/jpg',
+      });
+
+    expect(response.statusCode).toBe(201);
+
+    const imageOnDatabase = await prisma.store.findUnique({
+        where: {
+            id: store.id
+        }
+    })
+
+    //Usado para deletar a imagem após o teste
+    uploadedPublicId = imageOnDatabase?.storage_public_id ?? null;
+
+    expect(imageOnDatabase).toBeTruthy();
   });
 });

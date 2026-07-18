@@ -142,6 +142,7 @@ model ProductImages {
   image_url    String
   storage_public_id String
   is_main       Boolean
+  createdAt     DateTime @default(now()) @map("created_at")
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 

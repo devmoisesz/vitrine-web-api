@@ -11,9 +11,9 @@ import { hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
-import { faker } from '@faker-js/faker';
+import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 
-describe('List Users Addresses (E2E)', () => {
+describe('Register Product (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
@@ -58,7 +58,7 @@ describe('List Users Addresses (E2E)', () => {
     await app.close();
   });
 
-  test('[GET] /me/addresses', async () => {
+  test('[POST] stores/:slug/products', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
@@ -69,31 +69,62 @@ describe('List Users Addresses (E2E)', () => {
       },
     });
 
-    for (let i = 0; i <= 6; i++) {
-      await prisma.address.create({
+    const uniqueWhatsapp = makeWhatsapp()
+
+    const store = await prisma.store.create({
+      data: {
+        name: 'store 013',
+        slug: 'store-013',
+        whatsapp: uniqueWhatsapp
+      },
+    });
+
+    const category = await prisma.category.create({
         data: {
-          userId: user.id,
-          city: 'Miami',
-          neighborhood: 'Long Beach',
-          state: faker.location.state(),
-        },
-      });
-    }
+            name: 'category',
+            slug: 'category'
+        }
+    })
+
+    const subcategory = await prisma.subCategory.create({
+        data: {
+            name: 'subcategory',
+            slug: 'subcategory',
+            categoryId: category.id
+        }
+    })
+
+    await prisma.collaborator.create({
+        data: {
+            userId: user.id,
+            storeId: store.id,
+            role: 'FUNCIONARIO'
+        }
+    })
 
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
     const response = await request(app.getHttpServer())
-      .get(`/me/addresses`)
+      .post(`/stores/${store.slug}/products`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send();
+      .send({
+        name_product: 'Product White',
+        tags: ['white', 'product'],
+        description: 'Product White',
+        price: 69.79,
+        stock: 39,
+        name_category: category.name,
+        name_subcategory: subcategory.name
+      });
 
-    expect(response.statusCode).toBe(200);
-    expect(response.body).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          city: 'Miami',
-        }),
-      ]),
-    );
+    expect(response.statusCode).toBe(201);
+
+    const productOnDatabase = await prisma.product.findMany({
+      where: {
+        name: 'Product White'
+      },
+    });
+
+    expect(productOnDatabase).toBeTruthy();
   });
 });
