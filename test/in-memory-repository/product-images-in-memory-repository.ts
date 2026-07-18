@@ -33,6 +33,7 @@ export class ProductsImagesInMemoryRepository implements ProductsImagesRepositor
       image_url: data.image_url,
       storage_public_id: data.storage_public_id,
       is_main: data.is_main ?? false,
+      createdAt: new Date()
     };
 
     this.items.push(products)
