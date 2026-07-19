@@ -1,34 +1,75 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { CreateProductInput, ProductsRepository } from '@/database/repositories/products-repository';
-import { Product } from '@prisma/client';
+import {
+  CreateProductInput,
+  ProductsRepository,
+  UpdateProductInput,
+} from '@/database/repositories/products-repository';
+import { Prisma, Product } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/client';
 
 @Injectable()
 export class PrismaProductsRepository implements ProductsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async save(product: UpdateProductInput): Promise<Product> {
+    const { id, tags, price, ...productData } = product;
+    const updateData: Prisma.ProductUncheckedUpdateInput = {
+      ...productData,
+    };
+
+    if (typeof price !== 'undefined') {
+      updateData.price = new Decimal(price);
+    }
+
+    let updatedProduct = await this.prisma.product.update({
+      where: { id },
+      data: updateData,
+    });
+
+    if (typeof tags !== 'undefined') {
+      await this.prisma.product.update({
+        where: { id },
+        data: {
+          tags: {
+            set: [],
+          },
+        },
+      });
+
+      updatedProduct = await this.prisma.product.update({
+        where: { id },
+        data: {
+          tags: {
+            connectOrCreate: tags.map((tagName) => ({
+              where: { name: tagName },
+              create: { name: tagName },
+            })),
+          },
+        },
+      });
+    }
+
+    return updatedProduct;
+  }
+
   async activateProduct(id: string, status: 'ATIVO'): Promise<void> {
     await this.prisma.product.update({
       where: {
-        id
+        id,
       },
       data: {
-        status
-      }
-    })
+        status,
+      },
+    });
   }
 
   async findById(id: string): Promise<Product | null> {
-    const product = await this.prisma.product.findUnique({
+    return await this.prisma.product.findUnique({
       where: {
-        id
-      }
-    })
-
-    if(!product) throw new Error()
-
-    return product
+        id,
+      },
+    });
   }
 
   async create(data: CreateProductInput): Promise<Product> {
