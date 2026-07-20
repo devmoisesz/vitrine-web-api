@@ -64,6 +64,8 @@ import { UpdateStatusProductController } from './controllers/collaborators/updat
 import { UpdateStatusProductService } from '@/use-cases/services/products/update-status-product.service';
 import { DeleteProductController } from './controllers/collaborators/delete-product.controller';
 import { DeleteProductService } from '@/use-cases/services/products/delete-product.service';
+import { GetStoreProfileService } from '@/use-cases/services/stores/get-store-profile.service';
+import { GetStoreProfileController } from './controllers/users/get-store-profile.controller';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -98,7 +100,8 @@ import { DeleteProductService } from '@/use-cases/services/products/delete-produ
     DeleteStoreLogoController,
     EditProductController,
     UpdateStatusProductController,
-    DeleteProductController
+    DeleteProductController,
+    GetStoreProfileController
   ],
   providers: [
     CreateAccountService,
@@ -132,7 +135,8 @@ import { DeleteProductService } from '@/use-cases/services/products/delete-produ
     DeleteStoreLogoService,
     EditProductService,
     UpdateStatusProductService,
-    DeleteProductService
+    DeleteProductService,
+    GetStoreProfileService
   ],
 })
 export class HttpModule {}
