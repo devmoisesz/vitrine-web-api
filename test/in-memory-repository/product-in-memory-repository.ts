@@ -23,6 +23,14 @@ export class ProductsInMemoryRepository implements ProductsRepository {
     }
   }
 
+  async disableProduct(productId: string, status: 'INATIVO'): Promise<void> {
+    const product = this.items.find((item) => item.id === productId);
+
+    if (product) {
+      product.status = status;
+    }
+  }
+
   public productTags: { productId: string; tagId: string }[] = [];
 
   async save(product: UpdateProductInput): Promise<Product> {

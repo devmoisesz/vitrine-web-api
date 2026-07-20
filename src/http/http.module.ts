@@ -60,6 +60,8 @@ import { DeleteStoreLogoController } from './controllers/collaborators/delete-st
 import { DeleteStoreLogoService } from '@/use-cases/services/stores/delete-store-logo.service';
 import { EditProductService } from '@/use-cases/services/products/edit-product.service';
 import { EditProductController } from './controllers/collaborators/edit-product.controller';
+import { UpdateStatusProductController } from './controllers/collaborators/update-status-product.controller';
+import { UpdateStatusProductService } from '@/use-cases/services/products/update-status-product.service';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -93,6 +95,7 @@ import { EditProductController } from './controllers/collaborators/edit-product.
     DeleteProductImageController,
     DeleteStoreLogoController,
     EditProductController,
+    UpdateStatusProductController,
   ],
   providers: [
     CreateAccountService,
@@ -125,6 +128,7 @@ import { EditProductController } from './controllers/collaborators/edit-product.
     DeleteProductImageService,
     DeleteStoreLogoService,
     EditProductService,
+    UpdateStatusProductService,
   ],
 })
 export class HttpModule {}

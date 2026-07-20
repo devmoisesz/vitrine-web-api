@@ -64,6 +64,17 @@ export class PrismaProductsRepository implements ProductsRepository {
     });
   }
 
+  async disableProduct(id: string, status: 'INATIVO'): Promise<void> {
+    await this.prisma.product.update({
+      where: {
+        id,
+      },
+      data: {
+        status,
+      },
+    });
+  }
+
   async findById(id: string): Promise<Product | null> {
     return await this.prisma.product.findUnique({
       where: {
