@@ -9,8 +9,7 @@ export class ListCategoriesController {
 
   @Get()
   @HttpCode(200)
-  async handle(
-  ) {
+  async handle() {
     return await this.listCategoriesService.execute();
   }
 }

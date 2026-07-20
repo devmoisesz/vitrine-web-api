@@ -8,7 +8,11 @@ export class PrismaCategoriesRepository implements CategoriesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findMany(): Promise<Category[]> {
-    return await this.prisma.category.findMany()
+    return await this.prisma.category.findMany({
+      orderBy: {
+        name: 'asc'
+      }
+    })
   }
 
   async findById(id: string): Promise<Category | null> {

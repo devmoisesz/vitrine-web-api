@@ -5,4 +5,5 @@ export abstract class SubcategoriesRepository {
     abstract save(subcategory: SubCategory): Promise<SubCategory>
     abstract findByCategoryId(categoryId: string, name_subcategory: string): Promise<SubCategory | null>
     abstract findById(id: string,): Promise<SubCategory | null>
+    abstract findMany(categoryId?: string): Promise<SubCategory[]>
 }
