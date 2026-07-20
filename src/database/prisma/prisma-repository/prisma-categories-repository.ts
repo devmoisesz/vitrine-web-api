@@ -7,6 +7,10 @@ import { CategoriesRepository } from '@/database/repositories/categories-reposit
 export class PrismaCategoriesRepository implements CategoriesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findMany(): Promise<Category[]> {
+    return await this.prisma.category.findMany()
+  }
+
   async findById(id: string): Promise<Category | null> {
     const category = await this.prisma.category.findUnique({
       where: {

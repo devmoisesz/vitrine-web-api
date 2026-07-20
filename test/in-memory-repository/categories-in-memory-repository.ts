@@ -34,6 +34,10 @@ export class CategoriesInMemoryRepository implements CategoriesRepository {
     return category;
   }
 
+  async findMany(): Promise<Category[]> {
+    return this.items
+  }
+
   async findByName(name: string): Promise<Category | null> {
     const category = this.items.find((item) => item.name === name);
 
