@@ -33,4 +33,5 @@ export abstract class ProductsRepository {
   abstract activateProduct(id: string, status: 'ATIVO'): Promise<void>;
   abstract disableProduct(id: string, status: 'INATIVO'): Promise<void>
   abstract findById(id: string): Promise<Product | null>;
+  abstract delete(id: string): Promise<void>;
 }

@@ -50,7 +50,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível editar produtos da própria loja
 - [x] Deve ser possível desativar um produto da própria loja
 - [x] Deve ser possível ativar um produto desativado da própria loja
-- [ ] Deve ser possível remover um produto da própria loja
+- [x] Deve ser possível remover um produto da própria loja
 - [ ] Deve ser possível visualizar pedidos solicitados via WhatsApp para a própria loja
 
 ## Dono da Loja (permissões do Funcionário, mais as abaixo)

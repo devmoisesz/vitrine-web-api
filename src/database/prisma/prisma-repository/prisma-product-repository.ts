@@ -12,6 +12,14 @@ import { Decimal } from '@prisma/client/runtime/client';
 export class PrismaProductsRepository implements ProductsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async delete(id: string): Promise<void> {
+    await this.prisma.product.delete({
+      where: {
+        id
+      }
+    })
+  }
+
   async save(product: UpdateProductInput): Promise<Product> {
     const { id, tags, price, ...productData } = product;
     const updateData: Prisma.ProductUncheckedUpdateInput = {

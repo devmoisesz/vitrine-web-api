@@ -11,6 +11,12 @@ export class ProductsInMemoryRepository implements ProductsRepository {
   public items: Product[] = [];
   public tags: Tag[] = [];
 
+  async delete(id: string): Promise<void> {
+    const product = this.items.findIndex((item) => item.id === id)
+
+    this.items.splice(product, 1)
+  }
+
   async findById(id: string): Promise<Product | null> {
     return this.items.find((item) => item.id === id) ?? null;
   }
