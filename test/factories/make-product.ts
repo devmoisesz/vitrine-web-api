@@ -5,7 +5,8 @@ export function makeProducts(
     inMemoryProductRepository: ProductsInMemoryRepository,
     storeId: string,
     categoryId: string,
-    subcategoryId: string
+    subcategoryId: string,
+    ativo?: 'ATIVO'
 ){
     return inMemoryProductRepository.create({
         name: faker.commerce.product(),
@@ -17,7 +18,7 @@ export function makeProducts(
         categoryId,
         storeId,
         subcategoryId,
-        status: 'INATIVO'
+        status: ativo ?? 'INATIVO'
     })
 
 }

@@ -25,12 +25,13 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Cliente
 
-- [ ] Deve ser possível pesquisar produtos por nome de forma global na plataforma
+- [x] Deve ser possível pesquisar produtos por nome de forma global na plataforma
+- [x] Deve ser possível listar todos produtos mais recentes  
 - [ ] Deve ser possível filtrar produtos de forma global por categoria principal
 - [ ] Deve ser possível filtrar produtos de forma global por subcategoria
 - [ ] Deve ser possível combinar filtros de categoria, subcategoria e busca por nome
-- [ ] Deve ser possível buscar lojas pelo nome
-- [ ] Deve ser possível visualizar a página de uma loja (vitrine exclusiva) com seus dados e apenas os seus produtos
+- [x] Deve ser possível buscar lojas pelo nome
+- [x] Deve ser possível visualizar a página de uma loja (vitrine exclusiva) com seus dados
 - [ ] Deve ser possível visualizar os detalhes de um produto
 - [x] Deve ser possível cadastrar vários endereços 
 - [x] Deve ser possível editar seus próprios endereços
@@ -101,7 +102,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 ## Produtos
 
 - [x] Um produto deve pertencer obrigatoriamente a uma loja
-- [ ] Um produto desativado não pode aparecer em nenhuma busca.
+- [x] Um produto desativado não pode aparecer em nenhuma busca.
 - [x] Um produto deve obrigatoriamente possuir categoria e subcategoria
 - [x] Um produto só pode ser publicado com nome, preço, categoria, subcategoria, estoque e pelo menos uma imagem
 - [x] Um produto deve possuir pelo menos uma imagem e no máximo 5 imagens.
@@ -115,11 +116,11 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Lojas
 
-- [ ] Um produto desativado não pode aparecer em nenhuma busca.
+- [x] Um produto desativado não pode aparecer em nenhuma busca.
 - [x] Uma loja só pode ter um endereço cadastrado
 - [x] Apenas o Admin pode cadastrar e desativar lojas
-- [ ] Uma loja desativada não aparece nos resultados de busca global e sua rota de vitrine exclusiva fica inacessível
-- [ ] Caso uma loja seja desativada, todos os seus produtos associados são ocultados da busca global automaticamente
+- [x] Uma loja desativada não aparece nos resultados de busca global e sua rota de vitrine exclusiva fica inacessível
+- [x] Caso uma loja seja desativada, todos os seus produtos associados são ocultados da busca global automaticamente
 
 ---
 

@@ -6,19 +6,92 @@ import {
   UpdateProductInput,
 } from '@/database/repositories/products-repository';
 import { Decimal } from '@prisma/client/runtime/client';
+import { StoresInMemoryRepository } from './stores-in-memory-repository';
+import { ProductsImagesInMemoryRepository } from './product-images-in-memory-repository';
 
 export class ProductsInMemoryRepository implements ProductsRepository {
   public items: Product[] = [];
   public tags: Tag[] = [];
 
-  async delete(id: string): Promise<void> {
-    const product = this.items.findIndex((item) => item.id === id)
+  constructor(
+    private storesRepository?: StoresInMemoryRepository,
+    private productImagesRepository?: ProductsImagesInMemoryRepository,
+  ) {}
 
-    this.items.splice(product, 1)
+  async delete(id: string): Promise<void> {
+    const product = this.items.findIndex((item) => item.id === id);
+
+    this.items.splice(product, 1);
   }
 
   async findById(id: string): Promise<Product | null> {
     return this.items.find((item) => item.id === id) ?? null;
+  }
+
+  async findMany(page: number, name?: string): Promise<Product[]> {
+    const pageSize = 40;
+
+    let filteredProducts = this.items.filter((product) => {
+      if (product.status !== 'ATIVO') {
+        return false;
+      }
+
+      const store = this.storesRepository?.items.find(
+        (s) => s.id === product.storeId,
+      );
+
+      if (!store || store.status !== 'ATIVA') {
+        return false;
+      }
+
+      return true;
+    });
+
+    if (name) {
+      const searchTerm = name.toLowerCase();
+
+      filteredProducts = filteredProducts.filter((product) => {
+        const nameMatch = product.name.toLowerCase().includes(searchTerm);
+        const descriptionMatch = product.description
+          ? product.description.toLowerCase().includes(searchTerm)
+          : false;
+
+        return nameMatch || descriptionMatch;
+      });
+    }
+
+    filteredProducts.sort((a, b) => {
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    });
+
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+    return paginatedProducts.map((product) => {
+      const store = this.storesRepository?.items.find(
+        (s) => s.id === product.storeId,
+      );
+
+      const mainImages = this.productImagesRepository?.items
+        .filter((img) => img.productId === product.id && img.is_main === true)
+        .map((img) => ({
+          image_url: img.image_url,
+        }));
+
+      return {
+        ...product,
+        store: store
+          ? {
+              id: store.id,
+              name: store.name,
+              slug: store.slug,
+              logo_image_url: store.logo_image_url,
+            }
+          : null,
+        products_images: mainImages,
+      };
+    });
   }
 
   async activateProduct(productId: string, status: 'ATIVO'): Promise<void> {
