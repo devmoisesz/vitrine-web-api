@@ -2,7 +2,7 @@ import { Public } from '@/auth/public';
 import { ListProductsByCategoryService } from '@/use-cases/services/products/list-products-by-category.service';
 import { Controller, Get, HttpCode, Param, Query } from '@nestjs/common';
 
-@Controller('/products/:slug')
+@Controller('/products/category/:slug')
 @Public()
 export class ListProductsByCategoryController {
   constructor(private listProductsByCategoryService: ListProductsByCategoryService) {}

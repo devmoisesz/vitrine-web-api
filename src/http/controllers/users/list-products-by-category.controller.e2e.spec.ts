@@ -55,7 +55,7 @@ describe('List Products By Category (E2E)', () => {
     await app.close();
   });
 
-  test('[GET] /products/:slug', async () => {
+  test('[GET] /products/category/:slug', async () => {
     await prisma.store.create({
       data: {
         name: 'store 013',
@@ -169,7 +169,7 @@ describe('List Products By Category (E2E)', () => {
     });
 
     const response = await request(app.getHttpServer()).get(
-      `/products/${category2.slug}?page=1`,
+      `/products/category/${category2.slug}?page=1`,
     );
 
     expect(response.statusCode).toBe(200);
