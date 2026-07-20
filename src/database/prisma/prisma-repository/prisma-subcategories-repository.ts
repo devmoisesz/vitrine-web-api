@@ -69,4 +69,19 @@ export class PrismaSubcategoriesRepository implements SubcategoriesRepository {
 
     return subCategory;
   }
+
+  async findBySlug(slugSubcategory: string, categoryId: string): Promise<SubCategory | null> {
+    const subCategory = await this.prisma.subCategory.findUnique({
+      where: {
+        slug_categoryId: {
+          slug: slugSubcategory,
+          categoryId
+        }
+      }
+    });
+
+    if (!subCategory) return null;
+
+    return subCategory;
+  }
 }

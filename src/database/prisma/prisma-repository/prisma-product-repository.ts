@@ -26,10 +26,70 @@ export class PrismaProductsRepository implements ProductsRepository {
           status: 'ATIVA',
         },
       },
+      include: {
+        store: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            logo_image_url: true,
+          },
+        },
+        products_images: {
+          where: {
+            is_main: true,
+          },
+          select: {
+            image_url: true,
+          },
+        },
+      },
       take: pageSize,
       skip: (page - 1) * pageSize,
       orderBy: {
-        name: 'asc',
+        createdAt: 'desc',
+      },
+    });
+  }
+
+  async findManyBySubcategory(
+    categoryId: string,
+    subcategoryId: string,
+    page: number,
+  ): Promise<Product[]> {
+    const pageSize = 40;
+
+    return this.prisma.product.findMany({
+      where: {
+        status: 'ATIVO',
+        categoryId,
+        subcategoryId,
+        store: {
+          status: 'ATIVA',
+        },
+      },
+      include: {
+        store: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            logo_image_url: true,
+          },
+        },
+        products_images: {
+          where: {
+            is_main: true,
+          },
+          select: {
+            image_url: true,
+          },
+        },
+      },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+      orderBy: {
+        createdAt: 'desc',
       },
     });
   }

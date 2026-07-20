@@ -78,6 +78,71 @@ export class ProductsInMemoryRepository implements ProductsRepository {
     });
   }
 
+  async findManyBySubcategory(
+    categoryId: string,
+    subcategoryId: string,
+    page: number,
+  ): Promise<Product[]> {
+    const pageSize = 40;
+
+    let filteredProducts = this.items.filter((product) => {
+      if (product.status !== 'ATIVO') {
+        return false;
+      }
+
+      if (product.categoryId !== categoryId) {
+        return false;
+      }
+
+      if(product.subcategoryId !== subcategoryId){
+        return false
+      }
+
+      const store = this.storesRepository?.items.find(
+        (s) => s.id === product.storeId,
+      );
+
+      if (!store || store.status !== 'ATIVA') {
+        return false;
+      }
+
+      return true;
+    });
+
+    filteredProducts.sort((a, b) => {
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    });
+
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+    return paginatedProducts.map((product) => {
+      const store = this.storesRepository?.items.find(
+        (s) => s.id === product.storeId,
+      );
+
+      const mainImages = this.productImagesRepository?.items
+        .filter((img) => img.productId === product.id && img.is_main === true)
+        .map((img) => ({
+          image_url: img.image_url,
+        }));
+
+      return {
+        ...product,
+        store: store
+          ? {
+              id: store.id,
+              name: store.name,
+              slug: store.slug,
+              logo_image_url: store.logo_image_url,
+            }
+          : null,
+        products_images: mainImages,
+      };
+    });
+  }
+
   async delete(id: string): Promise<void> {
     const product = this.items.findIndex((item) => item.id === id);
 

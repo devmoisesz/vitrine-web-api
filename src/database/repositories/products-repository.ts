@@ -35,5 +35,6 @@ export abstract class ProductsRepository {
   abstract findById(id: string): Promise<Product | null>;
   abstract findMany(page: number, name?: string): Promise<Product[]>;
   abstract findManyByCategory(categoryId: string, page: number): Promise<Product[]>;
+  abstract findManyBySubcategory(categoryId: string, subcategoryId: string, page: number): Promise<Product[]>;
   abstract delete(id: string): Promise<void>;
 }
