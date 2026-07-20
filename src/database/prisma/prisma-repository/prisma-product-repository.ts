@@ -12,19 +12,43 @@ import { Decimal } from '@prisma/client/runtime/client';
 export class PrismaProductsRepository implements ProductsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findManyByCategory(
+    categoryId: string,
+    page: number,
+  ): Promise<Product[]> {
+    const pageSize = 40;
+
+    return this.prisma.product.findMany({
+      where: {
+        categoryId,
+        status: 'ATIVO',
+        store: {
+          status: 'ATIVA',
+        },
+      },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+      orderBy: {
+        name: 'asc',
+      },
+    });
+  }
+
   async findMany(page: number, name?: string): Promise<Product[]> {
-    const pageSize = 40
+    const pageSize = 40;
 
     return await this.prisma.product.findMany({
       where: {
         status: 'ATIVO',
         store: {
-          status: 'ATIVA'
+          status: 'ATIVA',
         },
-        OR: name ? [
-          { name: { contains: name, mode: 'insensitive' } },
-          { description: { contains: name, mode: 'insensitive' } },
-        ] : undefined,
+        OR: name
+          ? [
+              { name: { contains: name, mode: 'insensitive' } },
+              { description: { contains: name, mode: 'insensitive' } },
+            ]
+          : undefined,
       },
       include: {
         store: {
@@ -32,7 +56,7 @@ export class PrismaProductsRepository implements ProductsRepository {
             id: true,
             name: true,
             slug: true,
-            logo_image_url: true
+            logo_image_url: true,
           },
         },
         products_images: {
@@ -40,24 +64,24 @@ export class PrismaProductsRepository implements ProductsRepository {
             is_main: true,
           },
           select: {
-            image_url: true
-          }
-        }
+            image_url: true,
+          },
+        },
       },
       take: pageSize,
       skip: (page - 1) * pageSize,
       orderBy: {
-        createdAt: 'desc'
-      }
-    })
+        createdAt: 'desc',
+      },
+    });
   }
 
   async delete(id: string): Promise<void> {
     await this.prisma.product.delete({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
   }
 
   async save(product: UpdateProductInput): Promise<Product> {

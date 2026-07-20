@@ -27,7 +27,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 - [x] Deve ser possível pesquisar produtos por nome de forma global na plataforma
 - [x] Deve ser possível listar todos produtos mais recentes  
-- [ ] Deve ser possível filtrar produtos de forma global por categoria principal
+- [x] Deve ser possível filtrar produtos de forma global por categoria principal
 - [ ] Deve ser possível filtrar produtos de forma global por subcategoria
 - [ ] Deve ser possível combinar filtros de categoria, subcategoria e busca por nome
 - [x] Deve ser possível buscar lojas pelo nome

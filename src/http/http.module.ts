@@ -72,6 +72,8 @@ import { ListCategoriesService } from '@/use-cases/services/products/list-catego
 import { ListCategoriesController } from './controllers/users/list-categories.controller';
 import { ListSubcategoriesService } from '@/use-cases/services/products/list-subcategories.service';
 import { ListSubcategoriesController } from './controllers/users/list-subcategories.controller';
+import { ListProductsByCategoryController } from './controllers/users/list-products-by-category.controller';
+import { ListProductsByCategoryService } from '@/use-cases/services/products/list-products-by-category.service';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -110,7 +112,8 @@ import { ListSubcategoriesController } from './controllers/users/list-subcategor
     GetStoreProfileController,
     ListGlobalProductsController,
     ListCategoriesController,
-    ListSubcategoriesController
+    ListSubcategoriesController,
+    ListProductsByCategoryController
   ],
   providers: [
     CreateAccountService,
@@ -148,7 +151,8 @@ import { ListSubcategoriesController } from './controllers/users/list-subcategor
     GetStoreProfileService,
     ListGlobalProductsService,
     ListCategoriesService,
-    ListSubcategoriesService
+    ListSubcategoriesService,
+    ListProductsByCategoryService
   ],
 })
 export class HttpModule {}
