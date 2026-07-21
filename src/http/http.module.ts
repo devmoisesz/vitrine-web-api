@@ -66,16 +66,12 @@ import { DeleteProductController } from './controllers/collaborators/delete-prod
 import { DeleteProductService } from '@/use-cases/services/products/delete-product.service';
 import { GetStoreProfileService } from '@/use-cases/services/stores/get-store-profile.service';
 import { GetStoreProfileController } from './controllers/users/get-store-profile.controller';
-import { ListGlobalProductsService } from '@/use-cases/services/products/list-global-products.service';
-import { ListGlobalProductsController } from './controllers/users/list-global-products.controller';
 import { ListCategoriesService } from '@/use-cases/services/products/list-categories.service';
 import { ListCategoriesController } from './controllers/users/list-categories.controller';
 import { ListSubcategoriesService } from '@/use-cases/services/products/list-subcategories.service';
 import { ListSubcategoriesController } from './controllers/users/list-subcategories.controller';
-import { ListProductsByCategoryController } from './controllers/users/list-products-by-category.controller';
-import { ListProductsByCategoryService } from '@/use-cases/services/products/list-products-by-category.service';
-import { ListProductsBySubcategoryController } from './controllers/users/list-products-by-subcategory.controller';
-import { ListProductsBySubcategoryService } from '@/use-cases/services/products/list-products-by-subcategory.service';
+import { ListProductsController } from './controllers/users/list-products.controller';
+import { ListProductsService } from '@/use-cases/services/products/list-products.service';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -112,11 +108,9 @@ import { ListProductsBySubcategoryService } from '@/use-cases/services/products/
     UpdateStatusProductController,
     DeleteProductController,
     GetStoreProfileController,
-    ListGlobalProductsController,
+    ListProductsController,
     ListCategoriesController,
     ListSubcategoriesController,
-    ListProductsByCategoryController,
-    ListProductsBySubcategoryController
   ],
   providers: [
     CreateAccountService,
@@ -152,11 +146,9 @@ import { ListProductsBySubcategoryService } from '@/use-cases/services/products/
     UpdateStatusProductService,
     DeleteProductService,
     GetStoreProfileService,
-    ListGlobalProductsService,
+    ListProductsService,
     ListCategoriesService,
     ListSubcategoriesService,
-    ListProductsByCategoryService,
-    ListProductsBySubcategoryService
   ],
 })
 export class HttpModule {}

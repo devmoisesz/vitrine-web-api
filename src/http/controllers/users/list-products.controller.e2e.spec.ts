@@ -12,7 +12,7 @@ import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
 
-describe('List Products By Category (E2E)', () => {
+describe('List Products (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
 
@@ -55,7 +55,7 @@ describe('List Products By Category (E2E)', () => {
     await app.close();
   });
 
-  test('[GET] /products/category/:slugCategory/subcategory/:slugSubcategory', async () => {
+  test('[GET] /products', async () => {
     await prisma.store.create({
       data: {
         name: 'store 013',
@@ -80,50 +80,53 @@ describe('List Products By Category (E2E)', () => {
       },
     });
 
-    const stores = await prisma.store.findMany()
-
-    const store = await prisma.store.create({
-      data: {
-        name: 'store 016',
-        slug: 'store-016',
-        whatsapp: makeWhatsapp(),
+    const stores = await prisma.store.findMany({
+      where: {
+        status: 'ATIVA',
       },
     });
 
-    const category = await prisma.category.create({
+    const categoryBlouse = await prisma.category.create({
       data: {
-        name: 'camisetas',
-        slug: 'camisetas',
+        name: 'Blouse',
+        slug: 'blouse',
       },
     });
 
-    const subcategory1 = await prisma.subCategory.create({
+    const categoryPants = await prisma.category.create({
       data: {
-        name: 'feminina',
-        slug: 'feminina',
-        categoryId: category.id,
+        name: 'Pants',
+        slug: 'pants',
       },
     });
 
-    const subcategory2 = await prisma.subCategory.create({
+    const subcategoryMasculine = await prisma.subCategory.create({
       data: {
-        name: 'masculina',
-        slug: 'masculina',
-        categoryId: category.id,
+        name: 'Masculine',
+        slug: 'masculine',
+        categoryId: categoryPants.id,
+      },
+    });
+
+    const subcategoryFeminine = await prisma.subCategory.create({
+      data: {
+        name: 'Feminine',
+        slug: 'feminine',
+        categoryId: categoryBlouse.id,
       },
     });
 
     for (let i = 0; i < 3; i++) {
       const product = await prisma.product.create({
         data: {
-          name: 'Camisa Feminina',
-          slug: 'camisa-feminina',
-          description: 'Camisa Feminina',
+          name: 'Blouse White',
+          slug: 'blouse-white',
+          description: 'Blouse White Feminine',
           price: 69.79,
           stock: 39,
           storeId: stores[i].id,
-          categoryId: category.id,
-          subcategoryId: subcategory1.id,
+          categoryId: categoryBlouse.id,
+          subcategoryId: subcategoryFeminine.id,
           status: 'ATIVO',
         },
       });
@@ -138,36 +141,46 @@ describe('List Products By Category (E2E)', () => {
       });
     }
 
-    const product = await prisma.product.create({
-      data: {
-        name: 'Camisa Masculina',
-        slug: 'camisa-masculina',
-        description: 'Camisa Masculina',
-        price: 69.79,
-        stock: 39,
-        storeId: store.id,
-        categoryId: category.id,
-        subcategoryId: subcategory2.id,
-        status: 'ATIVO',
-      },
-    });
+    for (let i = 0; i < 3; i++) {
+      const product = await prisma.product.create({
+        data: {
+          name: 'Pants Black',
+          slug: 'pants-black',
+          description: 'Pants Black Masculine',
+          price: 69.79,
+          stock: 39,
+          storeId: stores[i].id,
+          categoryId: categoryPants.id,
+          subcategoryId: subcategoryMasculine.id,
+          status: 'ATIVO',
+        },
+      });
 
-    await prisma.productImages.create({
-      data: {
-        image_url: faker.internet.url(),
-        storage_public_id: randomUUID(),
-        is_main: true,
-        productId: product.id,
-      },
-    });
-
+      await prisma.productImages.create({
+        data: {
+          image_url: faker.internet.url(),
+          storage_public_id: randomUUID(),
+          is_main: true,
+          productId: product.id,
+        },
+      });
+    }
 
     const response = await request(app.getHttpServer()).get(
-      `/products/category/${category.slug}/subcategory/${subcategory2.slug}?page=1`,
+      `/products?name=pants%20black&categoryId=${categoryPants.id}&subcategoryId=${subcategoryMasculine.id}&page=1`,
     );
 
     expect(response.statusCode).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
-    expect(response.body).toHaveLength(1);
+    expect(response.body).toHaveLength(3);
+    expect(response.body).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'Pants Black',
+          description: 'Pants Black Masculine',
+          status: 'ATIVO',
+        }),
+      ]),
+    );
   });
 });

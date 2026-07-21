@@ -29,10 +29,10 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível listar todos produtos mais recentes  
 - [x] Deve ser possível filtrar produtos de forma global por categoria principal
 - [x] Deve ser possível filtrar produtos de forma global por subcategoria
-- [ ] Deve ser possível combinar filtros de categoria, subcategoria e busca por nome
-- [x] Deve ser possível buscar lojas pelo nome
+- [x] Deve ser possível combinar filtros de categoria, subcategoria e busca por nome
+- [ ] Deve ser possível buscar lojas pelo nome
 - [x] Deve ser possível visualizar a página de uma loja (vitrine exclusiva) com seus dados
-- [ ] Deve ser possível visualizar os detalhes de um produto
+- [x] Deve ser possível visualizar os detalhes de um produto
 - [x] Deve ser possível cadastrar vários endereços 
 - [x] Deve ser possível editar seus próprios endereços
 - [x] Deve ser possível visualizar seus próprios endereços
@@ -112,7 +112,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 - [x] Categorias e subcategorias são criadas e gerenciadas exclusivamente pelo Admin
 - [x] Uma subcategoria deve pertencer obrigatoriamente a uma categoria principal
-- [ ] O vendedor seleciona a categoria principal e a subcategoria ao cadastrar um produto através de menus de seleção encadeados na interface, sem poder criar categorias livres
+- [x] O vendedor seleciona a categoria principal e a subcategoria ao cadastrar um produto através de menus de seleção encadeados na interface, sem poder criar categorias livres
 
 ## Lojas
 
@@ -135,10 +135,10 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 ## Dados e Armazenamento
 
 - [x] Os dados da aplicação devem ser persistidos em banco de dados relacional
-- [ ] As imagens dos produtos devem ser armazenadas em serviço de storage externo (Cloudinary)
+- [x] As imagens dos produtos devem ser armazenadas em serviço de storage externo (Cloudinary)
 
 ## Experiência e Interface
 
 - [ ] A aplicação deve ser responsiva para dispositivos móveis
-- [ ] Todas as listagens de produtos devem ser paginadas com 40 itens por página
+- [x] Todas as listagens de produtos devem ser paginadas com 40 itens por página
 - [ ] A aplicação deve integrar com a API ViaCEP para autopreenchimento de endereços no cadastro de lojas e no perfil do cliente
