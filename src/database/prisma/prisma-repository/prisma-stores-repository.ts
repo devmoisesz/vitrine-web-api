@@ -7,6 +7,25 @@ import { StoresRepository } from '@/database/repositories/stores-repository';
 export class PrismaStoresRepository implements StoresRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findMany(page: number, name?: string): Promise<Store[]> {
+    const pageSize = 20
+
+    return await this.prisma.store.findMany({
+      where: {
+        status: 'ATIVA',
+        OR: name ? [
+          { name: { contains: name, mode: 'insensitive' } },
+          { description: { contains: name, mode: 'insensitive' } }
+        ] : undefined
+      },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+      orderBy: {
+        createdAt: 'asc'
+      }
+    })
+  }
+
   async create(data: Prisma.StoreUncheckedCreateInput): Promise<Store> {
     return await this.prisma.store.create({
       data,
