@@ -25,13 +25,14 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Cliente
 
-- [ ] Deve ser possível pesquisar produtos por nome de forma global na plataforma
-- [ ] Deve ser possível filtrar produtos de forma global por categoria principal
-- [ ] Deve ser possível filtrar produtos de forma global por subcategoria
-- [ ] Deve ser possível combinar filtros de categoria, subcategoria e busca por nome
-- [ ] Deve ser possível buscar lojas pelo nome
-- [ ] Deve ser possível visualizar a página de uma loja (vitrine exclusiva) com seus dados e apenas os seus produtos
-- [ ] Deve ser possível visualizar os detalhes de um produto
+- [x] Deve ser possível pesquisar produtos por nome de forma global na plataforma
+- [x] Deve ser possível listar todos produtos mais recentes  
+- [x] Deve ser possível filtrar produtos de forma global
+- [x] Deve ser possível combinar filtros de categoria, subcategoria e busca por nome
+- [x] Deve ser possível buscar lojas pelo nome
+- [x] Deve ser possível filtrar produtos de uma loja só
+- [x] Deve ser possível visualizar a página de uma loja (vitrine exclusiva) com seus dados
+- [x] Deve ser possível visualizar os detalhes de um produto
 - [x] Deve ser possível cadastrar vários endereços 
 - [x] Deve ser possível editar seus próprios endereços
 - [x] Deve ser possível visualizar seus próprios endereços
@@ -47,9 +48,10 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível escolher qual imagem do produto é a principal
 - [x] Deve ser possível trocar imagem do produto
 - [x] Deve ser possível deletar imagem do produto
-- [ ] Deve ser possível editar produtos da própria loja
-- [ ] Deve ser possível desativar um produto da própria loja
-- [ ] Deve ser possível remover um produto da própria loja
+- [x] Deve ser possível editar produtos da própria loja
+- [x] Deve ser possível desativar um produto da própria loja
+- [x] Deve ser possível ativar um produto desativado da própria loja
+- [x] Deve ser possível remover um produto da própria loja
 - [ ] Deve ser possível visualizar pedidos solicitados via WhatsApp para a própria loja
 
 ## Dono da Loja (permissões do Funcionário, mais as abaixo)
@@ -100,25 +102,25 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 ## Produtos
 
 - [x] Um produto deve pertencer obrigatoriamente a uma loja
-- [ ] Um produto desativado não pode aparecer em nenhuma busca.
+- [x] Um produto desativado não pode aparecer em nenhuma busca.
 - [x] Um produto deve obrigatoriamente possuir categoria e subcategoria
 - [x] Um produto só pode ser publicado com nome, preço, categoria, subcategoria, estoque e pelo menos uma imagem
 - [x] Um produto deve possuir pelo menos uma imagem e no máximo 5 imagens.
-- [ ] Na listagem geral e resultados de busca, os cards dos produtos devem exibir claramente a identificação da loja à qual pertencem
+- [x] Na listagem geral e resultados de busca, os cards dos produtos devem exibir claramente a identificação da loja à qual pertencem
 
 ## Categorias
 
 - [x] Categorias e subcategorias são criadas e gerenciadas exclusivamente pelo Admin
 - [x] Uma subcategoria deve pertencer obrigatoriamente a uma categoria principal
-- [ ] O vendedor seleciona a categoria principal e a subcategoria ao cadastrar um produto através de menus de seleção encadeados na interface, sem poder criar categorias livres
+- [x] O vendedor seleciona a categoria principal e a subcategoria ao cadastrar um produto através de menus de seleção encadeados na interface, sem poder criar categorias livres
 
 ## Lojas
 
-- [ ] Um produto desativado não pode aparecer em nenhuma busca.
+- [x] Um produto desativado não pode aparecer em nenhuma busca.
 - [x] Uma loja só pode ter um endereço cadastrado
 - [x] Apenas o Admin pode cadastrar e desativar lojas
-- [ ] Uma loja desativada não aparece nos resultados de busca global e sua rota de vitrine exclusiva fica inacessível
-- [ ] Caso uma loja seja desativada, todos os seus produtos associados são ocultados da busca global automaticamente
+- [x] Uma loja desativada não aparece nos resultados de busca global e sua rota de vitrine exclusiva fica inacessível
+- [x] Caso uma loja seja desativada, todos os seus produtos associados são ocultados da busca global automaticamente
 
 ---
 
@@ -133,10 +135,10 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 ## Dados e Armazenamento
 
 - [x] Os dados da aplicação devem ser persistidos em banco de dados relacional
-- [ ] As imagens dos produtos devem ser armazenadas em serviço de storage externo (Cloudinary)
+- [x] As imagens dos produtos devem ser armazenadas em serviço de storage externo (Cloudinary)
 
 ## Experiência e Interface
 
 - [ ] A aplicação deve ser responsiva para dispositivos móveis
-- [ ] Todas as listagens de produtos devem ser paginadas com 40 itens por página
+- [x] Todas as listagens de produtos devem ser paginadas com 40 itens por página
 - [ ] A aplicação deve integrar com a API ViaCEP para autopreenchimento de endereços no cadastro de lojas e no perfil do cliente

@@ -4,11 +4,12 @@ import { CategoriesInMemoryRepository } from "../in-memory-repository/categories
 
 export function makeCategory(
     inMemoryCategoriesRepository: CategoriesInMemoryRepository,
+    slug?: string
 ){
     return inMemoryCategoriesRepository.create({
         id: randomUUID(),
         name: faker.person.fullName(),
-        slug: 'slug-category',
+        slug: slug ?? 'slug-category',
     })
 
 }

@@ -70,6 +70,7 @@ model Store {
   status            StatusStore @default(ATIVA)
   logo_image_url    String?
   storage_public_id String?
+  createdAt    DateTime @default(now()) @map("created_at")
 
   collaborators Collaborator[]
   address Address?
@@ -107,6 +108,7 @@ model Product {
   slug         String 
   description  String
   price        Decimal
+  sizes        String[] @default([])
   stock        Int
   status       StatusProduct @default(ATIVO)
   storeId      String @map("store_id")

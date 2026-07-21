@@ -5,24 +5,56 @@ import { randomUUID } from 'node:crypto';
 export class StoresInMemoryRepository implements StoresRepository {
   public items: Store[] = [];
 
-  async disable(slug: string ): Promise<void> {
-     const store = this.items.find((item) => item.slug === slug && item.status === 'ATIVA')
+  async findMany(page: number, name?: string): Promise<Store[]> {
+    const pageSize = 40;
 
-    if(!store){
-      return
+    let filteredStores = this.items.filter((store) => store.status === 'ATIVA');
+
+    if (name) {
+      const searchTerm = name.toLocaleLowerCase();
+
+      filteredStores = filteredStores.filter((store) => {
+        const nameMatch = store.name.toLocaleLowerCase().includes(searchTerm);
+        const descriptionMatch = store.description
+          ? store.description.toLocaleLowerCase().includes(searchTerm)
+          : false;
+
+        return nameMatch || descriptionMatch;
+      });
     }
 
-     store.status = 'INATIVA'
+    filteredStores.sort((a, b) => {
+      return a.createdAt.getTime() - b.createdAt.getTime();
+    });
+
+    return filteredStores.slice(
+      (page - 1) * pageSize,
+      page * pageSize
+    )
   }
 
-  async activate(slug: string ): Promise<void> {
-     const store = this.items.find((item) => item.slug === slug && item.status === 'INATIVA')
+  async disable(slug: string): Promise<void> {
+    const store = this.items.find(
+      (item) => item.slug === slug && item.status === 'ATIVA',
+    );
 
-    if(!store){
-      return
+    if (!store) {
+      return;
     }
 
-     store.status = 'ATIVA'
+    store.status = 'INATIVA';
+  }
+
+  async activate(slug: string): Promise<void> {
+    const store = this.items.find(
+      (item) => item.slug === slug && item.status === 'INATIVA',
+    );
+
+    if (!store) {
+      return;
+    }
+
+    store.status = 'ATIVA';
   }
 
   async findByWhatsapp(whatsapp: string): Promise<Store | null> {
@@ -77,6 +109,7 @@ export class StoresInMemoryRepository implements StoresRepository {
       status: data.status ?? 'ATIVA',
       logo_image_url: data.logo_image_url || null,
       storage_public_id: data.storage_public_id || null,
+      createdAt: new Date()
     };
 
     this.items.push(store);
@@ -95,9 +128,9 @@ export class StoresInMemoryRepository implements StoresRepository {
   async saveImage(id: string, url: string, public_id: string): Promise<void> {
     const store = this.items.find((item) => item.id === id);
 
-    if(!store) return
+    if (!store) return;
 
-    store.logo_image_url = url
-    store.storage_public_id = public_id
+    store.logo_image_url = url;
+    store.storage_public_id = public_id;
   }
 }

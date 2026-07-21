@@ -4,12 +4,13 @@ import { SubcategoriesInMemoryRepository } from "../in-memory-repository/subcate
 
 export function makeSubCategory(
     inMemorySubCategoriesRepository: SubcategoriesInMemoryRepository,
-    categoryId: string
+    categoryId: string,
+    slug?: string 
 ){
     return inMemorySubCategoriesRepository.create({
         id: randomUUID(),
         name: faker.person.fullName(),
-        slug: 'slug-subcategory',
+        slug: slug ?? 'slug-subcategory',
         categoryId,
     })
 

@@ -5,8 +5,24 @@ import { SubcategoriesRepository } from '@/database/repositories/subcategories-r
 export class SubcategoriesInMemoryRepository implements SubcategoriesRepository {
   public items: SubCategory[] = [];
 
+  async findBySlug(slug: string, categoryId: string): Promise<SubCategory | null> {
+    const subcategory = this.items.find((item) => item.categoryId === categoryId && item.slug === slug)
+
+    if(!subcategory) return null
+
+    return subcategory
+  }
+
+  async findMany(categoryId?: string): Promise<SubCategory[]> {
+    if(categoryId){
+      return this.items.filter((item) => item.categoryId === categoryId)
+    }
+
+    return this.items
+  }
+
   async findById(id: string): Promise<SubCategory | null> {
-    const subcategory = await this.items.find((item) => item.id === id)
+    const subcategory = this.items.find((item) => item.id === id)
 
     if(!subcategory) return null
 
