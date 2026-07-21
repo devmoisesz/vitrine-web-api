@@ -56,6 +56,7 @@ export class RegisterProductService {
       tags: sanitizedTags,
       description: data.description,
       price: data.price,
+      sizes: data.sizes,
       stock: data.stock,
       status: 'INATIVO',
       storeId: store.id,

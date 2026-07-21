@@ -77,6 +77,7 @@ export class EditProductService {
       name: data.newNameProduct ?? product.name,
       description: data.newDescription ?? product.description,
       price: data.newPrice ?? product.price.toNumber(),
+      sizes: data.newSizes,
       slug,
       stock: data.newStock ?? product.stock,
       status: 'ATIVO',

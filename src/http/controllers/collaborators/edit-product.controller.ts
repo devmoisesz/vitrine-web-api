@@ -35,6 +35,7 @@ export class EditProductController {
       newTags: body.newTags,
       newDescription: body.newDescription,
       newPrice: body.newPrice,
+      newSizes: body.newSizes,
       newStock: body.newStock,
       newCategory: body.newCategory,
       newSubcategory: body.newSubcategory,

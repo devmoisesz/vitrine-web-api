@@ -112,6 +112,7 @@ describe('Register Product (E2E)', () => {
         tags: ['white', 'product'],
         description: 'Product White',
         price: 69.79,
+        sizes: ["40", "42", "44"],
         stock: 39,
         name_category: category.name,
         name_subcategory: subcategory.name
