@@ -59,6 +59,7 @@ export class EditStoreDataService {
       status: store.status,
       logo_image_url: store.logo_image_url,
       storage_public_id: store.storage_public_id,
+      createdAt: store.createdAt
     });
 
     return {

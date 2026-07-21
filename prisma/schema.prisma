@@ -70,6 +70,7 @@ model Store {
   status            StatusStore @default(ATIVA)
   logo_image_url    String?
   storage_public_id String?
+  createdAt    DateTime @default(now()) @map("created_at")
 
   collaborators Collaborator[]
   address Address?
