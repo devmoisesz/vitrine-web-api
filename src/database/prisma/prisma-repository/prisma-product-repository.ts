@@ -12,89 +12,12 @@ import { Decimal } from '@prisma/client/runtime/client';
 export class PrismaProductsRepository implements ProductsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findManyByCategory(
-    categoryId: string,
+  async findMany(
     page: number,
+    name?: string,
+    categoryId?: string,
+    subcategoryId?: string,
   ): Promise<Product[]> {
-    const pageSize = 40;
-
-    return this.prisma.product.findMany({
-      where: {
-        categoryId,
-        status: 'ATIVO',
-        store: {
-          status: 'ATIVA',
-        },
-      },
-      include: {
-        store: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            logo_image_url: true,
-          },
-        },
-        products_images: {
-          where: {
-            is_main: true,
-          },
-          select: {
-            image_url: true,
-          },
-        },
-      },
-      take: pageSize,
-      skip: (page - 1) * pageSize,
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-  }
-
-  async findManyBySubcategory(
-    categoryId: string,
-    subcategoryId: string,
-    page: number,
-  ): Promise<Product[]> {
-    const pageSize = 40;
-
-    return this.prisma.product.findMany({
-      where: {
-        status: 'ATIVO',
-        categoryId,
-        subcategoryId,
-        store: {
-          status: 'ATIVA',
-        },
-      },
-      include: {
-        store: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            logo_image_url: true,
-          },
-        },
-        products_images: {
-          where: {
-            is_main: true,
-          },
-          select: {
-            image_url: true,
-          },
-        },
-      },
-      take: pageSize,
-      skip: (page - 1) * pageSize,
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-  }
-
-  async findMany(page: number, name?: string): Promise<Product[]> {
     const pageSize = 40;
 
     return await this.prisma.product.findMany({
@@ -103,6 +26,8 @@ export class PrismaProductsRepository implements ProductsRepository {
         store: {
           status: 'ATIVA',
         },
+        categoryId: categoryId ? categoryId : undefined,
+        subcategoryId: subcategoryId ? subcategoryId : undefined,
         OR: name
           ? [
               { name: { contains: name, mode: 'insensitive' } },
