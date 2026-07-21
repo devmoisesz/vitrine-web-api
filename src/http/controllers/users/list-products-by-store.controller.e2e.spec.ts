@@ -175,8 +175,6 @@ describe('List Products By Store (E2E)', () => {
       `/store/${store2.slug}/products?categoryId=${categoryPants.id}&subcategoryId=${subcategoryMasculine.id}&page=1`,
     );
 
-    console.log(response.body)
-
     expect(response.statusCode).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
     expect(response.body).toHaveLength(2);
