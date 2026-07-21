@@ -74,6 +74,8 @@ import { ListProductsController } from './controllers/users/list-products.contro
 import { ListProductsService } from '@/use-cases/services/products/list-products.service';
 import { ListStoresService } from '@/use-cases/services/stores/list-stores.service';
 import { ListStoresController } from './controllers/users/list-stores.controller';
+import { ListProductsByStoreService } from '@/use-cases/services/products/list-products-by-store.service';
+import { ListProductsByStoreController } from './controllers/users/list-products-by-store.controller';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -113,7 +115,8 @@ import { ListStoresController } from './controllers/users/list-stores.controller
     ListProductsController,
     ListCategoriesController,
     ListSubcategoriesController,
-    ListStoresController
+    ListStoresController,
+    ListProductsByStoreController
   ],
   providers: [
     CreateAccountService,
@@ -152,7 +155,8 @@ import { ListStoresController } from './controllers/users/list-stores.controller
     ListProductsService,
     ListCategoriesService,
     ListSubcategoriesService,
-    ListStoresService
+    ListStoresService,
+    ListProductsByStoreService
   ],
 })
 export class HttpModule {}

@@ -12,6 +12,57 @@ import { Decimal } from '@prisma/client/runtime/client';
 export class PrismaProductsRepository implements ProductsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findManyByStore(
+    storeId: string,
+    page: number,
+    name?: string,
+    categoryId?: string,
+    subcategoryId?: string,
+  ): Promise<Product[]> {
+    const pageSize = 40;
+
+    return await this.prisma.product.findMany({
+      where: {
+        status: 'ATIVO',
+        storeId,
+        store: {
+          status: 'ATIVA',
+        },
+        categoryId: categoryId ? categoryId : undefined,
+        subcategoryId: subcategoryId ? subcategoryId : undefined,
+        OR: name
+          ? [
+              { name: { contains: name, mode: 'insensitive' } },
+              { description: { contains: name, mode: 'insensitive' } },
+            ]
+          : undefined,
+      },
+      include: {
+        store: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            logo_image_url: true,
+          },
+        },
+        products_images: {
+          where: {
+            is_main: true,
+          },
+          select: {
+            image_url: true,
+          },
+        },
+      },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
   async findMany(
     page: number,
     name?: string,

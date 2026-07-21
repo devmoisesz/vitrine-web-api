@@ -27,10 +27,10 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 - [x] Deve ser possível pesquisar produtos por nome de forma global na plataforma
 - [x] Deve ser possível listar todos produtos mais recentes  
-- [x] Deve ser possível filtrar produtos de forma global por categoria principal
-- [x] Deve ser possível filtrar produtos de forma global por subcategoria
+- [x] Deve ser possível filtrar produtos de forma global
 - [x] Deve ser possível combinar filtros de categoria, subcategoria e busca por nome
-- [ ] Deve ser possível buscar lojas pelo nome
+- [x] Deve ser possível buscar lojas pelo nome
+- [x] Deve ser possível filtrar produtos de uma loja só
 - [x] Deve ser possível visualizar a página de uma loja (vitrine exclusiva) com seus dados
 - [x] Deve ser possível visualizar os detalhes de um produto
 - [x] Deve ser possível cadastrar vários endereços 
@@ -106,7 +106,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Um produto deve obrigatoriamente possuir categoria e subcategoria
 - [x] Um produto só pode ser publicado com nome, preço, categoria, subcategoria, estoque e pelo menos uma imagem
 - [x] Um produto deve possuir pelo menos uma imagem e no máximo 5 imagens.
-- [ ] Na listagem geral e resultados de busca, os cards dos produtos devem exibir claramente a identificação da loja à qual pertencem
+- [x] Na listagem geral e resultados de busca, os cards dos produtos devem exibir claramente a identificação da loja à qual pertencem
 
 ## Categorias
 

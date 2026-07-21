@@ -33,8 +33,20 @@ export abstract class ProductsRepository {
   abstract create(data: CreateProductInput): Promise<Product>;
   abstract save(product: UpdateProductInput): Promise<Product>;
   abstract activateProduct(id: string, status: 'ATIVO'): Promise<void>;
-  abstract disableProduct(id: string, status: 'INATIVO'): Promise<void>
+  abstract disableProduct(id: string, status: 'INATIVO'): Promise<void>;
   abstract findById(id: string): Promise<Product | null>;
-  abstract findMany(page: number, name?: string, categoryId?: string, subcategoryId?: string): Promise<Product[]>;
+  abstract findMany(
+    page: number,
+    name?: string,
+    categoryId?: string,
+    subcategoryId?: string,
+  ): Promise<Product[]>;
+  abstract findManyByStore(
+    storeId: string,
+    page: number,
+    name?: string,
+    categoryId?: string,
+    subcategoryId?: string,
+  ): Promise<Product[]>;
   abstract delete(id: string): Promise<void>;
 }

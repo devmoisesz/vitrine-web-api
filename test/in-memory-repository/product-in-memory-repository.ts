@@ -107,6 +107,90 @@ export class ProductsInMemoryRepository implements ProductsRepository {
     });
   }
 
+  async findManyByStore(
+    storeId: string,
+    page: number,
+    name?: string,
+    categoryId?: string,
+    subcategoryId?: string,
+  ): Promise<Product[]> {
+    const pageSize = 40;
+
+    let filteredProducts = this.items.filter((product) => {
+      if(product.storeId !== storeId){
+        return false
+      }
+
+      if (product.status !== 'ATIVO') {
+        return false;
+      }
+
+      if (categoryId && product.categoryId !== categoryId) {
+        return false;
+      }
+
+      if (subcategoryId && product.subcategoryId !== subcategoryId) {
+        return false;
+      }
+
+      const store = this.storesRepository?.items.find(
+        (s) => s.id === product.storeId,
+      );
+
+      if (!store || store.status !== 'ATIVA') {
+        return false;
+      }
+
+      return true;
+    });
+
+    if (name) {
+      const searchTerm = name.toLowerCase();
+
+      filteredProducts = filteredProducts.filter((product) => {
+        const nameMatch = product.name.toLowerCase().includes(searchTerm);
+        const descriptionMatch = product.description
+          ? product.description.toLowerCase().includes(searchTerm)
+          : false;
+
+        return nameMatch || descriptionMatch;
+      });
+    }
+
+    filteredProducts.sort((a, b) => {
+      return b.createdAt.getTime() - a.createdAt.getTime();
+    });
+
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+    return paginatedProducts.map((product) => {
+      const store = this.storesRepository?.items.find(
+        (s) => s.id === product.storeId,
+      );
+
+      const mainImages = (this.productImagesRepository?.items ?? [])
+        .filter((img) => img.productId === product.id && img.is_main === true)
+        .map((img) => ({
+          image_url: img.image_url,
+        }));
+
+      return {
+        ...product,
+        store: store
+          ? {
+              id: store.id,
+              name: store.name,
+              slug: store.slug,
+              logo_image_url: store.logo_image_url,
+            }
+          : null,
+        products_images: mainImages,
+      };
+    });
+  }
+
   async activateProduct(productId: string, status: 'ATIVO'): Promise<void> {
     const product = this.items.find((item) => item.id === productId);
 
