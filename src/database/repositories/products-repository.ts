@@ -5,6 +5,7 @@ export interface CreateProductInput {
   slug: string;
   description: string;
   price: number;
+  sizes: string[];
   stock: number;
   status?: 'ATIVO' | 'INATIVO';
   storeId: string;
@@ -19,6 +20,7 @@ export interface UpdateProductInput {
   slug?: string;
   description?: string;
   price?: number;
+  sizes?: string[];
   stock?: number;
   status?: 'ATIVO' | 'INATIVO';
   storeId?: string;

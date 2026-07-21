@@ -107,6 +107,7 @@ model Product {
   slug         String 
   description  String
   price        Decimal
+  sizes        String[] @default([])
   stock        Int
   status       StatusProduct @default(ATIVO)
   storeId      String @map("store_id")

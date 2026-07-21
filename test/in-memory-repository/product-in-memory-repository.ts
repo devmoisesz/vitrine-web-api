@@ -289,6 +289,7 @@ export class ProductsInMemoryRepository implements ProductsRepository {
       slug: data.slug,
       description: data.description,
       price: new Decimal(data.price),
+      sizes: data.sizes,
       stock: data.stock,
       status: data.status ?? 'INATIVO',
       storeId: data.storeId,

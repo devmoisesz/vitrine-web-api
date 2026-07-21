@@ -13,6 +13,7 @@ export function makeProducts(
         slug: 'slug',
         description: faker.commerce.productDescription(),
         price: 179.90,
+        sizes: ["P", "M"],
         stock: 177,
         tags: ['test'],
         categoryId,
