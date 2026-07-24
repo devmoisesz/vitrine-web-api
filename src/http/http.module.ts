@@ -88,6 +88,8 @@ import { DeleteItemCartController } from './controllers/users/delete-item-cart.c
 import { DeleteItemCartService } from '@/use-cases/services/cart/delete-item-cart.service';
 import { RegisterOrderService } from '@/use-cases/services/order/register-order.service';
 import { RegisterOrderController } from './controllers/users/register-order.controller';
+import { GetProductController } from './controllers/users/get-product.controller';
+import { GetProductService } from '@/use-cases/services/products/get-product.service';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -125,6 +127,7 @@ import { RegisterOrderController } from './controllers/users/register-order.cont
     DeleteProductController,
     GetStoreProfileController,
     ListProductsController,
+    GetProductController,
     ListCategoriesController,
     ListSubcategoriesController,
     ListStoresController,
@@ -171,6 +174,7 @@ import { RegisterOrderController } from './controllers/users/register-order.cont
     DeleteProductService,
     GetStoreProfileService,
     ListProductsService,
+    GetProductService,
     ListCategoriesService,
     ListSubcategoriesService,
     ListStoresService,

@@ -292,6 +292,10 @@ Example response:
 - PUT /cart/:cartItemId — Atualizar item registrado no carrinho (Auth: `JwtAuthGuard`). Body: quantity, size.
 - DELETE /cart/:cartItemId — Remove item registrado no carrinho (Auth: `JwtAuthGuard`). 
 
+## Pedidos
+
+- POST /cart/:cartId/order - Registrar o pedido do usuario após ele solicitar um pedido (Auth: `JwtAuthGuard`)
+
 ## Logo da loja
 
 - POST /stores/:slug/logo — Upload de logo (Auth: `JwtAuthGuard` + `StoreAccessGuard`, roles: `PROPRIETARIO`). FormFile `file`.
