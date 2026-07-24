@@ -4,4 +4,5 @@ export abstract class CartsRepository {
     abstract create(data: Prisma.CartUncheckedCreateInput): Promise<Cart>
     abstract findByUserIdAndStoreId(userId: string, storeId: string): Promise<Cart | null>
     abstract findMany(userId: string, page: number): Promise<Cart[]>
+    abstract findById(id: string): Promise<Cart | null>
 }

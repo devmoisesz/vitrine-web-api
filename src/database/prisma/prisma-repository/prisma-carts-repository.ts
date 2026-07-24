@@ -7,6 +7,20 @@ import { CartsRepository } from '@/database/repositories/carts-repository';
 export class PrismaCartsRepository implements CartsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findById(id: string): Promise<Cart | null> {
+    const cart = await this.prisma.cart.findUnique({
+      where: {
+        id
+      }
+    })
+
+    if(!cart) {
+      return null
+    }
+
+    return cart
+  }
+
   async findMany(userId: string, page: number): Promise<Cart[]> {
     const pageSize = 5;
 

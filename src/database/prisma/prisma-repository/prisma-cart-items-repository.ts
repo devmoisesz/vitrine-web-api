@@ -39,4 +39,38 @@ export class PrismaCartItemsRepository implements CartItemsRepository {
       },
     });
   }
+
+  async findAllItemsByCart(cartId: string): Promise<CartItems[]> {
+    return await this.prisma.cartItems.findMany({
+      where: {
+        cartId
+      },
+      include: {
+        product: {
+          select: {
+            name: true,
+            price: true,
+            products_images: {
+              select: {
+                image_url: true
+              }
+            },
+            category: {
+              select: {
+                name: true
+              }
+            },
+            subcategory: {
+              select: {
+                name: true
+              }
+            },
+          }
+        }
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+  }
 }
