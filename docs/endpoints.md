@@ -235,6 +235,63 @@ Example response:
 ]
 ```
 
+GET /cart/:cartId/products — Listar produtos de um carrinho (Auth: JwtAuthGuard).
+Example response:
+
+```json
+[
+  {
+    "id": "c5dd0ce8-1415-4fe5-a8c1-2a924a4819e7",
+    "cartId": "18bf7a30-5d67-48b7-b287-21fb4995016c",
+    "productId": "570787f0-a1ec-4dc6-b12a-1f27b62b2152",
+    "quantity": 5,
+    "selectedSize": "M",
+    "createdAt": "2026-07-24T19:36:06.570Z",
+    "product": {
+      "name": "Pants Black",
+      "price": "69.79",
+      "products_images": [
+        {
+          "image_url": "https://suburban-custom.info/"
+        }
+      ],
+      "category": {
+        "name": "Pants"
+      },
+      "subcategory": {
+        "name": "Masculine"
+      }
+    }
+  },
+  {
+    "id": "052c188e-d52e-41b1-89f2-1966354e6a50",
+    "cartId": "18bf7a30-5d67-48b7-b287-21fb4995016c",
+    "productId": "c48cca7a-b078-47ad-98a5-e12047a24fb5",
+    "quantity": 5,
+    "selectedSize": "P",
+    "createdAt": "2026-07-24T19:36:06.535Z",
+    "product": {
+      "name": "Blouse White",
+      "price": "69.79",
+      "products_images": [
+        {
+          "image_url": "https://gloomy-squid.info/"
+        }
+      ],
+      "category": {
+        "name": "Pants"
+      },
+      "subcategory": {
+        "name": "Masculine"
+      }
+    }
+  }
+]
+```
+
+- PUT /cart/:cartItemId — Atualizar item registrado no carrinho (Auth: `JwtAuthGuard`). Body: quantity, size.
+- DELETE /cart/:cartItemId — Remove item registrado no carrinho (Auth: `JwtAuthGuard`). 
+
 ## Logo da loja
 
 - POST /stores/:slug/logo — Upload de logo (Auth: `JwtAuthGuard` + `StoreAccessGuard`, roles: `PROPRIETARIO`). FormFile `file`.
