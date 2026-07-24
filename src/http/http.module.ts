@@ -78,6 +78,8 @@ import { ListProductsByStoreService } from '@/use-cases/services/products/list-p
 import { ListProductsByStoreController } from './controllers/users/list-products-by-store.controller';
 import { AddProductToCartController } from './controllers/users/add-product-to-cart.controller';
 import { AddProductToCartService } from '@/use-cases/services/cart/add-product-to-cart.service';
+import { ListCartsService } from '@/use-cases/services/cart/list-carts.service';
+import { ListCartsController } from './controllers/users/list-carts.controller';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -119,7 +121,8 @@ import { AddProductToCartService } from '@/use-cases/services/cart/add-product-t
     ListSubcategoriesController,
     ListStoresController,
     ListProductsByStoreController,
-    AddProductToCartController
+    AddProductToCartController,
+    ListCartsController
   ],
   providers: [
     CreateAccountService,
@@ -160,7 +163,8 @@ import { AddProductToCartService } from '@/use-cases/services/cart/add-product-t
     ListSubcategoriesService,
     ListStoresService,
     ListProductsByStoreService,
-    AddProductToCartService
+    AddProductToCartService,
+    ListCartsService
   ],
 })
 export class HttpModule {}

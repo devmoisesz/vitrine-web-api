@@ -154,6 +154,9 @@ Este documento lista os endpoints públicos e protegidos da API, método HTTP, r
 - GET /store/:slug/products — Listar produtos por loja (Public). Query: ?name=&?categoryId=&?subcategoryId=&?page=
   Example response: same shape as `/products` (array of `Product`).
 
+- GET /store/:slug/products — Listar produtos por loja (Public). Query: ?name=&?categoryId=&?subcategoryId=&?page=
+  Example response: same shape as `/products` (array of `Product`).
+
 ## Produtos (colaborador/loja)
 
 - POST /stores/:slug/products — Criar produto (Auth: `JwtAuthGuard` + `StoreAccessGuard`, roles: `FUNCIONARIO`|`PROPRIETARIO`). Body: product data.
@@ -181,6 +184,56 @@ Este documento lista os endpoints públicos e protegidos da API, método HTTP, r
   ```
 - PATCH /stores/:slug/productimages/:productId/:imageId — Substituir imagem (Auth: `JwtAuthGuard` + `StoreAccessGuard`, roles: `FUNCIONARIO`|`PROPRIETARIO`). FormFile `file`.
 - DELETE /stores/:slug/productimages/:productId/:imageId — Deletar imagem (Auth: `JwtAuthGuard` + `StoreAccessGuard`, roles: `FUNCIONARIO`|`PROPRIETARIO`). Query: ?newMainId=
+
+## Carrinho
+
+- POST /products/:productId/cart — Adicionar produto no carrinho (Auth: `JwtAuthGuard`). Body: quantity, size(opcional)
+
+GET /carts — Listar carrinhos do usuário (Auth: JwtAuthGuard). Query: ?page=
+Example response:
+
+```json
+[
+  {
+    "id": "c176cff6-94c6-4220-a77d-6dcc8da51f61",
+    "userId": "782e0b23-3f01-4c73-9655-985659e4a1fe",
+    "storeId": "ede6fd30-56c4-4e1b-ba32-7cb8dcb55230",
+    "createdAt": "2026-07-24T13:18:25.144Z",
+    "updatedAt": "2026-07-24T13:18:25.144Z",
+    "store": {
+      "id": "ede6fd30-56c4-4e1b-ba32-7cb8dcb55230",
+      "name": "store 014",
+      "logo_image_url": "[https://easy-dividend.net](https://easy-dividend.net)",
+      "whatsapp": "72969860425"
+    },
+    "cart_items": [
+      {
+        "id": "a4158e3d-0c55-4e5d-8cea-8ba75566f0f3",
+        "cartId": "c176cff6-94c6-4220-a77d-6dcc8da51f61",
+        "productId": "f4f01cb8-c019-4835-9297-03e6d79af7dc",
+        "quantity": 5,
+        "selectedSize": "M",
+        "product": {
+          "id": "f4f01cb8-c019-4835-9297-03e6d79af7dc",
+          "name": "Pants Black",
+          "price": "69.79",
+          "stock": 39,
+          "products_images": [
+            {
+              "id": "d9b58241-1315-4010-ae0d-7d54236303fa",
+              "productId": "f4f01cb8-c019-4835-9297-03e6d79af7dc",
+              "image_url": "[https://immediate-completion.biz/](https://immediate-completion.biz/)",
+              "storage_public_id": "92b24e62-2451-47b4-8041-5c80b068858b",
+              "is_main": true,
+              "createdAt": "2026-07-24T13:18:25.100Z"
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
+```
 
 ## Logo da loja
 

@@ -39,7 +39,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível adicionar produtos ao carrinho de uma loja
 - [ ] Deve ser possível alterar a quantidade e o tamanho selecionado de um item no carrinho
 - [ ] Deve ser possível remover produtos do carrinho
-- [ ] Deve ser possível visualizar todos os carrinhos de diferentes lojas
+- [x] Deve ser possível visualizar todos os carrinhos de diferentes lojas
 - [ ] Deve ser possível solicitar a compra de um carrinho específico via WhatsApp, gerando mensagem automática com produtos, tamanhos, quantidades e dados da loja
 - [ ] Deve ser possível visualizar o histórico de solicitações enviadas via WhatsApp
 
@@ -53,7 +53,6 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível desativar um produto da própria loja
 - [x] Deve ser possível ativar um produto desativado da própria loja
 - [x] Deve ser possível remover um produto da própria loja
-- [ ] Deve ser possível visualizar pedidos solicitados via WhatsApp para a própria loja
 
 ## Dono da Loja (permissões do Funcionário, mais as abaixo)
 
@@ -95,7 +94,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] O cliente não pode adicionar ao carrinho um produto com estoque insuficiente ou zerado
 - [x] O cliente não pode adicionar ao carrinho um produto desativado ou pertencente a uma loja inativa
 - [x] O carrinho deve ser deletado/encerrado automaticamente quando todos os seus itens forem removidos
-- [ ] A listagem de carrinhos do cliente deve ser ordenada pelos carrinhos atualizados/modificados mais recentemente
+- [x] A listagem de carrinhos do cliente deve ser ordenada pelos carrinhos atualizados/modificados mais recentemente
 
 ## Pedido via WhatsApp
 
