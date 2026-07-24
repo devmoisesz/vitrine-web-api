@@ -86,6 +86,8 @@ import { EditSelectedProductController } from './controllers/users/edit-selected
 import { EditSelectedProductService } from '@/use-cases/services/cart/edit-selected-product.service';
 import { DeleteItemCartController } from './controllers/users/delete-item-cart.controller';
 import { DeleteItemCartService } from '@/use-cases/services/cart/delete-item-cart.service';
+import { RegisterOrderService } from '@/use-cases/services/order/register-order.service';
+import { RegisterOrderController } from './controllers/users/register-order.controller';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -131,7 +133,8 @@ import { DeleteItemCartService } from '@/use-cases/services/cart/delete-item-car
     ListCartsController,
     ListCartProductsController,
     EditSelectedProductController,
-    DeleteItemCartController
+    DeleteItemCartController,
+    RegisterOrderController
   ],
   providers: [
     CreateAccountService,
@@ -176,7 +179,8 @@ import { DeleteItemCartService } from '@/use-cases/services/cart/delete-item-car
     ListCartsService,
     ListCartProductsService,
     EditSelectedProductService,
-    DeleteItemCartService
+    DeleteItemCartService,
+    RegisterOrderService
   ],
 })
 export class HttpModule {}

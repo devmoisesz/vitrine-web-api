@@ -20,6 +20,8 @@ import { CartsRepository } from "./repositories/carts-repository";
 import { PrismaCartsRepository } from "./prisma/prisma-repository/prisma-carts-repository";
 import { CartItemsRepository } from "./repositories/cart-items-repository";
 import { PrismaCartItemsRepository } from "./prisma/prisma-repository/prisma-cart-items-repository";
+import { OrdersRepository } from "./repositories/orders-repository";
+import { PrismaOrdersRepository } from "./prisma/prisma-repository/prisma-order-repository";
 
 @Module({
     imports: [],
@@ -65,6 +67,10 @@ import { PrismaCartItemsRepository } from "./prisma/prisma-repository/prisma-car
             provide: CartItemsRepository,
             useClass: PrismaCartItemsRepository
         },
+        {
+            provide: OrdersRepository,
+            useClass: PrismaOrdersRepository
+        },
     ],
     exports: [
         PrismaService,
@@ -77,7 +83,8 @@ import { PrismaCartItemsRepository } from "./prisma/prisma-repository/prisma-car
         ProductsRepository,
         ProductsImagesRepository,
         CartsRepository,
-        CartItemsRepository
+        CartItemsRepository,
+        OrdersRepository
     ]
 })
 export class DatabaseModule {}
