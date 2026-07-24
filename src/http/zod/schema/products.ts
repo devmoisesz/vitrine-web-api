@@ -78,6 +78,10 @@ export const registerProductBodySchema = z.object({
     .min(1, 'Informe uma subcategoria.'),
 });
 
+export type RegisterProductBodySchema = z.infer<
+  typeof registerProductBodySchema
+>;
+
 export const editProductBodySchema = z.object({
   newNameProduct: z
     .string()
@@ -119,7 +123,21 @@ export const editProductBodySchema = z.object({
     .optional(),
 });
 
-export type RegisterProductBodySchema = z.infer<
-  typeof registerProductBodySchema
->;
 export type EditProductBodySchema = z.infer<typeof editProductBodySchema>;
+
+export const addProductToCart = z.object({
+  quantity: z
+    .number({ message: 'Informe a quantidade que você deseja' })
+    .int('A quantidade deve ser um número inteiro.')
+    .positive('A quantidade deve ser maior que zero.')
+    .default(1),
+
+  size: z
+    .enum(ALLOWED_SIZES, {
+      message:
+        'Tamanho inválido. Informe tamanhos válidos (ex: P, M, G, 38, 40)',
+    })
+    .optional(),
+});
+
+export type AddProductToCart = z.infer<typeof addProductToCart>;
