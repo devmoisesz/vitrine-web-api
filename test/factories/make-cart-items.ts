@@ -7,7 +7,7 @@ export function makeCartItems(
     quantity: number,
     size?: string
 ){
-    cartItemsInMemoryRepository.create({
+    return cartItemsInMemoryRepository.create({
         cartId,
         productId,
         quantity,

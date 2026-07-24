@@ -37,7 +37,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível editar seus próprios endereços
 - [x] Deve ser possível visualizar seus próprios endereços
 - [x] Deve ser possível adicionar produtos ao carrinho de uma loja
-- [ ] Deve ser possível alterar a quantidade e o tamanho selecionado de um item no carrinho
+- [x] Deve ser possível alterar a quantidade e o tamanho selecionado de um item no carrinho
 - [ ] Deve ser possível remover produtos do carrinho
 - [x] Deve ser possível visualizar todos os carrinhos de diferentes lojas
 - [ ] Deve ser possível solicitar a compra de um carrinho específico via WhatsApp, gerando mensagem automática com produtos, tamanhos, quantidades e dados da loja

@@ -1,14 +1,55 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CartItems, Prisma } from '@prisma/client';
-import { CartItemsRepository } from '@/database/repositories/cart-items-repository';
+import {
+  CartItemsRepository,
+  SaveCartItemInput,
+} from '@/database/repositories/cart-items-repository';
 
 @Injectable()
 export class PrismaCartItemsRepository implements CartItemsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: Prisma.CartItemsUncheckedCreateInput): Promise<void> {
-    await this.prisma.cartItems.create({
+  async delete(id: string): Promise<void> {
+    await this.prisma.cartItems.delete({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async findByCartProductAndSize(
+    cartId: string,
+    productId: string,
+    selectedSize?: string,
+  ): Promise<CartItems | null> {
+    const cartItems = await this.prisma.cartItems.findFirst({
+      where: {
+        cartId,
+        productId,
+        selectedSize,
+      },
+    });
+
+    if (!cartItems) return null;
+
+    return cartItems;
+  }
+
+  async findById(id: string): Promise<CartItems | null> {
+    const cartItems = await this.prisma.cartItems.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!cartItems) return null;
+
+    return cartItems;
+  }
+
+  async create(data: Prisma.CartItemsUncheckedCreateInput): Promise<CartItems> {
+    return await this.prisma.cartItems.create({
       data: {
         cartId: data.cartId,
         productId: data.productId,
@@ -18,18 +59,24 @@ export class PrismaCartItemsRepository implements CartItemsRepository {
     });
   }
 
-  async save(data: Prisma.CartItemsUncheckedCreateInput): Promise<void> {
-    await this.prisma.cartItems.update({
-      where: {
-        id: data.id,
-      },
-      data: {
-        cartId: data.cartId,
-        productId: data.productId,
-        quantity: data.quantity,
-        selectedSize: data.selectedSize,
-      },
-    });
+  async save(data: SaveCartItemInput): Promise<void> {
+    if ('id' in data && data.id) {
+      await this.prisma.cartItems.update({
+        where: {
+          id: data.id,
+        },
+        data: {
+          cartId: data.cartId,
+          productId: data.productId,
+          quantity: data.quantity,
+          selectedSize: data.selectedSize,
+        },
+      });
+    } else {
+      await this.prisma.cartItems.create({
+        data: data as Prisma.CartItemsUncheckedCreateInput,
+      });
+    }
   }
 
   async findByCartId(cartId: string): Promise<CartItems[]> {
@@ -43,7 +90,7 @@ export class PrismaCartItemsRepository implements CartItemsRepository {
   async findAllItemsByCart(cartId: string): Promise<CartItems[]> {
     return await this.prisma.cartItems.findMany({
       where: {
-        cartId
+        cartId,
       },
       include: {
         product: {
@@ -52,25 +99,25 @@ export class PrismaCartItemsRepository implements CartItemsRepository {
             price: true,
             products_images: {
               select: {
-                image_url: true
-              }
+                image_url: true,
+              },
             },
             category: {
               select: {
-                name: true
-              }
+                name: true,
+              },
             },
             subcategory: {
               select: {
-                name: true
-              }
+                name: true,
+              },
             },
-          }
-        }
+          },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
-    })
+        createdAt: 'desc',
+      },
+    });
   }
 }

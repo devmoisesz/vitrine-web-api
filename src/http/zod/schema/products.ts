@@ -141,3 +141,10 @@ export const addProductToCart = z.object({
 });
 
 export type AddProductToCart = z.infer<typeof addProductToCart>;
+
+export const updateCartItemBodySchema = z.object({
+  quantity: z.number().int().positive().optional(),
+  size: z.string().optional(),
+});
+
+export type UpdateCartItemBodySchema = z.infer<typeof updateCartItemBodySchema>;

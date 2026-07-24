@@ -82,6 +82,8 @@ import { ListCartsService } from '@/use-cases/services/cart/list-carts.service';
 import { ListCartsController } from './controllers/users/list-carts.controller';
 import { ListCartProductsController } from './controllers/users/list-cart-products.controller';
 import { ListCartProductsService } from '@/use-cases/services/cart/list-cart-products.service';
+import { EditSelectedProductController } from './controllers/users/edit-selected-product.controller';
+import { EditSelectedProductService } from '@/use-cases/services/cart/edit-selected-product.service';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -125,7 +127,8 @@ import { ListCartProductsService } from '@/use-cases/services/cart/list-cart-pro
     ListProductsByStoreController,
     AddProductToCartController,
     ListCartsController,
-    ListCartProductsController
+    ListCartProductsController,
+    EditSelectedProductController,
   ],
   providers: [
     CreateAccountService,
@@ -168,7 +171,8 @@ import { ListCartProductsService } from '@/use-cases/services/cart/list-cart-pro
     ListProductsByStoreService,
     AddProductToCartService,
     ListCartsService,
-    ListCartProductsService
+    ListCartProductsService,
+    EditSelectedProductService,
   ],
 })
 export class HttpModule {}

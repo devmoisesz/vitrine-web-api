@@ -1,6 +1,9 @@
 import { CartItems, Prisma } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
-import { CartItemsRepository } from '@/database/repositories/cart-items-repository';
+import {
+  CartItemsRepository,
+  SaveCartItemInput,
+} from '@/database/repositories/cart-items-repository';
 import { ProductsInMemoryRepository } from './product-in-memory-repository';
 import { ProductsImagesInMemoryRepository } from './product-images-in-memory-repository';
 import { CategoriesInMemoryRepository } from './categories-in-memory-repository';
@@ -16,21 +19,57 @@ export class CartItemsInMemoryRepository implements CartItemsRepository {
     private subcategoriesRepository?: SubcategoriesInMemoryRepository,
   ) {}
 
-  async create(data: Prisma.CartItemsUncheckedCreateInput): Promise<void> {
+  async delete(id: string): Promise<void> {
+    const cartItems = this.items.findIndex((item) => item.id === id);
+
+    this.items.splice(cartItems, 1);
+  }
+
+  async findByCartProductAndSize(
+    cartId: string,
+    productId: string,
+    selectedSize?: string,
+  ): Promise<CartItems | null> {
+    const cartItems = await this.items.find(
+      (item) =>
+        item.cartId === cartId &&
+        item.productId === productId &&
+        item.selectedSize === selectedSize,
+    );
+
+    if (!cartItems) return null;
+
+    return cartItems;
+  }
+
+  async findById(id: string): Promise<CartItems | null> {
+    const cartItems = this.items.find((item) => item.id === id);
+    
+    if (!cartItems) return null;
+
+    return cartItems;
+  }
+
+  async create(data: Prisma.CartItemsUncheckedCreateInput): Promise<CartItems> {
     const cartItems = {
       id: randomUUID(),
       cartId: data.cartId,
       productId: data.productId,
       quantity: data.quantity,
       selectedSize: data.selectedSize ?? null,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     this.items.push(cartItems);
+    
+    return cartItems
   }
 
-  async save(data: Prisma.CartItemsUncheckedCreateInput): Promise<void> {
-    const itemIndex = this.items.findIndex((item) => item.id === data.id);
+  async save(data: SaveCartItemInput): Promise<void> {
+    const itemIndex =
+      'id' in data && data.id
+        ? this.items.findIndex((item) => item.id === data.id)
+        : -1;
 
     if (itemIndex >= 0) {
       this.items[itemIndex] = {
@@ -42,13 +81,15 @@ export class CartItemsInMemoryRepository implements CartItemsRepository {
             : this.items[itemIndex].selectedSize,
       };
     } else {
+      const createData = data as Prisma.CartItemsUncheckedCreateInput;
+
       const newItem: CartItems = {
-        id: data.id ?? randomUUID(),
-        cartId: data.cartId,
-        productId: data.productId,
-        quantity: data.quantity,
-        selectedSize: data.selectedSize ?? null,
-        createdAt: new Date()
+        id: createData.id ?? randomUUID(),
+        cartId: createData.cartId,
+        productId: createData.productId,
+        quantity: createData.quantity,
+        selectedSize: createData.selectedSize ?? null,
+        createdAt: new Date(),
       };
 
       this.items.push(newItem);
@@ -73,13 +114,19 @@ export class CartItemsInMemoryRepository implements CartItemsRepository {
         (p) => p.id === item.productId,
       );
 
-      const category = product?.categoryId && this.categoriesRepository
-        ? this.categoriesRepository.items.find((c) => c.id === product.categoryId)
-        : null;
+      const category =
+        product?.categoryId && this.categoriesRepository
+          ? this.categoriesRepository.items.find(
+              (c) => c.id === product.categoryId,
+            )
+          : null;
 
-      const subcategory = product?.subcategoryId && this.subcategoriesRepository
-        ? this.subcategoriesRepository.items.find((s) => s.id === product.subcategoryId)
-        : null;
+      const subcategory =
+        product?.subcategoryId && this.subcategoriesRepository
+          ? this.subcategoriesRepository.items.find(
+              (s) => s.id === product.subcategoryId,
+            )
+          : null;
 
       const productsImages = this.productImagesRepository
         ? this.productImagesRepository.items
