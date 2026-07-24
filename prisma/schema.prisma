@@ -26,11 +26,6 @@ enum StatusProduct {
   INATIVO
 }
 
-enum StatusCart {
-  ATIVO
-  CONCLUIDO
-}
-
 model User {
   id          String @id @default(uuid())
   name        String
@@ -107,7 +102,7 @@ model Product {
   name         String
   slug         String 
   description  String
-  price        Decimal
+  price        Decimal @db.Decimal(10, 2)
   sizes        String[] @default([])
   stock        Int
   status       StatusProduct @default(ATIVO)
@@ -122,6 +117,7 @@ model Product {
 
   products_images ProductImages[]
   cart_items CartItems[]
+  order_items     OrderItems[]
   tags  Tag[]
 
   @@unique([slug, storeId])
@@ -182,9 +178,8 @@ model Cart {
   id           String   @id @default(uuid())
   userId      String @map("user_id")
   storeId      String  @map("store_id")
-  status       StatusCart @default(ATIVO)
   createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @default(now()) @map("updated_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
@@ -200,11 +195,12 @@ model CartItems {
   cartId       String @map("cart_id")
   productId    String @map("product_id")
   quantity     Int
-  priceAtPurchase Decimal @map("price_at_purchase")
+  selectedSize String? @map("selected_size")
 
   cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
+  @@unique([cartId, productId, selectedSize])
   @@map("cart_items")
 }
 
@@ -212,7 +208,7 @@ model Order {
   id           String   @id @default(uuid())
   userId       String @map("user_id") 
   storeId      String @map("store_id")
-  total        Decimal
+  total        Decimal @db.Decimal(10, 2)
   createdAt    DateTime @default(now()) @map("created_at")
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -226,11 +222,15 @@ model Order {
 model OrderItems {
   id           String   @id @default(uuid())
   orderId      String @map("order_id")
+  productId    String? @map("product_id")
   productName  String
-  price        Decimal
+  productImageUrl String? @map("product_image_url")
+  price        Decimal @db.Decimal(10, 2)
   quantity     Int
+  selectedSize String? @map("selected_size")
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
 
   @@map("order_items")
 }
