@@ -136,20 +136,75 @@ Este documento lista os endpoints públicos e protegidos da API, método HTTP, r
   ```json
   [
     {
-      "id": "p1-...",
-      "name": "Camiseta Exemplo",
-      "slug": "camiseta-exemplo",
-      "description": "Camiseta 100% algodão",
-      "price": "49.90",
-      "sizes": ["P", "M", "G"],
-      "stock": 10,
+      "id": "124ccdb1-d81a-4d48-9d96-a4b0078b79aa",
+      "name": "Pants Black",
+      "slug": "pants-black",
+      "description": "Pants Black Masculine",
+      "price": "69.79",
+      "sizes": [],
+      "stock": 39,
       "status": "ATIVO",
-      "storeId": "a1b2c3d4-...",
-      "categoryId": "cat-...",
-      "subcategoryId": "sub-...",
-      "createdAt": "2026-02-01T12:00:00.000Z"
-    }
+      "storeId": "13705634-c648-4ad2-bdf3-ad42688bb38e",
+      "categoryId": "6b8a4105-57b7-4012-b001-3f7d2592dc88",
+      "subcategoryId": "cd2da19d-e89a-455a-ba30-5db035f54605",
+      "createdAt": "2026-07-24T23:52:26.282Z",
+      "store": {
+        "id": "13705634-c648-4ad2-bdf3-ad42688bb38e",
+        "name": "store 015",
+        "slug": "store-015",
+        "logo_url": "https://cdn.example.com/loja-exemplo/logo.png",
+      },
+      "products_images": [
+        {
+          "image_url": "https://cdn.example.com/vitrine-web/loja-exemplo/products/p1/img1.jpg"
+        }
+      ]
+    },
   ]
+  ```
+- GET /products/:productId — Lista apenas um produto, rota para interface para visualizar um produto (Public).
+  Example response (array of `Product`):
+  ```json
+  {
+    "product": {
+      "id": "2116c889-a801-4d9b-8c73-b0c06af95763",
+      "name": "Pants Black",
+      "slug": "pants-black",
+      "description": "Pants Black Masculine",
+      "price": "69.79",
+      "sizes": [],
+      "stock": 39,
+      "status": "ATIVO",
+      "storeId": "c4c711b4-7038-44de-9b5c-c7fb97c09324",
+      "categoryId": "043f8d76-2725-4926-9a2d-98622ce077ed",
+      "subcategoryId": "3ca8b53b-4fc9-4c56-af04-755b7b709445",
+      "createdAt": "2026-07-24T23:57:40.960Z",
+      "store": {
+        "id": "c4c711b4-7038-44de-9b5c-c7fb97c09324",
+        "name": "store 013",
+        "slug": "store-013",
+        "logo_image_url": null
+      }
+    },
+    "images": [
+      {
+        "id": "2cb69670-4b05-48d5-8b02-edbfc6df56f1",
+        "productId": "2116c889-a801-4d9b-8c73-b0c06af95763",
+        "image_url": "https://cdn.example.com/vitrine-web/loja-exemplo/products/p1/img1.jpg",
+        "storage_public_id": "1868c3d2-4f9d-4db6-b40e-507a7424a233",
+        "is_main": true,
+        "createdAt": "2026-07-24T23:57:40.990Z"
+      },
+      {
+        "id": "78a7185e-4ba7-4dec-b270-716687386b94",
+        "productId": "2116c889-a801-4d9b-8c73-b0c06af95763",
+        "image_url": "https://cdn.example.com/vitrine-web/loja-exemplo/products/p1/img1.jpg",
+        "storage_public_id": "4217db5b-da01-44af-ab00-c98925ca7d93",
+        "is_main": false,
+        "createdAt": "2026-07-24T23:57:41.003Z"
+      }
+    ]
+  }
   ```
 - GET /store/:slug/products — Listar produtos por loja (Public). Query: ?name=&?categoryId=&?subcategoryId=&?page=
   Example response: same shape as `/products` (array of `Product`).
