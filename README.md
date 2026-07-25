@@ -87,26 +87,6 @@ src/
 
 ---
 
-## 💾 Modelo de Dados
-
-### Estrutura Relacional
-
-```
-Users ─┬─ Collaborators ─┐
-       ├─ Addresses      │
-       ├─ Carts ─────────┼─ Stores ─┬─ Products
-       └─ Orders         │          └─ Address
-                         └─────────────────────
-```
-
-### Constraints & Índices
-
-- `Cart(userId, storeId)` — unique (um carrinho por loja)
-- `Product(slug, storeId)` — unique (slug por loja)
-- `Product(storeId, subcategoryId)` — index (busca otimizada)
-
----
-
 ## 🛣️ API: 47 Endpoints
 
 ### Catálogo (Público)
@@ -225,7 +205,6 @@ Users ─┬─ Collaborators ─┐
 
 - [`docs/requirements.md`](./docs/requirements.md) — Requisitos funcionais e não-funcionais
 - [`docs/endpoints.md`](./docs/endpoints.md) — Especificação completa de endpoints
-- [`docs/authentication.md`](./docs/authentication.md) — Fluxo JWT e segurança
 
 ---
 
