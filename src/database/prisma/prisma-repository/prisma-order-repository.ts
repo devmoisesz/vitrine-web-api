@@ -67,6 +67,18 @@ export class PrismaOrdersRepository implements OrdersRepository {
     });
   }
 
+  async findManyByStoreId(storeId: string, page: number): Promise<Order[]> {
+    const pageSize = 10;
+
+    return await this.prisma.order.findMany({
+      where: {
+        storeId,
+      },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+    });
+  }
+
   async create(data: CreateOrder): Promise<Order> {
     return await this.prisma.order.create({
       data: {

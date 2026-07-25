@@ -33,6 +33,14 @@ export class OrdersInMemoryRepository implements OrdersRepository {
       .slice((page - 1) * pageSize, page * pageSize);
   }
 
+  async findManyByStoreId(storeId: string, page: number): Promise<Order[]> {
+    const pageSize = 10;
+
+    return this.items
+      .filter((order) => order.storeId === storeId)
+      .slice((page - 1) * pageSize, page * pageSize);
+  }
+
   async create(data: CreateOrder): Promise<Order> {
     const orderId = crypto.randomUUID();
 
