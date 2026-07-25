@@ -188,6 +188,16 @@ export class PrismaProductsRepository implements ProductsRepository {
       where: {
         id,
       },
+      include: {
+        store: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            logo_image_url: true,
+          },
+        },
+      },
     });
   }
 

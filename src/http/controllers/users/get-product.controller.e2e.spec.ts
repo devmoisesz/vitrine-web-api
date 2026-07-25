@@ -122,8 +122,6 @@ describe('Get Product (E2E)', () => {
       `/products/${product.id}`,
     );
 
-    console.log(JSON.stringify(response.body, null, 2));
-
     expect(response.statusCode).toBe(200);
     expect(response.body).toEqual(
       expect.objectContaining({
