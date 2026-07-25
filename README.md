@@ -68,19 +68,6 @@ src/
 
 ## 💾 Modelo de Dados
 
-### Estrutura Relacional
-
-```
-Users ─┬─ Collaborators ─┐
-       ├─ Addresses      │
-       ├─ Carts ─────────┼─ Stores ─┬─ Products ─┬─ ProductImages
-       └─ Orders         │          │            ├─ CartItems
-                         │          │            ├─ Tags
-                         │          ├─ Address   └─ OrderItems
-                         │          └─ Orders
-                         └─────────────────────────┘
-```
-
 ### Enums & Validações
 
 - **UserRole**: `USER`, `ADMIN`
@@ -187,16 +174,9 @@ Users ─┬─ Collaborators ─┐
 
 ## 🚀 Performance & Otimizações
 
-### Índices de Banco de Dados
-
-```sql
--- Busca por loja + subcategoria
-INDEX products(store_id, subcategory_id)
-```
-
 ### Paginação
 
-- 40 itens por página (padrão em todas as listagens)
+- 40 produtos por página (padrão em todas as listagens)
 - Query param `?page=` (1-indexed)
 
 ### Storage de Imagens
@@ -254,7 +234,6 @@ NODE_ENV
 Veja também:
 - [`docs/requirements.md`](./docs/requirements.md) — Requisitos funcionais e não-funcionais
 - [`docs/endpoints.md`](./docs/endpoints.md) — Especificação completa de endpoints
-- [`docs/authentication.md`](./docs/authentication.md) — Fluxo JWT e segurança
 
 ---
 
