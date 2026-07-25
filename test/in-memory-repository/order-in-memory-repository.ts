@@ -10,19 +10,28 @@ export interface InMemoryOrder extends Order {
     quantity: number;
     price: Decimal;
     selectedSize: string | null;
+    product?: any; 
   }>;
 }
 
 export class OrdersInMemoryRepository implements OrdersRepository {
   public items: InMemoryOrder[] = [];
 
-  async findManyByUserId(userId: string, page: number): Promise<Order[]> {
-  const pageSize = 5;
+  async findById(id: string): Promise<Order | null> {
+    const order = this.items.find((item) => item.id === id)
 
-  return this.items
-    .filter((order) => order.userId === userId)
-    .slice((page - 1) * pageSize, page * pageSize);
-}
+    if(!order) return null
+
+    return order
+  }
+
+  async findManyByUserId(userId: string, page: number): Promise<Order[]> {
+    const pageSize = 5;
+
+    return this.items
+      .filter((order) => order.userId === userId)
+      .slice((page - 1) * pageSize, page * pageSize);
+  }
 
   async create(data: CreateOrder): Promise<Order> {
     const orderId = crypto.randomUUID();
@@ -48,5 +57,40 @@ export class OrdersInMemoryRepository implements OrdersRepository {
     this.items.push(newOrder);
 
     return newOrder;
+  }
+
+  async findOrderDetails(id: string, page: number) {
+    const pageSize = 10;
+    
+    const order = this.items.find((item) => item.id === id);
+
+    if (!order) {
+      return null;
+    }
+
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedItems = (order.order_items || []).slice(startIndex, endIndex);
+
+    const formattedItems = paginatedItems.map((item) => {
+      const formattedProduct = item.product ? {
+        id: item.product.id,
+        name: item.product.name,
+        price: item.product.price,
+        products_images: (item.product.products_images || [])
+          .filter((img: any) => img.is_main === true)
+          .map((img: any) => ({ image_url: img.image_url }))
+      } : null; 
+
+      return {
+        ...item,
+        product: formattedProduct,
+      };
+    });
+
+    return {
+      ...order,
+      order_items: formattedItems,
+    };
   }
 }

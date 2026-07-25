@@ -97,7 +97,7 @@ Este documento lista os endpoints públicos e protegidos da API, método HTTP, r
       "email": "contato@loja.com",
       "description": "Loja de roupas",
       "whatsapp": "+551199999999",
-      "logo_image_url": null,
+      "logo_image_url": "https://cdn.example.com/vitrine-web/logo.png",
       "createdAt": "2026-01-01T09:00:00.000Z"
     }
   ]
@@ -183,7 +183,7 @@ Este documento lista os endpoints públicos e protegidos da API, método HTTP, r
         "id": "c4c711b4-7038-44de-9b5c-c7fb97c09324",
         "name": "store 013",
         "slug": "store-013",
-        "logo_image_url": null
+        "logo_image_url": "https://cdn.example.com/vitrine-web/logo.png"
       }
     },
     "images": [
@@ -258,7 +258,7 @@ Example response:
     "store": {
       "id": "ede6fd30-56c4-4e1b-ba32-7cb8dcb55230",
       "name": "store 014",
-      "logo_image_url": "[https://easy-dividend.net](https://easy-dividend.net)",
+      "logo_image_url": "https://cdn.example.com/vitrine-web/logo.png",
       "whatsapp": "72969860425"
     },
     "cart_items": [
@@ -277,7 +277,7 @@ Example response:
             {
               "id": "d9b58241-1315-4010-ae0d-7d54236303fa",
               "productId": "f4f01cb8-c019-4835-9297-03e6d79af7dc",
-              "image_url": "[https://immediate-completion.biz/](https://immediate-completion.biz/)",
+              "image_url": "https://cdn.example.com/vitrine-web/loja-exemplo/products/p1/img1.jpg",
               "storage_public_id": "92b24e62-2451-47b4-8041-5c80b068858b",
               "is_main": true,
               "createdAt": "2026-07-24T13:18:25.100Z"
@@ -307,7 +307,7 @@ Example response:
       "price": "69.79",
       "products_images": [
         {
-          "image_url": "https://suburban-custom.info/"
+          "image_url": "https://cdn.example.com/vitrine-web/loja-exemplo/products/p1/img1.jpg"
         }
       ],
       "category": {
@@ -330,7 +330,7 @@ Example response:
       "price": "69.79",
       "products_images": [
         {
-          "image_url": "https://gloomy-squid.info/"
+          "image_url": "https://cdn.example.com/vitrine-web/loja-exemplo/products/p1/img1.jpg"
         }
       ],
       "category": {
@@ -365,6 +365,41 @@ Example response:
     "createdAt": "2026-07-25T00:59:58.590Z"
   }
 ]
+
+```
+
+GET /orders/:orderId — Listar produtos de um pedido (Auth: JwtAuthGuard).
+Example response:
+
+```json
+
+{
+  "id": "035fade4-3afd-482e-b7ba-2b20dc806da0",
+  "userId": "3d6e2223-b071-47c9-9850-40ae18965e6a",
+  "storeId": "4997d8d1-b20e-408f-9c5e-fef46beb1ef9",
+  "total": "348.95",
+  "createdAt": "2026-07-25T02:05:45.079Z",
+  "order_items": [
+    {
+      "id": "f01079e1-c65a-4d10-921d-5459b1016772",
+      "orderId": "035fade4-3afd-482e-b7ba-2b20dc806da0",
+      "productId": "87e4263a-baf3-4bb0-a361-430120ab7db7",
+      "price": "69.79",
+      "quantity": 5,
+      "selectedSize": null,
+      "product": {
+        "id": "87e4263a-baf3-4bb0-a361-430120ab7db7",
+        "name": "Blouse White",
+        "price": "69.79",
+        "products_images": [
+          {
+            "image_url": "https://cdn.example.com/vitrine-web/loja-exemplo/products/p1/img1.jpg"
+          }
+        ]
+      }
+    }
+  ]
+}
 
 ```
 
