@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="img/vitrine-web.jpg" alt="Vitrine Web" width="300" />
+<img src="img/vitrine-web.jpg" alt="Vitrine Web" width="700" />
 
 <br/><br/>
 
