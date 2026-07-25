@@ -54,7 +54,6 @@ export class EditSelectedProductService {
           existingItemWithNewSize.quantity + finalQuantity;
 
         if (combinedQuantity > product.stock) {
-          console.log('1')
           throw new ConflictException(
             'Unable to process the request.',
           );
