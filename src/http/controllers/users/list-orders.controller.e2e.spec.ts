@@ -148,7 +148,6 @@ describe('List Orders (E2E)', () => {
     await prisma.orderItems.create({
       data: {
         orderId: order.id,
-        productName: product.name,
         quantity: cartItem.quantity,
         price: product.price,
       },

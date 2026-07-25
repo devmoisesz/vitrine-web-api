@@ -224,8 +224,6 @@ model OrderItems {
   id           String   @id @default(uuid())
   orderId      String @map("order_id")
   productId    String? @map("product_id")
-  productName  String
-  productImageUrl String? @map("product_image_url")
   price        Decimal @db.Decimal(10, 2)
   quantity     Int
   selectedSize String? @map("selected_size")

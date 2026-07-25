@@ -3,7 +3,6 @@ import { Decimal } from '@prisma/client/runtime/client';
 
 export interface CreateOrderItemInput {
   productId: string;
-  productName: string
   quantity: number;
   price: Decimal | number;
   selectedSize: string | null;

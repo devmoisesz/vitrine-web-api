@@ -31,7 +31,6 @@ export class PrismaOrdersRepository implements OrdersRepository {
         order_items: {
           create: data.items.map((item) => ({
             productId: item.productId,
-            productName: item.productName,
             quantity: item.quantity,
             price: item.price,
             selectedSize: item.selectedSize,

@@ -2,7 +2,6 @@ import { Order } from '@prisma/client';
 import { CreateOrder, OrdersRepository } from '@/database/repositories/orders-repository';
 import { Decimal } from '@prisma/client/runtime/wasm-compiler-edge';
 
-// Interface opcional para estender o Order com os itens salvos em memória
 export interface InMemoryOrder extends Order {
   order_items?: Array<{
     id: string;

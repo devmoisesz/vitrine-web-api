@@ -50,7 +50,6 @@ export class RegisterOrderService {
 
       orderItems.push({
         productId: product.id,
-        productName: product.name,
         quantity: item.quantity,
         price: product.price, 
         selectedSize: item.selectedSize,
