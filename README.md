@@ -1,6 +1,33 @@
-# Vitrine Web API
+<div align="center">
+
+<img src="img/vitrine-web.jpg" alt="Vitrine Web" width="300" />
+
+<br/><br/>
+
+<img src="https://img.shields.io/badge/status-in_development-F59E0B?style=flat-square&logoColor=white" height="22"/>
+<img src="https://img.shields.io/badge/arquitetura-NestJS_%2B_Prisma-EC4899?style=flat-square" height="22"/>
+<img src="https://img.shields.io/badge/testes-Vitest_%2B_e2e-7C3AED?style=flat-square" height="22"/>
+<img src="https://img.shields.io/badge/database-PostgreSQL-336791?style=flat-square&logo=postgresql&logoColor=white" height="22"/>
+<img src="https://img.shields.io/badge/autenticação-JWT_RS256-10B981?style=flat-square" height="22"/>
+
+<br/><br/>
 
 **Marketplace de roupas para cidades pequenas** — Uma plataforma escalável de e-commerce construída com arquitetura moderna, segurança robusta e padrões de design bem definidos.
+
+*Inspirado nos modelos do Mercado Livre, Amazon e OLX. Um catálogo unificado onde consumidores descobrem produtos de múltiplas lojas locais em um único lugar.*
+
+</div>
+
+---
+
+## 🎯 Visão Geral
+
+Vitrine Web é um marketplace que conecta lojas de roupas locais de pequenas cidades com clientes através de um catálogo centralizado. Diferente de marketplaces tradicionais, a plataforma oferece:
+
+- **Catálogo Unificado**: Clientes navegam por todas as lojas em um lugar
+- **Negociação Flexível**: Carrinho integrado com envio de solicitação via WhatsApp
+- **Sem Barreira de Entrada**: Lojas não gerenciam pagamentos, apenas seus produtos
+- **Acesso Público**: Catálogo aberto, autenticação apenas para carrinho e pedidos
 
 ---
 
@@ -20,16 +47,16 @@
 | **Testes** | Vitest + Supertest |
 | **Lint/Format** | ESLint + Prettier |
 
-### Estrutura de Diretórios
+### Estrutura de Camadas
 
 ```
 src/
-├── auth/              # Estratégias JWT, Guards (JwtAuthGuard, AdminAccessGuard, StoreAccessGuard)
+├── auth/              # Estratégias JWT & Guards
 ├── http/              # Controllers & Rotas (47 endpoints)
-├── use-cases/         # Lógica de negócio (camada de aplicação)
-├── database/          # Serviços Prisma (camada de dados)
+├── use-cases/         # Lógica de negócio
+├── database/          # Serviços Prisma
 ├── storage/           # Cloudinary integration
-├── env/               # Validação de variáveis com Zod
+├── env/               # Validação com Zod
 └── app.module.ts      # Configuração principal
 ```
 
@@ -41,152 +68,130 @@ src/
 
 - **Algoritmo**: RS256 (RSA assimétrico)
 - **Access Token**: 15 minutos de expiração
-- **Refresh Token**: 1 hora, armazenado em cookie `httpOnly` + `Secure` + `SameSite=strict`
+- **Refresh Token**: 1 hora em cookie `httpOnly` + `Secure` + `SameSite=strict`
 - **Password Hashing**: bcryptjs com salt automático
 
-### Guards de Autorização (Multi-camada)
+### Guards Multi-camada
 
 ```typescript
-// Guard 1: Validação JWT
+// Autenticação JWT
 @UseGuards(JwtAuthGuard)
 
-// Guard 2: Verificação de role global
-@UseGuards(AdminAccessGuard)  // role === 'ADMIN'
+// Verificação de admin global
+@UseGuards(AdminAccessGuard)
 
-// Guard 3: Validação de acesso por loja + role específico
+// Validação de acesso por loja + roles
 @UseGuards(StoreAccessGuard)
 @RequireRoles('PROPRIETARIO', 'FUNCIONARIO')
 ```
-
-**Fluxo de Autorização:**
-1. `JwtAuthGuard` valida token e injeta `user` no request
-2. `AdminAccessGuard` verifica se `role === 'ADMIN'`
-3. `StoreAccessGuard` verifica se usuário é colaborador da loja solicitada
-4. `@RequireRoles()` valida papéis específicos do colaborador
 
 ---
 
 ## 💾 Modelo de Dados
 
-### Enums & Validações
+### Estrutura Relacional
 
-- **UserRole**: `USER`, `ADMIN`
-- **CollaboratorRole**: `PROPRIETARIO`, `FUNCIONARIO`
-- **StatusStore**: `ATIVA`, `INATIVA` (com cascade em produtos)
-- **StatusProduct**: `ATIVO`, `INATIVO`
+```
+Users ─┬─ Collaborators ─┐
+       ├─ Addresses      │
+       ├─ Carts ─────────┼─ Stores ─┬─ Products
+       └─ Orders         │          └─ Address
+                         └─────────────────────
+```
 
 ### Constraints & Índices
 
+- `Cart(userId, storeId)` — unique (um carrinho por loja)
 - `Product(slug, storeId)` — unique (slug por loja)
-- `Cart(userId, storeId)` — unique (um carrinho ativo por loja)
-- `Product(storeId, subcategoryId)` — index (otimização de busca)
-- Cascata de deleção em relacionamentos críticos (manutenção de integridade)
+- `Product(storeId, subcategoryId)` — index (busca otimizada)
 
 ---
 
-## 🛣️ API Endpoints (47 total)
-
-### Autenticação (Público)
-- `POST /accounts` — Cadastro
-- `POST /authenticate` — Login (retorna access_token + refresh_token)
-- `PATCH /refresh` — Renovar tokens
+## 🛣️ API: 47 Endpoints
 
 ### Catálogo (Público)
-- `GET /products?name=&categoryId=&subcategoryId=&page=` — Listagem paginada com filtros
-- `GET /products/:productId` — Detalhes do produto com imagens
-- `GET /stores?name=&page=` — Busca de lojas
-- `GET /store/:slug` — Vitrine exclusiva da loja
+- `GET /products` — Listagem com filtros e paginação
+- `GET /products/:productId` — Detalhes com imagens
+- `GET /stores` — Busca de lojas
+- `GET /store/:slug` — Vitrine exclusiva
+
+### Autenticação
+- `POST /accounts` — Cadastro
+- `POST /authenticate` — Login
+- `PATCH /refresh` — Renovar tokens
 
 ### Carrinho (Autenticado)
-- `POST /products/:productId/cart` — Adicionar ao carrinho
-- `GET /carts?page=` — Listar carrinhos do usuário
-- `PUT /cart/:cartItemId` — Atualizar quantidade/tamanho
-- `DELETE /cart/:cartItemId` — Remover item
+- `POST /products/:productId/cart` — Adicionar
+- `GET /carts` — Listar carrinhos
+- `PUT /cart/:cartItemId` — Atualizar
+- `DELETE /cart/:cartItemId` — Remover
 
-### Pedidos (Autenticado)
-- `POST /cart/:cartId/order` — Criar pedido (registra data + produtos)
-- `GET /orders?page=` — Histórico do cliente
-- `GET /store/:slug/orders?page=` — Pedidos da loja (store staff)
+### Pedidos
+- `POST /cart/:cartId/order` — Criar pedido
+- `GET /orders` — Histórico do cliente
+- `GET /store/:slug/orders` — Pedidos da loja
 
-### Gestão de Produtos (Store Staff)
-- `POST /stores/:slug/products` — Criar com validação de estoque/imagens
+### Gestão de Produtos
+- `POST /stores/:slug/products` — Criar
 - `PUT /stores/:slug/products/:productId` — Editar
 - `DELETE /stores/:slug/products/:productId` — Deletar
 - `PATCH /stores/:slug/products/:productId/status` — Ativar/desativar
 
-### Imagens (Cloudinary)
-- `POST /stores/:slug/productimages/:productId` — Upload (FormFile)
-- `PATCH /stores/:slug/productimages/:productId/:imageId` — Substituir
-- `DELETE /stores/:slug/productimages/:productId/:imageId` — Deletar com query `?newMainId=`
-
 ### Admin
 - `POST /stores` — Criar loja
-- `PATCH /stores/:slug/deactivate` | `activate` — Gerenciar status
+- `PATCH /stores/:slug/deactivate` — Desativar loja
 - `POST /categories` — Criar categoria
 - `POST /categories/:slug/subcategory` — Criar subcategoria
 
 ---
 
-## 📋 Regras de Negócio Implementadas
+## 📋 Regras de Negócio
 
-### Validações de Carrinho
-
-- ✅ Cliente autenticado obrigatório para adicionar ao carrinho
-- ✅ Um carrinho ativo por loja (constraint unique)
+### Carrinho
+- ✅ Cliente autenticado obrigatório
+- ✅ Um carrinho ativo por loja
 - ✅ Criação automática ao adicionar primeiro produto
-- ✅ Rejeita produtos com estoque zerado ou desativados
-- ✅ Produtos devem pertencer à loja do carrinho
-- ✅ Deleção automática quando carrinho fica vazio
-- ✅ Ordenação por `updatedAt` DESC (mais recentes primeiro)
+- ✅ Rejeita produtos com estoque zerado
+- ✅ Deleção automática quando vazio
 
-### Validações de Produtos
-
-- ✅ Obrigatório: nome, preço, categoria, subcategoria, estoque, ≥1 imagem
+### Produtos
+- ✅ Obrigatório: nome, preço, categoria, subcategoria, estoque, imagem
 - ✅ Máximo 5 imagens por produto
 - ✅ Produtos desativados nunca aparecem em buscas
-- ✅ Identificação clara da loja nos cards (relação `Product.store`)
-- ✅ Estoque inteiro (Int)
+- ✅ Identificação clara da loja nos cards
 
-### Validações de Lojas
+### Lojas
+- ✅ Loja desativada oculta todos seus produtos
+- ✅ Uma única loja por endereço
+- ✅ Apenas Admin pode criar/desativar
 
-- ✅ Uma única loja desativada oculta todos seus produtos (via status cascade)
-- ✅ Uma loja pode ter apenas um endereço
-- ✅ Apenas Admin pode criar/desativar lojas
-- ✅ Lojas desativadas inacessíveis na rota `/store/:slug`
-
-### Gestão de Colaboradores
-
-- ✅ Funcionário vinculado obrigatoriamente a uma loja
-- ✅ Apenas PROPRIETARIO pode cadastrar novos funcionários
-- ✅ Funcionários não podem gerenciar outros funcionários
-- ✅ Cada papel (PROPRIETARIO/FUNCIONARIO) têm permissões distintas
+### Colaboradores
+- ✅ Funcionário vinculado obrigatoriamente a loja
+- ✅ Apenas PROPRIETARIO cadastra funcionários
+- ✅ Papéis distintos com permissões específicas
 
 ---
 
-## 🧪 Testes & Qualidade
+## 🚀 Performance
 
-- **Framework**: Vitest (SWC transpiler, ~10x mais rápido que Babel)
-- **HTTP Mocking**: Supertest
-- **Dados de Teste**: Faker.js
-- **Cobertura**: V8
+### Otimizações
 
----
-
-## 🚀 Performance & Otimizações
-
-### Paginação
-
-- 40 produtos por página (padrão em todas as listagens)
-- Query param `?page=` (1-indexed)
-
-### Storage de Imagens
-
-- Cloudinary CDN (cache global, otimização de tamanho)
-- `storage_public_id` para rastreabilidade e deleção segura
+- **Índices**: `products(store_id, subcategory_id)` para busca otimizada
+- **Paginação**: 40 itens por página (padrão)
+- **Storage**: Cloudinary CDN com cache global
 
 ---
 
-## 📦 Dependências Principais
+## 🧪 Testes
+
+- **Vitest** + SWC (~10x mais rápido que Babel)
+- **Supertest** para HTTP mocking
+- **Faker.js** para dados de teste
+- **V8** para cobertura
+
+---
+
+## 📦 Stack Completa
 
 ```json
 {
@@ -203,47 +208,38 @@ src/
 
 ---
 
-## 📝 Validação de Entrada
+## 🎯 Destaques Técnicos
 
-Todos os DTOs usam **Zod** para validação estruturada:
-
-- Schemas de request/response tipados
-- Mensagens de erro estruturadas
-- Validação em tempo de compilação + runtime
-
----
-
-## 🔧 Configuração
-
-Variáveis de ambiente obrigatórias:
-
-```bash
-DATABASE_URL
-JWT_PRIVATE_KEY (base64)
-JWT_PUBLIC_KEY (base64)
-CLOUDINARY_CLOUD_NAME
-CLOUDINARY_API_KEY
-CLOUDINARY_API_SECRET
-NODE_ENV
-```
+- **Arquitetura em camadas** com separação clara
+- **Guards multi-camada** (JWT + Role + Store)
+- **Validação com Zod** em toda entrada
+- **Type-safe** (TypeScript + Prisma)
+- **Testes rápidos** (Vitest)
+- **Padrão de repositório** (abstração de dados)
+- **Tratamento robusto de erros**
+- **Paginação consistente** em todas listagens
 
 ---
 
 ## 📚 Documentação
 
-Veja também:
 - [`docs/requirements.md`](./docs/requirements.md) — Requisitos funcionais e não-funcionais
 - [`docs/endpoints.md`](./docs/endpoints.md) — Especificação completa de endpoints
+- [`docs/authentication.md`](./docs/authentication.md) — Fluxo JWT e segurança
 
 ---
 
-## 🎯 Destaques Técnicos
+<div align="center">
 
-- **Arquitetura em camadas** com separação clara de responsabilidades (controllers → use-cases → database)
-- **Guards de autorização multi-camada** (JWT + Role + Store access)
-- **Validação declarativa** com Zod em toda entrada de dados
-- **Tipo seguro end-to-end** (TypeScript + Prisma)
-- **Testes rápidos** com Vitest + SWC
-- **Padrão de repositório** via Prisma (abstração de dados)
-- **Tratamento robusto de erros** com guards customizados
-- **Paginação consistente** em todas listagens
+### Desenvolvido por
+
+<a href="https://github.com/devmoisesz">
+  <img src="https://img.shields.io/badge/GitHub-111827?style=flat&logo=github&logoColor=white" height="26"/>
+</a>
+<a href="https://www.linkedin.com/in/moises-figueiredo/">
+  <img src="https://img.shields.io/badge/LinkedIn-111827?style=flat&logo=linkedin&logoColor=0A66C2" height="26"/>
+</a>
+
+<sub>Construído com foco em arquitetura escalável, código testável e aprendizado real.</sub>
+
+</div>
