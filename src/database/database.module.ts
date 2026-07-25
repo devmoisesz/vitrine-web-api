@@ -16,6 +16,12 @@ import { ProductsRepository } from "./repositories/products-repository";
 import { PrismaProductsRepository } from "./prisma/prisma-repository/prisma-product-repository";
 import { ProductsImagesRepository } from "./repositories/products-images-repository";
 import { PrismaProductsImagesRepository } from "./prisma/prisma-repository/prisma-product-image-repository";
+import { CartsRepository } from "./repositories/carts-repository";
+import { PrismaCartsRepository } from "./prisma/prisma-repository/prisma-carts-repository";
+import { CartItemsRepository } from "./repositories/cart-items-repository";
+import { PrismaCartItemsRepository } from "./prisma/prisma-repository/prisma-cart-items-repository";
+import { OrdersRepository } from "./repositories/orders-repository";
+import { PrismaOrdersRepository } from "./prisma/prisma-repository/prisma-order-repository";
 
 @Module({
     imports: [],
@@ -53,6 +59,18 @@ import { PrismaProductsImagesRepository } from "./prisma/prisma-repository/prism
             provide: ProductsImagesRepository,
             useClass: PrismaProductsImagesRepository
         },
+        {
+            provide: CartsRepository,
+            useClass: PrismaCartsRepository
+        },
+        {
+            provide: CartItemsRepository,
+            useClass: PrismaCartItemsRepository
+        },
+        {
+            provide: OrdersRepository,
+            useClass: PrismaOrdersRepository
+        },
     ],
     exports: [
         PrismaService,
@@ -63,7 +81,10 @@ import { PrismaProductsImagesRepository } from "./prisma/prisma-repository/prism
         CategoriesRepository,
         SubcategoriesRepository,
         ProductsRepository,
-        ProductsImagesRepository
+        ProductsImagesRepository,
+        CartsRepository,
+        CartItemsRepository,
+        OrdersRepository
     ]
 })
 export class DatabaseModule {}

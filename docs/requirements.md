@@ -36,11 +36,13 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível cadastrar vários endereços 
 - [x] Deve ser possível editar seus próprios endereços
 - [x] Deve ser possível visualizar seus próprios endereços
-- [ ] Deve ser possível adicionar produtos ao carrinho de uma loja
-- [ ] Deve ser possível remover produtos do carrinho
-- [ ] Deve ser possível visualizar carrinhos ativos de múltiplas lojas simultaneamente
-- [ ] Deve ser possível solicitar compra via WhatsApp, gerando mensagem automática com os produtos do carrinho, quantidades e modalidades aceitas pela loja
-- [ ] Deve ser possível visualizar o histórico de solicitações enviadas via WhatsApp
+- [x] Deve ser possível adicionar produtos ao carrinho de uma loja
+- [x] Deve ser possível alterar a quantidade e o tamanho selecionado de um item no carrinho
+- [x] Deve ser possível remover produtos do carrinho
+- [x] Deve ser possível visualizar todos os carrinhos de diferentes lojas
+- [ ] Deve ser possível solicitar a compra de um carrinho específico via WhatsApp, gerando mensagem automática com produtos, tamanhos, quantidades e dados da loja
+- [x] Deve ser possível após solicitar um pedido a aplicação registre o pedido 
+- [x] Deve ser possível visualizar o histórico de solicitações enviadas via WhatsApp
 
 ## Funcionário
 
@@ -52,7 +54,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível desativar um produto da própria loja
 - [x] Deve ser possível ativar um produto desativado da própria loja
 - [x] Deve ser possível remover um produto da própria loja
-- [ ] Deve ser possível visualizar pedidos solicitados via WhatsApp para a própria loja
+- [x] Deve ser possível ver pedidos solicitados da propria loja
 
 ## Dono da Loja (permissões do Funcionário, mais as abaixo)
 
@@ -87,10 +89,14 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Carrinho
 
-- [ ] Cada loja possui um carrinho isolado por cliente
-- [ ] Um carrinho só aceita produtos da loja à qual pertence
-- [ ] O cliente não pode adicionar ao carrinho um produto com estoque zerado
-- [ ] O cliente não pode adicionar ao carrinho um produto desativado
+- [x] O cliente deve estar autenticado na plataforma para adicionar produtos ao carrinho
+- [x] Cada cliente possui no máximo um carrinho ativo por loja
+- [x] O carrinho de uma loja deve ser criado automaticamente no momento em que o cliente adiciona o primeiro produto dela
+- [x] Um carrinho só aceita produtos pertencentes à loja à qual ele está vinculado
+- [x] O cliente não pode adicionar ao carrinho um produto com estoque insuficiente ou zerado
+- [x] O cliente não pode adicionar ao carrinho um produto desativado ou pertencente a uma loja inativa
+- [x] O carrinho deve ser deletado/encerrado automaticamente quando todos os seus itens forem removidos
+- [x] A listagem de carrinhos do cliente deve ser ordenada pelos carrinhos atualizados/modificados mais recentemente
 
 ## Pedido via WhatsApp
 

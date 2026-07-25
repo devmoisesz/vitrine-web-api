@@ -76,6 +76,26 @@ import { ListStoresService } from '@/use-cases/services/stores/list-stores.servi
 import { ListStoresController } from './controllers/users/list-stores.controller';
 import { ListProductsByStoreService } from '@/use-cases/services/products/list-products-by-store.service';
 import { ListProductsByStoreController } from './controllers/users/list-products-by-store.controller';
+import { AddProductToCartController } from './controllers/users/add-product-to-cart.controller';
+import { AddProductToCartService } from '@/use-cases/services/cart/add-product-to-cart.service';
+import { ListCartsService } from '@/use-cases/services/cart/list-carts.service';
+import { ListCartsController } from './controllers/users/list-carts.controller';
+import { ListCartProductsController } from './controllers/users/list-cart-products.controller';
+import { ListCartProductsService } from '@/use-cases/services/cart/list-cart-products.service';
+import { EditSelectedProductController } from './controllers/users/edit-selected-product.controller';
+import { EditSelectedProductService } from '@/use-cases/services/cart/edit-selected-product.service';
+import { DeleteItemCartController } from './controllers/users/delete-item-cart.controller';
+import { DeleteItemCartService } from '@/use-cases/services/cart/delete-item-cart.service';
+import { RegisterOrderService } from '@/use-cases/services/order/register-order.service';
+import { RegisterOrderController } from './controllers/users/register-order.controller';
+import { GetProductController } from './controllers/users/get-product.controller';
+import { GetProductService } from '@/use-cases/services/products/get-product.service';
+import { ListOrdersService } from '@/use-cases/services/order/list-orders.service';
+import { ListOrdersController } from './controllers/users/list-orders.controller';
+import { ListOrderProductsController } from './controllers/users/list-order-products.controller';
+import { ListOrderProductsService } from '@/use-cases/services/order/list-order-products.service';
+import { ListStoreOrdersService } from '@/use-cases/services/order/list-store-orders.service';
+import { ListStoreOrdersController } from './controllers/collaborators/list-store-orders.controller';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -113,10 +133,20 @@ import { ListProductsByStoreController } from './controllers/users/list-products
     DeleteProductController,
     GetStoreProfileController,
     ListProductsController,
+    GetProductController,
     ListCategoriesController,
     ListSubcategoriesController,
     ListStoresController,
-    ListProductsByStoreController
+    ListProductsByStoreController,
+    AddProductToCartController,
+    ListCartsController,
+    ListCartProductsController,
+    EditSelectedProductController,
+    DeleteItemCartController,
+    RegisterOrderController,
+    ListOrdersController,
+    ListOrderProductsController,
+    ListStoreOrdersController
   ],
   providers: [
     CreateAccountService,
@@ -153,10 +183,20 @@ import { ListProductsByStoreController } from './controllers/users/list-products
     DeleteProductService,
     GetStoreProfileService,
     ListProductsService,
+    GetProductService,
     ListCategoriesService,
     ListSubcategoriesService,
     ListStoresService,
-    ListProductsByStoreService
+    ListProductsByStoreService,
+    AddProductToCartService,
+    ListCartsService,
+    ListCartProductsService,
+    EditSelectedProductService,
+    DeleteItemCartService,
+    RegisterOrderService,
+    ListOrdersService,
+    ListOrderProductsService,
+    ListStoreOrdersService
   ],
 })
 export class HttpModule {}

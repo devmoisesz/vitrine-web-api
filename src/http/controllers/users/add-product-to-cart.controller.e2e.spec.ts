@@ -1,0 +1,136 @@
+import { INestApplication } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
+import request from 'supertest';
+import { PrismaService } from '../../../database/prisma/prisma.service';
+import { AppModule } from '../../../app.module';
+import { afterAll, beforeAll, describe, expect, test } from 'vitest';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '@prisma/client';
+import { DatabaseModule } from '@/database/database.module';
+import cookieParser from 'cookie-parser';
+import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
+import { hash } from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
+
+describe('Add Product To Cart (E2E)', () => {
+  let app: INestApplication;
+  let prisma: PrismaClient;
+  let jwt: JwtService;
+
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
+      imports: [AppModule, DatabaseModule],
+    })
+      .overrideProvider(PrismaService)
+      .useFactory({
+        factory: () => {
+          const databaseUrl = process.env.DATABASE_URL!;
+          const schema =
+            new URL(databaseUrl).searchParams.get('schema') ?? 'public';
+
+          const adapter = new PrismaPg(
+            { connectionString: databaseUrl },
+            { schema },
+          );
+
+          return new PrismaClient({
+            adapter,
+            log: ['warn', 'error'],
+          });
+        },
+      })
+      .compile();
+
+    app = moduleRef.createNestApplication();
+
+    app.use(cookieParser());
+
+    prisma = app.get(PrismaService);
+    jwt = moduleRef.get(JwtService);
+
+    await app.init();
+    await prisma.$connect();
+  });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
+    await app.close();
+  });
+
+  test('[POST] /products/:productId/cart', async () => {
+    const user = await prisma.user.create({
+        data: {
+            name: 'John Doe',
+            email: 'johndoe@example.com',
+            password: await hash('123456', 8),
+        }
+    })
+
+    const store = await prisma.store.create({
+      data: {
+        name: 'store 013',
+        slug: 'store-013',
+        whatsapp: makeWhatsapp(),
+        status: 'ATIVA'
+      },
+    });
+
+    const category = await prisma.category.create({
+      data: {
+        name: 'Blouse',
+        slug: 'blouse',
+      },
+    });
+
+    const subcategory = await prisma.subCategory.create({
+      data: {
+        name: 'Masculine',
+        slug: 'masculine',
+        categoryId: category.id,
+      },
+    });
+
+    const product = await prisma.product.create({
+      data: {
+        name: 'Blouse White',
+        slug: 'blouse-white',
+        description: 'Blouse White Feminine',
+        price: 69.79,
+        stock: 39,
+        sizes: ["P", "M", "G"],
+        storeId: store.id,
+        categoryId: category.id,
+        subcategoryId: subcategory.id,
+        status: 'ATIVO',
+      },
+    });
+
+    const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
+
+    const response = await request(app.getHttpServer())
+      .post(`/products/${product.id}/cart`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        quantity: 2,
+        size: "P"
+      });
+
+    expect(response.statusCode).toBe(201);
+
+    const cartOnDatabase = await prisma.cart.findFirst({
+        where: {
+            userId: user.id
+        }
+    })
+
+    expect(cartOnDatabase).toBeTruthy()
+
+    const cartItemsOnDatabase = await prisma.cartItems.findFirst({
+        where: {
+            productId: product.id
+        }
+    })
+
+    expect(cartItemsOnDatabase).toBeTruthy()
+  });
+});
