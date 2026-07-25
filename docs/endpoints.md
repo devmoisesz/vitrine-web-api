@@ -351,6 +351,23 @@ Example response:
 
 - POST /cart/:cartId/order - Registrar o pedido do usuario após ele solicitar um pedido (Auth: `JwtAuthGuard`)
 
+GET /orders — Listar pedidos de um usuario (Auth: JwtAuthGuard).
+Example response:
+
+```json
+
+[
+  {
+    "id": "30a364b4-fafa-4e0e-8c7c-e266bc4dfa24",
+    "userId": "949f32d4-93d4-4494-b060-f82e555ececf",
+    "storeId": "c8bfd185-4eb7-4e27-bfb3-6527eb0d109e",
+    "total": "348.95",
+    "createdAt": "2026-07-25T00:59:58.590Z"
+  }
+]
+
+```
+
 ## Logo da loja
 
 - POST /stores/:slug/logo — Upload de logo (Auth: `JwtAuthGuard` + `StoreAccessGuard`, roles: `PROPRIETARIO`). FormFile `file`.
