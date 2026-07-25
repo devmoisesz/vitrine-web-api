@@ -135,7 +135,6 @@ describe('List Orders Service', () => {
     const page = 1;
 
     const result = await sut.execute(user.id, page);
-    console.log(JSON.stringify(result, null, 2));
 
     expect(result).toHaveLength(1);
     expect(result).toEqual(expect.arrayContaining([
