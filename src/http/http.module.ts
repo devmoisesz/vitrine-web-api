@@ -90,6 +90,8 @@ import { RegisterOrderService } from '@/use-cases/services/order/register-order.
 import { RegisterOrderController } from './controllers/users/register-order.controller';
 import { GetProductController } from './controllers/users/get-product.controller';
 import { GetProductService } from '@/use-cases/services/products/get-product.service';
+import { ListOrdersService } from '@/use-cases/services/order/list-orders.service';
+import { ListOrdersController } from './controllers/users/list-orders.controller';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -137,7 +139,8 @@ import { GetProductService } from '@/use-cases/services/products/get-product.ser
     ListCartProductsController,
     EditSelectedProductController,
     DeleteItemCartController,
-    RegisterOrderController
+    RegisterOrderController,
+    ListOrdersController
   ],
   providers: [
     CreateAccountService,
@@ -184,7 +187,8 @@ import { GetProductService } from '@/use-cases/services/products/get-product.ser
     ListCartProductsService,
     EditSelectedProductService,
     DeleteItemCartService,
-    RegisterOrderService
+    RegisterOrderService,
+    ListOrdersService
   ],
 })
 export class HttpModule {}

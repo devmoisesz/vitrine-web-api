@@ -17,6 +17,14 @@ export interface InMemoryOrder extends Order {
 export class OrdersInMemoryRepository implements OrdersRepository {
   public items: InMemoryOrder[] = [];
 
+  async findManyByUserId(userId: string, page: number): Promise<Order[]> {
+  const pageSize = 5;
+
+  return this.items
+    .filter((order) => order.userId === userId)
+    .slice((page - 1) * pageSize, page * pageSize);
+}
+
   async create(data: CreateOrder): Promise<Order> {
     const orderId = crypto.randomUUID();
 

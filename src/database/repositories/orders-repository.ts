@@ -13,9 +13,10 @@ export interface CreateOrder {
   storeId: string;
   userId: string;
   total: Decimal | number;
-  items: CreateOrderItemInput[]
+  items: CreateOrderItemInput[];
 }
 
 export abstract class OrdersRepository {
   abstract create(data: CreateOrder): Promise<Order>;
+  abstract findManyByUserId(userId: string, page: number): Promise<Order[]>
 }

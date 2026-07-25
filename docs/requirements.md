@@ -42,8 +42,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 - [x] Deve ser possível visualizar todos os carrinhos de diferentes lojas
 - [ ] Deve ser possível solicitar a compra de um carrinho específico via WhatsApp, gerando mensagem automática com produtos, tamanhos, quantidades e dados da loja
 - [x] Deve ser possível após solicitar um pedido a aplicação registre o pedido 
-- [ ] Deve ser possível visualizar o histórico de solicitações enviadas via WhatsApp
-- [ ] Deve ser possível desfazer pedido e retornar os itens do pedido de volta ao carrinho
+- [x] Deve ser possível visualizar o histórico de solicitações enviadas via WhatsApp
 
 ## Funcionário
 
