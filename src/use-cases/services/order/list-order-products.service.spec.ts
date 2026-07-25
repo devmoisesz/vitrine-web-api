@@ -45,7 +45,7 @@ describe('List Order Product Service', () => {
     sut = new ListOrderProductsService(ordersRepository);
   });
 
-  it('should list the user carts.', async () => {
+  it('must list the products in the order', async () => {
     const user = await makeUser(usersRepository);
 
     const store = await storesRepository.create({

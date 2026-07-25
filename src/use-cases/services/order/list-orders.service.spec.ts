@@ -41,7 +41,7 @@ describe('List Orders Service', () => {
     sut = new ListOrdersService(ordersRepository);
   });
 
-  it('should list the user carts.', async () => {
+  it('must list the user orders', async () => {
     const user = await makeUser(usersRepository);
 
     const store = await storesRepository.create({
@@ -135,7 +135,7 @@ describe('List Orders Service', () => {
     const page = 1;
 
     const result = await sut.execute(user.id, page);
-
+    
     expect(result).toHaveLength(1);
     expect(result).toEqual(expect.arrayContaining([
         expect.objectContaining({
