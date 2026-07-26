@@ -41,7 +41,7 @@ export class ChangeProductImageService {
       folder: `vitrine-web/${product.storeId}/products/${productId}`,
     });
 
-    await this.productsImagesRepository.create({
+    return await this.productsImagesRepository.create({
       image_url: newImage.url,
       storage_public_id: newImage.public_id,
       productId,
