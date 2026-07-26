@@ -30,7 +30,7 @@ export class ChangeProductImageController {
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({
-            maxSize: 1024 * 1024 * 2, //2mb
+            maxSize: 1024 * 1024 * 5, //Atualizado para 5Mb
           }),
           new FileTypeValidator({
             fileType: '.(png|jpg|jpeg|webp)',
