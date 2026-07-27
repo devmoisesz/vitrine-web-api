@@ -60,6 +60,8 @@ export class UsersInMemoryRepository implements UsersRepository {
       name: data.name,
       email: data.email,
       password: data.password ?? null,
+      provider: data.provider ?? 'LOCAL',
+      google_id: data.google_id ?? null,
       role: data.role ?? 'USER',
     };
 

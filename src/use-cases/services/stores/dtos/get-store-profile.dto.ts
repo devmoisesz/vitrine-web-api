@@ -4,6 +4,8 @@ export abstract class OutputStoreProfileDto {
     abstract name: string
     abstract logo_url: string | null
     abstract description: string | null
+    abstract payment_methods: string[]
+    abstract delivery_methods: string[]
     abstract whatsapp: string
     abstract address: Address | null
 }

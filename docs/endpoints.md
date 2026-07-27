@@ -1,11 +1,19 @@
 # API Endpoints
 
-Este documento lista os 47 endpoints públicos e protegidos da API, método HTTP, rota e requisitos de autenticação/autorização.
+Este documento lista os 50 endpoints públicos e protegidos da API, método HTTP, rota e requisitos de autenticação/autorização.
 
 ## Autenticação / Conta
 
 - POST `/accounts` — Criar conta (Public). Body: `{ name, email, password }`. Retorna status `201` sem corpo.
 - POST `/authenticate` — Autenticação (Public). Body: `{ email, password }`. Retorna `access_token` (JWT) e define cookie `refreshToken` (httpOnly).
+  Example response (200):
+  ```json
+  {
+    "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVC...",
+    "refresh_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVC..."
+  }
+  ```
+- POST `/authenticate/google` — Autenticação com Google (Public). Body: `{ id_token }`. Retorna `access_token` (JWT) e define cookie `refreshToken` (httpOnly).
   Example response (200):
   ```json
   {
@@ -19,6 +27,13 @@ Este documento lista os 47 endpoints públicos e protegidos da API, método HTTP
   {
     "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVC...",
     "refresh_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVC..."
+  }
+  ```
+- POST `/logout` — Logout (Public). Limpa o cookie `refreshToken`. Retorna mensagem de confirmação.
+  Example response (200):
+  ```json
+  {
+    "message": "Logout realizado com sucesso"
   }
   ```
 
@@ -239,6 +254,7 @@ Este documento lista os 47 endpoints públicos e protegidos da API, método HTTP
   }
   ```
 - PATCH `/stores/:slug/productimages/:productId/:imageId` — Substituir imagem (Auth: `JwtAuthGuard` + `StoreAccessGuard`, roles: `FUNCIONARIO`|`PROPRIETARIO`). FormFile `file`. Retorna status `200` com a imagem atualizada.
+- PATCH `/stores/:slug/productimages/:productId/:imageId/set-main` — Definir imagem como principal (Auth: `JwtAuthGuard` + `StoreAccessGuard`, roles: `FUNCIONARIO`|`PROPRIETARIO`). Retorna status `204`.
 - DELETE `/stores/:slug/productimages/:productId/:imageId` — Deletar imagem (Auth: `JwtAuthGuard` + `StoreAccessGuard`, roles: `FUNCIONARIO`|`PROPRIETARIO`). Query: `?newMainId=`. Retorna status `204`.
 
 ## Carrinho
@@ -464,4 +480,4 @@ Este documento lista os 47 endpoints públicos e protegidos da API, método HTTP
 
 ---
 
-> **Observação:** Este documento lista todos os **47 endpoints** registrados em `src/http/http.module.ts` (23 de usuários/público, 7 de admin, 17 de colaboradores/loja). Para detalhes sobre validação e payloads, consulte os esquemas Zod em `src/http/zod/schema` e as DTOs nos serviços correspondentes.
+> **Observação:** Este documento lista todos os **50 endpoints** registrados em `src/http/http.module.ts`. Para detalhes sobre validação e payloads, consulte os esquemas Zod em `src/http/zod/schema` e as DTOs nos serviços correspondentes.

@@ -1,4 +1,4 @@
-import z from "zod";
+import z from 'zod';
 
 export const registerCollaboratorBodySchema = z.object({
   name: z.string({ message: 'O nome do colaborador é obrigatório' }).trim(),

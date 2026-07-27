@@ -26,11 +26,32 @@ enum StatusProduct {
   INATIVO
 }
 
+enum PaymentMethod {
+  PIX
+  DINHEIRO
+  CARTAO_ENTREGA
+  CARTAO_ONLINE
+}
+
+enum DeliveryMethod {
+  RETIRADA_LOJA
+  ENTREGA_PROPRIA
+  CORREIOS
+  MOTOBOY
+}
+
+enum Provider {
+  LOCAL
+  GOOGLE
+}
+
 model User {
   id          String @id @default(uuid())
   name        String
   email       String @unique
   password    String?
+  provider  Provider  @default(LOCAL)
+  google_id String? 
   role        UserRole @default(USER)
 
   collaborator Collaborator?
@@ -66,6 +87,8 @@ model Store {
   logo_image_url    String?
   storage_public_id String?
   createdAt    DateTime @default(now()) @map("created_at")
+  payment_methods  PaymentMethod[]
+  delivery_methods DeliveryMethod[]
 
   collaborators Collaborator[]
   address Address?
