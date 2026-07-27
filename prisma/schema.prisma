@@ -40,11 +40,18 @@ enum DeliveryMethod {
   MOTOBOY
 }
 
+enum Provider {
+  LOCAL
+  GOOGLE
+}
+
 model User {
   id          String @id @default(uuid())
   name        String
   email       String @unique
   password    String?
+  provider  Provider  @default(LOCAL)
+  google_id String? 
   role        UserRole @default(USER)
 
   collaborator Collaborator?
