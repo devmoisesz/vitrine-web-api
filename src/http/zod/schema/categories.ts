@@ -1,4 +1,4 @@
-import z from "zod";
+import z from 'zod';
 
 export const registerCategoryBodySchema = z.object({
   name: z.string({ message: 'O nome da categooria é obrigatório' }).trim(),
