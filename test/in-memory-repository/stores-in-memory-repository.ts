@@ -1,6 +1,22 @@
 import { StoresRepository } from '@/database/repositories/stores-repository';
-import { Prisma, Store } from '@prisma/client';
+import { DeliveryMethod, PaymentMethod, StatusStore, Store } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
+
+export interface CreateStore {
+  id?: string;
+  name: string;
+  slug: string;
+  email?: string | null;
+  description?: string | null;
+  whatsapp: string;
+  cnpj?: string | null;
+  cpf?: string | null;
+  status?: StatusStore;
+  logo_image_url?: string | null;
+  storage_public_id?: string | null;
+  payment_methods?: PaymentMethod[];
+  delivery_methods?: DeliveryMethod[];
+}
 
 export class StoresInMemoryRepository implements StoresRepository {
   public items: Store[] = [];
@@ -96,19 +112,21 @@ export class StoresInMemoryRepository implements StoresRepository {
     return store;
   }
 
-  async create(data: Prisma.StoreUncheckedCreateInput): Promise<Store> {
+  async create(data: CreateStore): Promise<Store> {
     const store = {
       id: data.id ?? randomUUID(),
       name: data.name,
       slug: data.slug,
-      email: data.email || null,
-      description: data.description || null,
+      email: data.email ?? null,
+      description: data.description ?? null,
       whatsapp: data.whatsapp,
-      cnpj: data.cnpj || null,
-      cpf: data.cpf || null,
+      cnpj: data.cnpj ?? null,
+      cpf: data.cpf ?? null,
       status: data.status ?? 'ATIVA',
-      logo_image_url: data.logo_image_url || null,
-      storage_public_id: data.storage_public_id || null,
+      logo_image_url: data.logo_image_url ?? null,
+      storage_public_id: data.storage_public_id ?? null,
+      payment_methods: data.payment_methods ?? [],
+      delivery_methods: data.delivery_methods ?? [],
       createdAt: new Date()
     };
 

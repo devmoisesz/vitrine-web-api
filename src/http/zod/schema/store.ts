@@ -24,6 +24,20 @@ export const registerStoreBodySchema = z.object({
 
 export type RegisterStoreBodySchema = z.infer<typeof registerStoreBodySchema>;
 
+export const paymentMethodEnum = z.enum([
+  'PIX',
+  'DINHEIRO',
+  'CARTAO_ENTREGA',
+  'CARTAO_ONLINE'
+]);
+
+export const deliveryMethodEnum = z.enum([
+  'RETIRADA_LOJA',
+  'ENTREGA_PROPRIA',
+  'CORREIOS',
+  'MOTOBOY'
+]);
+
 export const editStoreDataBodySchema = z.object({
   newName: z.string().trim().optional(),
 
@@ -34,6 +48,10 @@ export const editStoreDataBodySchema = z.object({
     .or(z.literal('')),
 
   newDescription: z.string().trim().optional(),
+
+  payment_methods: z.array(paymentMethodEnum).optional(),
+  delivery_methods: z.array(deliveryMethodEnum).optional(),
+
 });
 
 export type EditStoreDataBodySchema = z.infer<typeof editStoreDataBodySchema>;

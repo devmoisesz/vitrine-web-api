@@ -4,11 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import {
-  InputEditDataStoreDto,
   OutputEditDataStoreDto,
 } from './dtos/edit-data-store.dto';
 import { StoresRepository } from '@/database/repositories/stores-repository';
 import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
+import { EditStoreDataBodySchema } from '@/http/zod/schema/store';
 
 @Injectable()
 export class EditStoreDataService {
@@ -19,7 +19,7 @@ export class EditStoreDataService {
 
   async execute(
     slug: string,
-    data: InputEditDataStoreDto,
+    data: EditStoreDataBodySchema,
   ): Promise<OutputEditDataStoreDto> {
     const store = await this.storesRepository.findBySlug(slug);
 
@@ -59,6 +59,8 @@ export class EditStoreDataService {
       status: store.status,
       logo_image_url: store.logo_image_url,
       storage_public_id: store.storage_public_id,
+      payment_methods: data.payment_methods ?? store.payment_methods,
+      delivery_methods: data.delivery_methods ?? store.delivery_methods,
       createdAt: store.createdAt
     });
 
