@@ -18,7 +18,7 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 - [x] Deve ser possível se cadastrar com nome, e-mail e senha
 - [x] Deve ser possível fazer login com e-mail e senha
-- [ ] Deve ser possível fazer login com Google
+- [x] Deve ser possível fazer login com Google
 - [x] Deve ser possível cadastrar endereços 
 - [x] Deve ser possível visualizar o próprio perfil
 - [x] Deve ser possível editar os próprios dados pessoais

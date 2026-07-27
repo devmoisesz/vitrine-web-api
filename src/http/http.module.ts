@@ -98,6 +98,9 @@ import { ListStoreOrdersService } from '@/use-cases/services/order/list-store-or
 import { ListStoreOrdersController } from './controllers/collaborators/list-store-orders.controller';
 import { SetMainImageService } from '@/use-cases/services/products/set-main-image.service';
 import { SetMainImageController } from './controllers/collaborators/set-main-image.controller';
+import { GoogleAuthenticateController } from './controllers/users/google-authenticate.controller';
+import { GoogleAuthenticateService } from '@/use-cases/services/users/google-authenticate.service';
+import { LogoutController } from './controllers/users/logout.controller';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -149,7 +152,9 @@ import { SetMainImageController } from './controllers/collaborators/set-main-ima
     ListOrdersController,
     ListOrderProductsController,
     ListStoreOrdersController,
-    SetMainImageController
+    SetMainImageController,
+    GoogleAuthenticateController,
+    LogoutController
   ],
   providers: [
     CreateAccountService,
@@ -200,7 +205,8 @@ import { SetMainImageController } from './controllers/collaborators/set-main-ima
     ListOrdersService,
     ListOrderProductsService,
     ListStoreOrdersService,
-    SetMainImageService
+    SetMainImageService,
+    GoogleAuthenticateService
   ],
 })
 export class HttpModule {}
