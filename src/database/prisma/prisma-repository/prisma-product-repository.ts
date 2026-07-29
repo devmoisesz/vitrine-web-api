@@ -18,49 +18,56 @@ export class PrismaProductsRepository implements ProductsRepository {
     name?: string,
     categoryId?: string,
     subcategoryId?: string,
-  ): Promise<Product[]> {
+  ): Promise<{products: Product[], total: number}> {
     const pageSize = 40;
 
-    return await this.prisma.product.findMany({
-      where: {
-        status: 'ATIVO',
-        storeId,
-        store: {
-          status: 'ATIVA',
-        },
-        categoryId: categoryId ? categoryId : undefined,
-        subcategoryId: subcategoryId ? subcategoryId : undefined,
-        OR: name
-          ? [
-              { name: { contains: name, mode: 'insensitive' } },
-              { description: { contains: name, mode: 'insensitive' } },
-            ]
-          : undefined,
+    const where: Prisma.ProductWhereInput = {
+      status: 'ATIVO',
+      storeId,
+      store: {
+        status: 'ATIVA',
       },
-      include: {
-        store: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            logo_image_url: true,
+      categoryId: categoryId ? categoryId : undefined,
+      subcategoryId: subcategoryId ? subcategoryId : undefined,
+      OR: name
+        ? [
+            { name: { contains: name, mode: 'insensitive' } },
+            { description: { contains: name, mode: 'insensitive' } },
+          ]
+        : undefined,
+    };
+
+    const [products, total] = await this.prisma.$transaction([
+      this.prisma.product.findMany({
+        where,
+        include: {
+          store: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              logo_image_url: true,
+            },
+          },
+          products_images: {
+            where: {
+              is_main: true,
+            },
+            select: {
+              image_url: true,
+            },
           },
         },
-        products_images: {
-          where: {
-            is_main: true,
-          },
-          select: {
-            image_url: true,
-          },
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+        orderBy: {
+          createdAt: 'desc',
         },
-      },
-      take: pageSize,
-      skip: (page - 1) * pageSize,
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+      }),
+      this.prisma.product.count({ where }),
+    ]);
+
+    return { products, total }
   }
 
   async findMany(
@@ -68,48 +75,55 @@ export class PrismaProductsRepository implements ProductsRepository {
     name?: string,
     categoryId?: string,
     subcategoryId?: string,
-  ): Promise<Product[]> {
+  ): Promise<{ products: Product[]; total: number }> {
     const pageSize = 40;
 
-    return await this.prisma.product.findMany({
-      where: {
-        status: 'ATIVO',
-        store: {
-          status: 'ATIVA',
-        },
-        categoryId: categoryId ? categoryId : undefined,
-        subcategoryId: subcategoryId ? subcategoryId : undefined,
-        OR: name
-          ? [
-              { name: { contains: name, mode: 'insensitive' } },
-              { description: { contains: name, mode: 'insensitive' } },
-            ]
-          : undefined,
+    const where: Prisma.ProductWhereInput = {
+      status: 'ATIVO',
+      store: {
+        status: 'ATIVA',
       },
-      include: {
-        store: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            logo_image_url: true,
+      categoryId: categoryId ? categoryId : undefined,
+      subcategoryId: subcategoryId ? subcategoryId : undefined,
+      OR: name
+        ? [
+            { name: { contains: name, mode: 'insensitive' } },
+            { description: { contains: name, mode: 'insensitive' } },
+          ]
+        : undefined,
+    };
+
+    const [products, total] = await this.prisma.$transaction([
+      this.prisma.product.findMany({
+        where,
+        include: {
+          store: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              logo_image_url: true,
+            },
+          },
+          products_images: {
+            where: {
+              is_main: true,
+            },
+            select: {
+              image_url: true,
+            },
           },
         },
-        products_images: {
-          where: {
-            is_main: true,
-          },
-          select: {
-            image_url: true,
-          },
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+        orderBy: {
+          createdAt: 'desc',
         },
-      },
-      take: pageSize,
-      skip: (page - 1) * pageSize,
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+      }),
+      this.prisma.product.count({ where }),
+    ]);
+
+    return { products, total };
   }
 
   async delete(id: string): Promise<void> {

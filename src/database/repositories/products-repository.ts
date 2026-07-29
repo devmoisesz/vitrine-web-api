@@ -40,13 +40,13 @@ export abstract class ProductsRepository {
     name?: string,
     categoryId?: string,
     subcategoryId?: string,
-  ): Promise<Product[]>;
+  ): Promise<{ products: Product[], total: number }>;
   abstract findManyByStore(
     storeId: string,
     page: number,
     name?: string,
     categoryId?: string,
     subcategoryId?: string,
-  ): Promise<Product[]>;
+  ): Promise<{products: Product[], total: number}>;
   abstract delete(id: string): Promise<void>;
 }
