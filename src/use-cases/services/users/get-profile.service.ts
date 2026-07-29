@@ -53,6 +53,7 @@ export class GetProfileService {
       return {
         user_name: user.name,
         user_email: user.email,
+        provider: user.provider,
         user_role: collaboratorRole,
         store_name: store?.name,
         store_address: storeAddress ?? undefined,
@@ -65,6 +66,7 @@ export class GetProfileService {
     return {
       user_name: user.name,
       user_email: user.email,
+      provider: user.provider,
       user_role: userRole === 'Usuário' ? 'Cliente' : 'Admin',
       user_address: userAddress ?? null,
     };

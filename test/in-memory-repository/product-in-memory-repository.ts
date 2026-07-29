@@ -33,7 +33,7 @@ export class ProductsInMemoryRepository implements ProductsRepository {
     name?: string,
     categoryId?: string,
     subcategoryId?: string,
-  ): Promise<Product[]> {
+  ): Promise<{ products: Product[]; total: number }> {
     const pageSize = 40;
 
     let filteredProducts = this.items.filter((product) => {
@@ -73,6 +73,8 @@ export class ProductsInMemoryRepository implements ProductsRepository {
       });
     }
 
+    const total = filteredProducts.length;
+
     filteredProducts.sort((a, b) => {
       return b.createdAt.getTime() - a.createdAt.getTime();
     });
@@ -81,7 +83,7 @@ export class ProductsInMemoryRepository implements ProductsRepository {
     const endIndex = startIndex + pageSize;
     const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
 
-    return paginatedProducts.map((product) => {
+    const mappedProducts = paginatedProducts.map((product) => {
       const store = this.storesRepository?.items.find(
         (s) => s.id === product.storeId,
       );
@@ -105,6 +107,12 @@ export class ProductsInMemoryRepository implements ProductsRepository {
         products_images: mainImages,
       };
     });
+
+    // 2. Retorna a lista paginada junto com a contagem total
+    return {
+      products: mappedProducts as unknown as Product[],
+      total,
+    };
   }
 
   async findManyByStore(
@@ -113,12 +121,12 @@ export class ProductsInMemoryRepository implements ProductsRepository {
     name?: string,
     categoryId?: string,
     subcategoryId?: string,
-  ): Promise<Product[]> {
+  ): Promise<{ products: Product[]; total: number }> {
     const pageSize = 40;
 
     let filteredProducts = this.items.filter((product) => {
-      if(product.storeId !== storeId){
-        return false
+      if (product.storeId !== storeId) {
+        return false;
       }
 
       if (product.status !== 'ATIVO') {
@@ -157,6 +165,8 @@ export class ProductsInMemoryRepository implements ProductsRepository {
       });
     }
 
+    const total = filteredProducts.length;
+
     filteredProducts.sort((a, b) => {
       return b.createdAt.getTime() - a.createdAt.getTime();
     });
@@ -165,7 +175,7 @@ export class ProductsInMemoryRepository implements ProductsRepository {
     const endIndex = startIndex + pageSize;
     const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
 
-    return paginatedProducts.map((product) => {
+    const mappedProducts = paginatedProducts.map((product) => {
       const store = this.storesRepository?.items.find(
         (s) => s.id === product.storeId,
       );
@@ -189,6 +199,12 @@ export class ProductsInMemoryRepository implements ProductsRepository {
         products_images: mainImages,
       };
     });
+
+    // 2. Retorna a lista paginada e o total
+    return {
+      products: mappedProducts as unknown as Product[],
+      total,
+    };
   }
 
   async activateProduct(productId: string, status: 'ATIVO'): Promise<void> {

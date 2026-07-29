@@ -114,7 +114,7 @@ describe('List Products By Store Service', () => {
       subcategoryFeminine.id,
     );
 
-    expect(result).toHaveLength(20);
+    expect(result.products).toHaveLength(20);
   });
 
   it('should not allow filtering for a non-existent store.', async () => {
@@ -152,6 +152,6 @@ describe('List Products By Store Service', () => {
 
     const result = await sut.execute(store.slug, page);
 
-    expect(result).toHaveLength(0);
+    expect(result.products).toHaveLength(0);
   });
 });

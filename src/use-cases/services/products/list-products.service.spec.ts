@@ -95,8 +95,8 @@ describe('List Products Service', () => {
       categoryPants.id,
       subcategoryMasculine.id,
     );
-    
-    expect(result).toHaveLength(1);
+
+    expect(result.products).toHaveLength(1);
   });
 
   it('should return the products from page 1', async () => {
@@ -126,7 +126,7 @@ describe('List Products Service', () => {
 
     const result = await sut.execute(page);
 
-    expect(result).toHaveLength(40);
+    expect(result.products).toHaveLength(40);
   });
 
   it('should return only the products matching the search.', async () => {
@@ -185,7 +185,7 @@ describe('List Products Service', () => {
 
     const result = await sut.execute(page, 'blac');
 
-    expect(result).toHaveLength(20);
+    expect(result.products).toHaveLength(20);
   });
 
   it('should return the products from page 2', async () => {
@@ -215,7 +215,7 @@ describe('List Products Service', () => {
 
     const result = await sut.execute(page);
 
-    expect(result).toHaveLength(10);
+    expect(result.products).toHaveLength(10);
   });
 
   it('should return an empty list because the product stores are inactive.', async () => {
@@ -245,7 +245,7 @@ describe('List Products Service', () => {
 
     const result = await sut.execute(page);
 
-    expect(result).toHaveLength(0);
+    expect(result.products).toHaveLength(0);
   });
 
   it('should return an empty list because all the products are empty.', async () => {
@@ -274,7 +274,7 @@ describe('List Products Service', () => {
 
     const result = await sut.execute(page);
 
-    expect(result).toHaveLength(0);
+    expect(result.products).toHaveLength(0);
   });
 
   it('should return only the active products', async () => {
@@ -316,6 +316,6 @@ describe('List Products Service', () => {
 
     const result = await sut.execute(page);
 
-    expect(result).toHaveLength(15);
+    expect(result.products).toHaveLength(15);
   });
 });

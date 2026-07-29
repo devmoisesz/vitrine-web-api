@@ -16,7 +16,7 @@ export class ListProductsByStoreService {
     name?: string,
     categoryId?: string,
     subcategoryId?: string,
-  ): Promise<Product[]> {
+  ): Promise<{products: Product[], total: number}> {
     const store = await this.storesRepository.findBySlug(slugStore)
 
     if(!store){
