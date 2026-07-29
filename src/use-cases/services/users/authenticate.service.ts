@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { UsersRepository } from '../../../database/repositories/users-repository';
 import { compare } from 'bcryptjs';
 import { User } from '@prisma/client';
@@ -13,6 +13,10 @@ export class AuthenticateService {
 
     if (!user) {
       throw new BadRequestException('Unable to process the request.');
+    }
+
+    if(user.provider === 'GOOGLE'){
+      throw new ConflictException('Unable to complete the requested operation.')
     }
 
     const doesPasswordMatches = await compare(data.password, user.password!);

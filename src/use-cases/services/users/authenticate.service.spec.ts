@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UsersInMemoryRepository } from '../../../../test/in-memory-repository/users-in-memory-repository';
 import { hash } from 'bcryptjs';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { AuthenticateService } from './authenticate.service';
 
 let usersRepository: UsersInMemoryRepository;
@@ -26,6 +26,22 @@ describe('Authenticate Service', () => {
     });
 
     expect(user.id).toEqual(expect.any(String));
+  });
+
+  it('should not be possible to authenticate a user logged in via Google', async () => {
+    await usersRepository.create({
+      name: 'John Doe',
+      email: 'johndoe@example.com',
+      password: await hash('123456', 8),
+      provider: 'GOOGLE'
+    });
+
+    await expect(() =>
+      sut.execute({
+        email: 'johndoe@example.com',
+        password: '123456',
+      }),
+    ).rejects.toBeInstanceOf(ConflictException);
   });
 
   it('should not be able to authenticate with wrong email', async () => {
