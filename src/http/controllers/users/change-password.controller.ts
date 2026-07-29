@@ -1,0 +1,33 @@
+import { CurrentUser } from '@/auth/current-user-decorator';
+import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { UserPayload } from '@/auth/jwt-payload';
+import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
+import {
+    changePasswordBodySchema,
+    type ChangePasswordBodySchema,
+} from '@/http/zod/schema/users';
+import { ChangePasswordService } from '@/use-cases/services/users/change-password.service';
+import { Body, Controller, HttpCode, Patch, UseGuards } from '@nestjs/common';
+
+@Controller('/account/password')
+@UseGuards(JwtAuthGuard)
+export class ChangePasswordController {
+  constructor(private changePasswordService: ChangePasswordService) {}
+
+  @Patch()
+  @HttpCode(204)
+  async handle(
+    @Body(new ZodValidationPipes(changePasswordBodySchema))
+    body: ChangePasswordBodySchema,
+    @CurrentUser() user: UserPayload,
+  ) {
+    const userId = user.sub;
+
+    const { currentPassword, newPassword } = body;
+
+    await this.changePasswordService.execute(userId, {
+      currentPassword,
+      newPassword,
+    });
+  }
+}

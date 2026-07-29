@@ -3,6 +3,7 @@ import { Prisma, User } from "@prisma/client"
 export abstract class UsersRepository {
     abstract create(data: Prisma.UserUncheckedCreateInput): Promise<User>
     abstract save(user: Prisma.UserUncheckedCreateInput): Promise<User>
+    abstract changePassword(userId: string, newPassword: string): Promise<void>
     abstract findByEmail(email: string): Promise<User | null>
     abstract findById(id: string): Promise<User | null>
     abstract findManyById(ids: string[], page: number): Promise<User[]>

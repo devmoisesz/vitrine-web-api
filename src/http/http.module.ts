@@ -101,6 +101,8 @@ import { SetMainImageController } from './controllers/collaborators/set-main-ima
 import { GoogleAuthenticateController } from './controllers/users/google-authenticate.controller';
 import { GoogleAuthenticateService } from '@/use-cases/services/users/google-authenticate.service';
 import { LogoutController } from './controllers/users/logout.controller';
+import { ChangePasswordController } from './controllers/users/change-password.controller';
+import { ChangePasswordService } from '@/use-cases/services/users/change-password.service';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -154,7 +156,8 @@ import { LogoutController } from './controllers/users/logout.controller';
     ListStoreOrdersController,
     SetMainImageController,
     GoogleAuthenticateController,
-    LogoutController
+    LogoutController,
+    ChangePasswordController
   ],
   providers: [
     CreateAccountService,
@@ -206,7 +209,8 @@ import { LogoutController } from './controllers/users/logout.controller';
     ListOrderProductsService,
     ListStoreOrdersService,
     SetMainImageService,
-    GoogleAuthenticateService
+    GoogleAuthenticateService,
+    ChangePasswordService
   ],
 })
 export class HttpModule {}

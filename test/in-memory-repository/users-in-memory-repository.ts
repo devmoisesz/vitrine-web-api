@@ -10,6 +10,14 @@ export class UsersInMemoryRepository implements UsersRepository {
     private collaboratorsRepository?: CollaboratorsInMemoryRepository,
   ) {}
 
+  async changePassword(userId: string, newPassword: string): Promise<void> {
+    const user = await this.items.find((user) => user.id === userId)
+    
+    if(!user) return;
+
+    user.password = newPassword
+  }
+
   async findEmployeesByStoreId(storeId: string, page: number): Promise<User[]> {
     if (!this.collaboratorsRepository) {
       throw new Error(

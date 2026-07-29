@@ -7,6 +7,17 @@ import { Prisma, User } from '@prisma/client';
 export class PrismaUsersRepository implements UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async changePassword(userId: string, newPassword: string): Promise<void> {
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        password: newPassword
+      }
+    })
+  }
+
   async findEmployeesByStoreId(storeId: string, page: number): Promise<User[]> {
     const itemsPerPage = 10;
 
