@@ -17,6 +17,7 @@ abstract class AddressResponse {
 export abstract class OutputGetProfileDto {
     abstract user_name: string
     abstract user_email: string
+    abstract provider: 'LOCAL' | 'GOOGLE'
     abstract user_role?: string
     abstract store_name?: string
     abstract store_address?: AddressResponse
