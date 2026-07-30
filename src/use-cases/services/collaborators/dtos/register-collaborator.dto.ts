@@ -1,6 +1,6 @@
-export abstract class InputRegisterCollaboratorDto {
-    abstract name: string
-    abstract email: string
-    abstract password: string
-    abstract role?: string | 'Propriétario' | 'Funcionário'
+export interface InputRegisterCollaboratorDto {
+    name: string
+    email: string
+    password: string
+    role?: string | 'Propriétario' | 'Funcionário'
 }

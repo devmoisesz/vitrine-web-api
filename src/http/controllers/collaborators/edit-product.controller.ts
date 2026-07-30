@@ -6,6 +6,7 @@ import {
   type EditProductBodySchema,
   editProductBodySchema,
 } from '@/http/zod/schema/products';
+import { EditProductBodySwaggerDto } from '@/http/zod/swagger/products.swagger.dto';
 import { EditProductService } from '@/use-cases/services/products/edit-product.service';
 import {
   Body,
@@ -15,15 +16,47 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiBody, ApiUnauthorizedResponse, ApiNotFoundResponse, ApiBadRequestResponse, ApiConflictResponse } from '@nestjs/swagger';
 
 @Controller('/stores/:slug/products/:productId')
 @RequireRoles('FUNCIONARIO', 'PROPRIETARIO')
 @UseGuards(JwtAuthGuard, StoreAccessGuard)
+@ApiTags('Edit Product')
+@ApiBearerAuth()
 export class EditProductController {
   constructor(private editProductService: EditProductService) {}
 
   @Put()
   @HttpCode(204)
+  @ApiOperation({
+    summary: 'Edit product data',
+    description:
+      'Updates product information such as name, price, stock, category, subcategory, sizes and tags.',
+  })
+
+  @ApiBody({
+    type: EditProductBodySwaggerDto,
+  })
+
+  @ApiUnauthorizedResponse({
+    description:
+      'Invalid authentication credentials.',
+  })
+
+  @ApiNotFoundResponse({
+    description:
+      'The requested resource could not be processed. Product, category or subcategory not found.',
+  })
+
+  @ApiBadRequestResponse({
+    description:
+      'Invalid request data.',
+  })
+
+  @ApiConflictResponse({
+    description:
+      'Unable to complete the requested operation.',
+  })
   async handle(
     @Body(new ZodValidationPipes(editProductBodySchema))
     body: EditProductBodySchema,

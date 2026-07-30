@@ -8,9 +8,21 @@ import {
   type AuthenticateBodySchema,
   authenticateBodySchema,
 } from '@/http/zod/schema/users';
+import {
+  AuthenticateBodySwaggerDto,
+  AuthenticateResponseSwaggerDto,
+} from '@/http/zod/swagger/users.swagger.dto';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiConflictResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('/authenticate')
 @Public()
+@ApiTags('Authentication')
 export class AuthenticateController {
   constructor(
     private authenticateService: AuthenticateService,
@@ -19,6 +31,24 @@ export class AuthenticateController {
 
   @Post()
   @HttpCode(200)
+
+  @ApiBody({
+    type: AuthenticateBodySwaggerDto,
+  })
+
+  @ApiOkResponse({
+    description: 'Authentication successful.',
+    type: AuthenticateResponseSwaggerDto,
+  })
+
+  @ApiBadRequestResponse({
+    description: 'Invalid credentials.',
+  })
+
+  @ApiConflictResponse({
+    description: 'Unable to complete the requested operation.',
+  })
+
   async handle(
     @Body(new ZodValidationPipes(authenticateBodySchema))
     body: AuthenticateBodySchema,

@@ -3,19 +3,26 @@ import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { UserPayload } from '@/auth/jwt-payload';
 import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
 import {
-    changePasswordBodySchema,
-    type ChangePasswordBodySchema,
+  changePasswordBodySchema,
+  type ChangePasswordBodySchema,
 } from '@/http/zod/schema/users';
 import { ChangePasswordService } from '@/use-cases/services/users/change-password.service';
 import { Body, Controller, HttpCode, Patch, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('/account/password')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
+@ApiTags('Change password')
 export class ChangePasswordController {
   constructor(private changePasswordService: ChangePasswordService) {}
 
   @Patch()
   @HttpCode(204)
+  @ApiOperation({
+    summary: 'Change password',
+    description: 'Updates the authenticated user password.',
+  })
   async handle(
     @Body(new ZodValidationPipes(changePasswordBodySchema))
     body: ChangePasswordBodySchema,

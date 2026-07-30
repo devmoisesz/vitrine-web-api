@@ -1,12 +1,12 @@
-export abstract class InputCreateAccountDto{
-    abstract name: string
-    abstract email: string
-    abstract password: string
+export interface InputCreateAccountDto {
+  name: string;
+  email: string;
+  password: string;
 }
 
-export abstract class OutputCreateAccountDto {
-    abstract id: string
-    abstract name: string
-    abstract email: string
-    abstract password: string
+export interface OutputCreateAccountDto {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
 }

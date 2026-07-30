@@ -1,6 +1,6 @@
-export abstract class OutputEditDataStoreDto {
-    abstract name: string | null
-    abstract slug: string | null
-    abstract email: string | null
-    abstract description: string | null
+export interface OutputEditDataStoreDto {
+  name: string | null;
+  slug: string | null;
+  email: string | null;
+  description: string | null;
 }

@@ -1,9 +1,9 @@
-export abstract class InputEditUserDataDto {
-    abstract name?: string
-    abstract email?: string
+export interface InputEditUserDataDto {
+  name?: string;
+  email?: string;
 }
 
-export abstract class OutputEditUserDataDto {
-    abstract name: string | null
-    abstract email: string | null
+export interface OutputEditUserDataDto {
+  name: string | null;
+  email: string | null;
 }

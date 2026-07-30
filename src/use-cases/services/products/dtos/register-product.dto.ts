@@ -1,10 +1,10 @@
-export abstract class InputRegisterProductDto {
-    abstract name_product: string
-    abstract tags: string[]
-    abstract description: string
-    abstract price: number
-    abstract sizes: string[]
-    abstract stock: number
-    abstract name_category: string
-    abstract name_subcategory: string
+export interface InputRegisterProductDto {
+    name_product: string
+    tags: string[]
+    description: string
+    price: number
+    sizes: string[]
+    stock: number
+    name_category: string
+    name_subcategory: string
 }
