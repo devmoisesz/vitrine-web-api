@@ -22,7 +22,7 @@ export class GoogleAuthenticateController {
     res.cookie('refreshToken', refresh_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: 1000 * 60 * 60, 
       path: '/',
     });
