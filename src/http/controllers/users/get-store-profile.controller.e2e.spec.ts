@@ -90,11 +90,8 @@ describe('Get Store Profile (E2E)', () => {
       },
     });
 
-    const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
-
     const response = await request(app.getHttpServer())
       .get(`/store/${store.slug}`)
-      .set('Authorization', `Bearer ${accessToken}`)
       .send();
 
     expect(response.statusCode).toBe(200);
