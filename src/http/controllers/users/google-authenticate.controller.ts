@@ -1,3 +1,4 @@
+import { Public } from '@/auth/public';
 import { GoogleAuthenticateService } from '@/use-cases/services/users/google-authenticate.service';
 import { Body, Controller, HttpCode, Post, Res } from '@nestjs/common';
 import type { Response } from 'express';
@@ -8,6 +9,7 @@ const googleAuthBodySchema = z.object({
 });
 
 @Controller('/authenticate/google')
+@Public()
 export class GoogleAuthenticateController {
   constructor(private googleAuthenticateService: GoogleAuthenticateService) {}
 

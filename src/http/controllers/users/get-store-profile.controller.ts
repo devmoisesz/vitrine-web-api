@@ -1,10 +1,10 @@
-import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { Public } from '@/auth/public';
 import { OutputStoreProfileDto } from '@/use-cases/services/stores/dtos/get-store-profile.dto';
 import { GetStoreProfileService } from '@/use-cases/services/stores/get-store-profile.service';
 import { Controller, Get, HttpCode, Param, UseGuards } from '@nestjs/common';
 
 @Controller('/store/:slug')
-@UseGuards(JwtAuthGuard)
+@Public()
 export class GetStoreProfileController {
   constructor(private getStoreProfileService: GetStoreProfileService) {}
 
