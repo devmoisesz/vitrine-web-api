@@ -1,7 +1,6 @@
 import { Public } from '@/auth/public';
-import { OutputStoreProfileDto } from '@/use-cases/services/stores/dtos/get-store-profile.dto';
 import { GetStoreProfileService } from '@/use-cases/services/stores/get-store-profile.service';
-import { Controller, Get, HttpCode, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, Param } from '@nestjs/common';
 
 @Controller('/store/:slug')
 @Public()
@@ -12,7 +11,7 @@ export class GetStoreProfileController {
   @HttpCode(200)
   async handle(
     @Param('slug') slug: string
-  ): Promise<OutputStoreProfileDto> {
+  ) {
     return await this.getStoreProfileService.execute(slug);
   }
 }

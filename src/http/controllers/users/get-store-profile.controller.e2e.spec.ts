@@ -8,7 +8,6 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
 import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
@@ -17,7 +16,6 @@ import { faker } from '@faker-js/faker';
 describe('Get Store Profile (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let jwt: JwtService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -48,7 +46,6 @@ describe('Get Store Profile (E2E)', () => {
     app.use(cookieParser());
 
     prisma = app.get(PrismaService);
-    jwt = moduleRef.get(JwtService);
 
     await app.init();
     await prisma.$connect();
@@ -63,7 +60,7 @@ describe('Get Store Profile (E2E)', () => {
     const userEmail = makeEmail();
     const storeEmail = makeEmail();
 
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         name: 'John doe',
         email: userEmail,

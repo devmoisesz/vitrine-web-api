@@ -1,25 +1,44 @@
 import { Public } from '@/auth/public';
 import { EnvService } from '@/env/env.service';
+import { RefreshTokenResponseSwaggerDto } from '@/http/zod/swagger/users.swagger.dto';
 import {
-    Controller,
-    HttpCode,
-    Patch, Req,
-    Res,
-    UnauthorizedException
+  Controller,
+  HttpCode,
+  Patch,
+  Req,
+  Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 
 @Controller('/refresh')
 @Public()
+@ApiTags('Refresh Token')
 export class RefreshTokenController {
   constructor(
     private jwt: JwtService,
-    private env: EnvService
+    private env: EnvService,
   ) {}
 
   @Patch()
   @HttpCode(200)
+  @ApiOperation({
+    summary: 'Refresh access token',
+    description:
+      'Generates a new access token and refresh token using a valid refresh token stored in cookies.',
+  })
+
+  @ApiOkResponse({
+    description: 'Tokens refreshed successfully.',
+    type: RefreshTokenResponseSwaggerDto,
+  })
+
+  @ApiUnauthorizedResponse({
+    description: 'Refresh token is missing, invalid or expired.',
+  })
+  
   async handle(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
@@ -31,8 +50,8 @@ export class RefreshTokenController {
     }
 
     try {
-        const publicKey = this.env.get('JWT_PUBLIC_KEY')
-    
+      const publicKey = this.env.get('JWT_PUBLIC_KEY');
+
       const payload = await this.jwt.verifyAsync(oldRefreshToken, {
         publicKey: Buffer.from(publicKey!, 'base64'),
       });
@@ -51,16 +70,16 @@ export class RefreshTokenController {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'none',
-        maxAge: 1000 * 60 * 60
-      })
+        maxAge: 1000 * 60 * 60,
+      });
 
       return {
         access_token: accessToken,
-        refresh_token: newRefreshToken
-      }
+        refresh_token: newRefreshToken,
+      };
     } catch (error) {
-        response.clearCookie('refreshToken')
-        throw new UnauthorizedException('Invalid or expired refresh token')
+      response.clearCookie('refreshToken');
+      throw new UnauthorizedException('Invalid or expired refresh token');
     }
   }
 }

@@ -20,7 +20,6 @@ import { EditUserDataController } from './controllers/users/edit-user-data.contr
 import { EditUserDataService } from '@/use-cases/services/users/edit-user-data.service';
 import { UpdateUserAddresController } from './controllers/users/update-user-address.controller';
 import { UpdateUserAddressService } from '@/use-cases/services/address/update-user-address.service';
-import { ListUsersAddressesController } from './controllers/users/list-users-addresses.controller';
 import { ListUserAddressesService } from '@/use-cases/services/address/list-user-addresses.service';
 import { EditStoreDataController } from './controllers/collaborators/edit-store-data.controller';
 import { EditStoreDataService } from '@/use-cases/services/stores/edit-store-data.service';
@@ -103,6 +102,7 @@ import { GoogleAuthenticateService } from '@/use-cases/services/users/google-aut
 import { LogoutController } from './controllers/users/logout.controller';
 import { ChangePasswordController } from './controllers/users/change-password.controller';
 import { ChangePasswordService } from '@/use-cases/services/users/change-password.service';
+import { ListUserAddressesController } from './controllers/users/list-user-addresses.controller';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -117,7 +117,7 @@ import { ChangePasswordService } from '@/use-cases/services/users/change-passwor
     RegisterStoreAddressController,
     EditUserDataController,
     UpdateUserAddresController,
-    ListUsersAddressesController,
+    ListUserAddressesController,
     EditStoreDataController,
     UpdateStoreAddresController,
     ListEmployeesController,

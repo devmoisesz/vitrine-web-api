@@ -1,5 +1,6 @@
 allowBuilds:
   '@prisma/engines': true
+  '@scarf/scarf': true
   '@swc/core': true
   prisma: true
   unrs-resolver: set this to true or false
