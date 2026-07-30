@@ -1,6 +1,6 @@
-export abstract class InputRegisterStroreDto {
-    abstract store_name: string
-    abstract store_email?: string
-    abstract owner_email: string
-    abstract whatsapp: string
+export interface InputRegisterStroreDto {
+  store_name: string;
+  store_email?: string;
+  owner_email: string;
+  whatsapp: string;
 }

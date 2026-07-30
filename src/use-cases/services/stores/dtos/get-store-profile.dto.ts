@@ -1,11 +1,11 @@
 import { Address } from "@prisma/client"
 
-export abstract class OutputStoreProfileDto {
-    abstract name: string
-    abstract logo_url: string | null
-    abstract description: string | null
-    abstract payment_methods: string[]
-    abstract delivery_methods: string[]
-    abstract whatsapp: string
-    abstract address: Address | null
+export interface OutputStoreProfileDto {
+    name: string
+    logo_url: string | null
+    description: string | null
+    payment_methods: string[]
+    delivery_methods: string[]
+    whatsapp: string
+    address: Address | null
 }

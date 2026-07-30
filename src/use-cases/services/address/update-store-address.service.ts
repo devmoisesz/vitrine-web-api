@@ -6,7 +6,7 @@ import {
 import {
   InputUpdateAddressDto,
   OutputUpdateAddressDto,
-} from './dto/update-address.dto';
+} from './dtos/update-address.dto';
 import { AddressRepository } from '@/database/repositories/addresses-repository';
 import { StoresRepository } from '@/database/repositories/stores-repository';
 

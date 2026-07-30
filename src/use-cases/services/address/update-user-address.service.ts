@@ -7,7 +7,7 @@ import { UsersRepository } from '../../../database/repositories/users-repository
 import {
   InputUpdateAddressDto,
   OutputUpdateAddressDto,
-} from './dto/update-address.dto';
+} from './dtos/update-address.dto';
 import { AddressRepository } from '@/database/repositories/addresses-repository';
 
 @Injectable()

@@ -1,4 +1,4 @@
-export abstract class ChangePasswordDto {
-    abstract currentPassword: string
-    abstract newPassword: string
+export interface ChangePasswordDto {
+  currentPassword: string;
+  newPassword: string;
 }

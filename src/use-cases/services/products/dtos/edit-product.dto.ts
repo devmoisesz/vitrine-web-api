@@ -1,10 +1,10 @@
-export abstract class InputEditProductDto {
-    abstract newNameProduct?: string
-    abstract newTags?: string[]
-    abstract newDescription?: string
-    abstract newPrice?: number
-    abstract newSizes?: string[]
-    abstract newStock?: number
-    abstract newCategory?: string
-    abstract newSubcategory?: string
+export interface InputEditProductDto {
+    newNameProduct?: string
+    newTags?: string[]
+    newDescription?: string
+    newPrice?: number
+    newSizes?: string[]
+    newStock?: number
+    newCategory?: string
+    newSubcategory?: string
 }
