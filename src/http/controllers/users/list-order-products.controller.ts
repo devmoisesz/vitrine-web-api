@@ -1,4 +1,6 @@
+import { CurrentUser } from '@/auth/current-user-decorator';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { UserPayload } from '@/auth/jwt-payload';
 import { OrderProductResponseSwaggerDto } from '@/http/zod/swagger/orders.swagger.dto';
 import { ListOrderProductsService } from '@/use-cases/services/order/list-order-products.service';
 import {
@@ -52,7 +54,10 @@ export class ListOrderProductsController {
   async handle(
     @Param('orderId') orderId: string,
     @Query('page') page: number = 1,
+    @CurrentUser() user: UserPayload
   ) {
-    return await this.listOrderProducts.execute(orderId, page);
+    const userId = user.sub
+
+    return await this.listOrderProducts.execute(orderId, page, userId);
   }
 }

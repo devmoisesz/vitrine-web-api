@@ -5,6 +5,14 @@ import { randomUUID } from 'node:crypto';
 export class CollaboratorsInMemoryRepository implements CollaboratorsRepository {
   public items: Collaborator[] = [];
 
+  async findByUserAndStore(userId: string, storeId: string): Promise<Collaborator | null> {
+    const collaborator = this.items.find((item) => item.userId === userId && item.storeId === storeId)
+
+    if (!collaborator) return null
+
+    return collaborator
+  }
+  
   async delete(userId: string): Promise<void> {
     const employee = this.items.findIndex((item) => item.userId === userId)
 
