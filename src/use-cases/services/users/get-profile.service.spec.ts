@@ -83,6 +83,7 @@ describe('Get Profile Service', () => {
 
     expect(result.user_role).toEqual('Proprietário');
     expect(result.store_name).toEqual(store.name)
+    expect(result.store_slug).toEqual(store.slug)
   });
 
   it('must not allow searching for a non-existent user', async () => {

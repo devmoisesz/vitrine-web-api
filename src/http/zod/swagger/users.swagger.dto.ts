@@ -56,6 +56,11 @@ export class GetProfileResponseSwaggerDto {
   store_name?: string;
 
   @ApiPropertyOptional({
+    example: 'minha-loja',
+  })
+  store_slug?: string;
+
+  @ApiPropertyOptional({
     nullable: true,
     description: 'User address.',
   })

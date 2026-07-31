@@ -20,6 +20,7 @@ export interface OutputGetProfileDto {
   provider: 'LOCAL' | 'GOOGLE';
   user_role?: string;
   store_name?: string;
+  store_slug?: string;
   store_address?: AddressResponse;
   user_address: AddressResponse[];
 }

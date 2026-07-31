@@ -47,6 +47,7 @@ Este documento lista os 50 endpoints públicos e protegidos da API, método HTTP
     "user_email": "joao@example.com",
     "user_role": "Proprietário",
     "store_name": "Loja Exemplo",
+    "store_slug": "loja-exemplo",
     "store_address": {
       "label": "Loja Matriz",
       "cep": "01001-000",
