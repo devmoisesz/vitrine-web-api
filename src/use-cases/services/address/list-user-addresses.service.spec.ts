@@ -38,7 +38,8 @@ describe('List User Addresses Service', () => {
 
     const result = await sut.execute(user.id, page);
 
-    expect(result).toHaveLength(3)
+    expect(result.addresses).toHaveLength(3)
+    expect(result.total).toEqual(3)
   });
 
   it('should return addresses from page 2.', async () => {
@@ -59,7 +60,8 @@ describe('List User Addresses Service', () => {
 
     const result = await sut.execute(user.id, page);
 
-    expect(result).toHaveLength(1)
+    expect(result.addresses).toHaveLength(1)
+    expect(result.total).toEqual(1)
   });
 
   it('should return an empty array because the user does not have a registered address', async () => {
@@ -73,7 +75,8 @@ describe('List User Addresses Service', () => {
 
     const result = await sut.execute(user.id, page);
 
-    expect(result).toHaveLength(0)
+    expect(result.addresses).toHaveLength(0)
+    expect(result.total).toEqual(0)
   });
 
   it('should return an Unauthorized error because the user does not exist.', async () => {
