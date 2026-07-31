@@ -53,12 +53,15 @@ export class EditStoreDataController {
 
     @Param('slug') slug: string
   ) {
-    const { newName, newEmail, newDescription } = body;
+    const { newName, newEmail, newDescription, newWhatsapp, newPaymentMethods, newDeliveryMethods  } = body;
 
     await this.editStoreDataService.execute(slug, {
         newName,
         newEmail,
-        newDescription
+        newWhatsapp,
+        newDescription,
+        newPaymentMethods,
+        newDeliveryMethods
     });
   }
 }
