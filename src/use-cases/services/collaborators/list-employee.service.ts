@@ -23,6 +23,7 @@ export class ListEmployeeService {
     );
 
     return employees.map((employee) => ({
+      id: employee.id,
       name: employee.name,
       email: employee.email,
     }));
