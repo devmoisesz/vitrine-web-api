@@ -38,6 +38,8 @@ export class PrismaCartsRepository implements CartsRepository {
             name: true,
             logo_image_url: true,
             whatsapp: true,
+            payment_methods: true,
+            delivery_methods: true,
           },
         },
         cart_items: {

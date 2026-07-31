@@ -74,6 +74,8 @@ describe('List Carts (E2E)', () => {
         slug: 'store-013',
         whatsapp: makeWhatsapp(),
         status: 'ATIVA',
+        delivery_methods: ['CORREIOS'],
+        payment_methods: ['PIX'],
         logo_image_url: faker.internet.url(),
       },
     });
