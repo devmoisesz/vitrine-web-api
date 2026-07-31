@@ -87,7 +87,7 @@ describe('Register collaborator (E2E)', () => {
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
     const response = await request(app.getHttpServer())
-      .post(`/stores/${store.id}/collaborators`)
+      .post(`/stores/${store.slug}/collaborators`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         name: 'John doe',

@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiParam, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
-@Controller('/stores/:storeId/collaborators')
+@Controller('/stores/:slug/collaborators')
 @RequireRoles('PROPRIETARIO')
 @UseGuards(JwtAuthGuard, StoreAccessGuard)
 @ApiTags('Register Collaborator')
@@ -35,9 +35,9 @@ export class RegisterCollaboratorController {
 })
 
 @ApiParam({
-  name: 'storeId',
+  name: 'slug',
   description: 'Store unique identifier.',
-  example: 'clx123456789',
+  example: 'store-slug',
 })
 
 @ApiBody({
@@ -63,11 +63,11 @@ export class RegisterCollaboratorController {
     @Body(new ZodValidationPipes(registerCollaboratorBodySchema))
     body: RegisterCollaboratorBodySchema,
     
-    @Param('storeId') storeId: string,
+    @Param('slug') slug: string,
   ) {
     const { name, email, password, role } = body;
 
-    await this.registerCollaboratorService.execute(storeId, {
+    await this.registerCollaboratorService.execute(slug, {
       name,
       email,
       password,
