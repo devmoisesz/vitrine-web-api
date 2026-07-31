@@ -10,22 +10,26 @@ export class ListEmployeeService {
     private storesRepository: StoresRepository,
   ) {}
 
-  async execute(slug: string, page: number): Promise<OutputListEmployee[]> {
+  async execute(slug: string, page: number): Promise<{employees: OutputListEmployee[], total: number}> {
     const store = await this.storesRepository.findBySlug(slug);
 
     if (!store) {
       throw new NotFoundException('Resource Not Found.');
     }
 
-    const employees = await this.usersRepository.findEmployeesByStoreId(
+    const users = await this.usersRepository.findEmployeesByStoreId(
       store.id,
       page
     );
 
-    return employees.map((employee) => ({
+    const employees = users.map((employee) => ({
       id: employee.id,
       name: employee.name,
       email: employee.email,
     }));
+
+    const total = employees.length
+
+    return { employees, total }
   }
 }

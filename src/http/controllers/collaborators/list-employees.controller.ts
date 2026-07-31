@@ -6,7 +6,6 @@ import {
   pageQueryParamSchema,
   type PageQueryParamSchema,
 } from '@/http/zod/schema/users';
-import { OutputListEmployee } from '@/use-cases/services/collaborators/dtos/output-list-employee.dto';
 import { ListEmployeeService } from '@/use-cases/services/collaborators/list-employee.service';
 import {
   Controller,
@@ -14,6 +13,7 @@ import {
   HttpCode,
   Param,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -26,6 +26,7 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import type { Response } from 'express';
 
 @Controller('/store/:slug/employees')
 @RequireRoles('PROPRIETARIO')
@@ -61,10 +62,15 @@ export class ListEmployeesController {
     description: 'Store not found.',
   })
   async handle(
+    @Res({ passthrough: true }) res: Response,
     @Param('slug') slug: string,
     @Query('page', new ZodValidationPipes(pageQueryParamSchema))
     page: PageQueryParamSchema,
-  ): Promise<OutputListEmployee[]> {
-    return await this.listEmployeesService.execute(slug, page);
+  ) {
+    const { employees, total } = await this.listEmployeesService.execute(slug, page);
+
+    res.setHeader('X-Total-Count', total.toString());
+
+    return employees
   }
 }
