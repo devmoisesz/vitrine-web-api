@@ -68,6 +68,14 @@ describe('List Order Products (E2E)', () => {
       },
     });
 
+    const owner = await prisma.user.create({
+      data: {
+        name: 'Guilherme Pessoa',
+        email: 'pctheone@example.com',
+        password: await hash('123456', 8),
+      },
+    });
+
     const store = await prisma.store.create({
       data: {
         name: 'store 013',
@@ -77,6 +85,14 @@ describe('List Order Products (E2E)', () => {
         logo_image_url: faker.internet.url(),
       },
     });
+
+    await prisma.collaborator.create({
+      data: {
+        storeId: store.id,
+        userId: owner.id,
+        role: 'PROPRIETARIO'
+      }
+    })
 
     const categoryPants = await prisma.category.create({
       data: {
@@ -154,7 +170,7 @@ describe('List Order Products (E2E)', () => {
       },
     });
 
-    const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
+    const accessToken = jwt.sign({ role: owner.role }, { subject: owner.id });
 
     const response = await request(app.getHttpServer())
       .get(`/orders/${order.id}`)

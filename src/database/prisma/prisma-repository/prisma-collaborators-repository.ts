@@ -7,12 +7,28 @@ import { CollaboratorsRepository } from '@/database/repositories/collaborators-r
 export class PrismaCollaboratorsRepository implements CollaboratorsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findByUserAndStore(
+    userId: string,
+    storeId: string,
+  ): Promise<Collaborator | null> {
+    const collaborator = await this.prisma.collaborator.findUnique({
+      where: {
+        userId,
+        storeId,
+      },
+    });
+
+    if (!collaborator) return null;
+
+    return collaborator;
+  }
+
   async delete(id: string): Promise<void> {
     await this.prisma.collaborator.delete({
       where: {
-        id
-      }
-    }) 
+        id,
+      },
+    });
   }
 
   async create(
