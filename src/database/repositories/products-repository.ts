@@ -48,5 +48,13 @@ export abstract class ProductsRepository {
     categoryId?: string,
     subcategoryId?: string,
   ): Promise<{products: Product[], total: number}>;
+  abstract findAllByStoreManage(
+    storeId: string,
+    page: number,
+    name?: string,
+    categoryId?: string,
+    subcategoryId?: string,
+    status?: 'ATIVO' | 'INATIVO'
+  ): Promise<{products: Product[], total: number}>;
   abstract delete(id: string): Promise<void>;
 }

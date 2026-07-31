@@ -103,6 +103,8 @@ import { LogoutController } from './controllers/users/logout.controller';
 import { ChangePasswordController } from './controllers/users/change-password.controller';
 import { ChangePasswordService } from '@/use-cases/services/users/change-password.service';
 import { ListUserAddressesController } from './controllers/users/list-user-addresses.controller';
+import { ListStoreManageProductsController } from './controllers/collaborators/list-store-manage-products.controller';
+import { ListStoreManageProductsService } from '@/use-cases/services/products/list-store-manage-products.service';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -157,7 +159,8 @@ import { ListUserAddressesController } from './controllers/users/list-user-addre
     SetMainImageController,
     GoogleAuthenticateController,
     LogoutController,
-    ChangePasswordController
+    ChangePasswordController,
+    ListStoreManageProductsController
   ],
   providers: [
     CreateAccountService,
@@ -210,7 +213,8 @@ import { ListUserAddressesController } from './controllers/users/list-user-addre
     ListStoreOrdersService,
     SetMainImageService,
     GoogleAuthenticateService,
-    ChangePasswordService
+    ChangePasswordService,
+    ListStoreManageProductsService
   ],
 })
 export class HttpModule {}

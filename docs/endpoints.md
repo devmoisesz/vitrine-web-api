@@ -231,6 +231,26 @@ Este documento lista os 50 endpoints públicos e protegidos da API, método HTTP
 
 ## Produtos (colaborador/loja)
 
+- GET `/store/:slug/manage/products` — Listar produtos da loja para gerenciamento (Auth: `JwtAuthGuard`, roles: `PROPRIETARIO`|`FUNCIONARIO`). Query: `?name=&?categoryId=&?subcategoryId=&?status=&?page=`. Retorna header `X-Total-Count` com o total de produtos.
+  Example response (200, array of `Product`):
+  ```json
+  [
+    {
+      "id": "124ccdb1-d81a-4d48-9d96-a4b0078b79aa",
+      "name": "Pants Black",
+      "slug": "pants-black",
+      "description": "Pants Black Masculine",
+      "price": "69.79",
+      "sizes": [],
+      "stock": 39,
+      "status": "ATIVO",
+      "storeId": "13705634-c648-4ad2-bdf3-ad42688bb38e",
+      "categoryId": "6b8a4105-57b7-4012-b001-3f7d2592dc88",
+      "subcategoryId": "cd2da19d-e89a-455a-ba30-5db035f54605",
+      "createdAt": "2026-07-24T23:52:26.282Z"
+    }
+  ]
+  ```
 - POST `/stores/:slug/products` — Criar produto (Auth: `JwtAuthGuard` + `StoreAccessGuard`, roles: `FUNCIONARIO`|`PROPRIETARIO`). Body: product data (`name_product`, `tags`, `description`, `price`, `sizes`, `stock`, `name_category`, `name_subcategory`).
   Example response (201): retorna o `id` do produto criado (string).
   ```json

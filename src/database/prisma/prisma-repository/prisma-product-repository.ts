@@ -70,6 +70,65 @@ export class PrismaProductsRepository implements ProductsRepository {
     return { products, total }
   }
 
+  async findAllByStoreManage(
+    storeId: string,
+    page: number,
+    name?: string,
+    categoryId?: string,
+    subcategoryId?: string,
+    status?: 'ATIVO' | 'INATIVO'
+  ): Promise<{products: Product[], total: number}> {
+    const pageSize = 40;
+
+    const where: Prisma.ProductWhereInput = {
+      storeId,
+      store: {
+        status: 'ATIVA',
+      },
+      categoryId: categoryId ? categoryId : undefined,
+      subcategoryId: subcategoryId ? subcategoryId : undefined,
+      status: status ? status : undefined,
+      OR: name
+        ? [
+            { name: { contains: name, mode: 'insensitive' } },
+            { description: { contains: name, mode: 'insensitive' } },
+          ]
+        : undefined,
+    };
+
+    const [products, total] = await this.prisma.$transaction([
+      this.prisma.product.findMany({
+        where,
+        include: {
+          store: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              logo_image_url: true,
+            },
+          },
+          products_images: {
+            where: {
+              is_main: true,
+            },
+            select: {
+              image_url: true,
+            },
+          },
+        },
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prisma.product.count({ where }),
+    ]);
+
+    return { products, total }
+  }
+
   async findMany(
     page: number,
     name?: string,
