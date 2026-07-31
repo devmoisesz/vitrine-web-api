@@ -45,10 +45,19 @@ export const editStoreDataBodySchema = z.object({
     .optional()
     .or(z.literal('')),
 
+  newWhatsapp: z
+    .string()
+    .min(10, 'Número de telefone incompleto')
+    .transform((val) => val.replace(/\D/g, ''))
+    .refine((val) => {
+      return val.length === 10 || val.length === 11;
+    }, 'O número de WhatsApp deve conter o DDD e um número válido (10 ou 11 dígitos).')
+    .optional(),
+
   newDescription: z.string().trim().optional(),
 
-  payment_methods: z.array(paymentMethodEnum).optional(),
-  delivery_methods: z.array(deliveryMethodEnum).optional(),
+  newPaymentMethods: z.array(paymentMethodEnum).optional(),
+  newDeliveryMethods: z.array(deliveryMethodEnum).optional(),
 });
 
 export type RegisterStoreBodySchema = z.infer<typeof registerStoreBodySchema>;

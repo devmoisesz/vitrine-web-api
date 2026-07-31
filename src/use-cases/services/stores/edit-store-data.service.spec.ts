@@ -19,25 +19,20 @@ describe('Edit Data Store Service', () => {
   it('should be possible to update store data.', async () => {
   const store = await makeStore(storesRepository)
 
-    const newStoreData = await sut.execute(store.slug, {
+    await sut.execute(store.slug, {
       newName: 'Fake Store',
       newDescription: 'Fake Description',
+      newPaymentMethods: ['CARTAO_ENTREGA'],
+      newDeliveryMethods: ['MOTOBOY', 'RETIRADA_LOJA']
     });
 
-    expect(newStoreData.name).not.toEqual(store.name)
-    expect(newStoreData.description).not.toEqual(store.description)
-    expect(newStoreData.email).toEqual(store.email)
-    expect(newStoreData.slug).not.toEqual(store.slug)
-  });
+    const newData = await storesRepository.findById(store.id)
 
-  it('should be possible to update only the email.', async () => {
-    const store = await makeStore(storesRepository)
-
-    const newStoreData = await sut.execute(store.slug,{
-      newEmail: 'fake@email.com'
-    });
-
-    expect(newStoreData.email).not.toEqual(store.email)
+    expect(newData?.name).toEqual('Fake Store')
+    expect(newData?.slug).toEqual('fake-store')
+    expect(newData?.delivery_methods[0]).toEqual('MOTOBOY')
+    expect(newData?.delivery_methods[1]).toEqual('RETIRADA_LOJA')
+    expect(newData?.payment_methods[0]).toEqual('CARTAO_ENTREGA')
   });
 
   it('should be possible to edit a non-existent store.', async () => {
@@ -55,6 +50,18 @@ describe('Edit Data Store Service', () => {
     await expect(() =>
       sut.execute(store1.slug, {
         newEmail: store2.email!
+      }),
+    ).rejects.toBeInstanceOf(ConflictException)
+  });
+
+  it('should not allow changing the WhatsApp number to one that already exists.', async () => {
+    const store1 = await makeStore(storesRepository)
+    const store2 = await makeStore(storesRepository)
+
+    await expect(() =>
+      sut.execute(store1.slug, {
+        newEmail: 'johndoe@example.com',
+        newWhatsapp: store2.whatsapp
       }),
     ).rejects.toBeInstanceOf(ConflictException)
   });

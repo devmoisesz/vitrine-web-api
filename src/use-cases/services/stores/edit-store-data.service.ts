@@ -3,9 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import {
-  OutputEditDataStoreDto,
-} from './dtos/edit-data-store.dto';
 import { StoresRepository } from '@/database/repositories/stores-repository';
 import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
 import { EditStoreDataBodySchema } from '@/http/zod/schema/store';
@@ -17,16 +14,23 @@ export class EditStoreDataService {
     private slugGenerator: SlugGeneratorService,
   ) {}
 
-  async execute(
-    slug: string,
-    data: EditStoreDataBodySchema,
-  ): Promise<OutputEditDataStoreDto> {
+  async execute(slug: string, data: EditStoreDataBodySchema) {
     const store = await this.storesRepository.findBySlug(slug);
 
     if (!store) {
       throw new NotFoundException(
         'The requested resource could not be processed.',
       );
+    }
+
+    if (data.newWhatsapp) {
+      const isWhatsappExists = await this.storesRepository.findByWhatsapp(
+        data.newWhatsapp,
+      );
+
+      if(isWhatsappExists){
+        throw new ConflictException('Unable to process the request.')
+      }
     }
 
     let updatedSlug = store.slug;
@@ -47,28 +51,21 @@ export class EditStoreDataService {
       }
     }
 
-    const newStoreData = await this.storesRepository.save({
+    await this.storesRepository.save({
       id: store.id,
       name: data.newName ?? store.name,
       email: data.newEmail ?? store.email,
       slug: updatedSlug,
+      whatsapp: data.newWhatsapp ?? store.whatsapp,
       description: data.newDescription ?? store.description,
-      whatsapp: store.whatsapp,
       cnpj: store.cnpj,
       cpf: store.cpf,
       status: store.status,
       logo_image_url: store.logo_image_url,
       storage_public_id: store.storage_public_id,
-      payment_methods: data.payment_methods ?? store.payment_methods,
-      delivery_methods: data.delivery_methods ?? store.delivery_methods,
-      createdAt: store.createdAt
+      payment_methods: data.newPaymentMethods ?? store.payment_methods,
+      delivery_methods: data.newDeliveryMethods ?? store.delivery_methods,
+      createdAt: store.createdAt,
     });
-
-    return {
-      name: newStoreData.name,
-      slug: newStoreData.slug,
-      email: newStoreData.email,
-      description: newStoreData.description,
-    };
   }
 }
