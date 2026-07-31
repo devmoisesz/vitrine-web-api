@@ -10,7 +10,7 @@ export class ListStoreOrdersService {
     private storesRepository: StoresRepository,
   ) {}
 
-  async execute(slug: string, page: number): Promise<Order[]> {
+  async execute(slug: string, page: number): Promise<{orders: Order[], total: number}> {
     const store = await this.storesRepository.findBySlug(slug);
 
     if (!store) {

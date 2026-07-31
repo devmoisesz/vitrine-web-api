@@ -13,7 +13,7 @@ export class ListOrdersService {
   async execute(
     userId: string,
     page: number
-  ): Promise<Order[]> {
+  ): Promise<{orders: Order[], total: number}> {
    return await this.ordersRepository.findManyByUserId(userId, page)
   }
 }

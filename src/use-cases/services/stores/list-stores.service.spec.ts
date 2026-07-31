@@ -39,7 +39,7 @@ describe('List Stores Service', () => {
 
     const result = await sut.execute(page, 'black');
 
-    expect(result).toHaveLength(23);
+    expect(result.stores).toHaveLength(23);
   });
 
   it('should return the stores from page 1', async () => {
@@ -51,7 +51,7 @@ describe('List Stores Service', () => {
 
     const result = await sut.execute(page);
 
-    expect(result).toHaveLength(40);
+    expect(result.stores).toHaveLength(40);
   });
 
   it('should return the stores from page 2', async () => {
@@ -63,6 +63,6 @@ describe('List Stores Service', () => {
 
     const result = await sut.execute(page);
 
-    expect(result).toHaveLength(10);
+    expect(result.stores).toHaveLength(10);
   });
 });

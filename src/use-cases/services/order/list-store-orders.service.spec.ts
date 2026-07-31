@@ -141,8 +141,8 @@ describe('List Store Orders Service', () => {
 
     const result = await sut.execute(store1.slug, page);
 
-    expect(result).toHaveLength(1);
-    expect(result).toEqual(expect.arrayContaining([
+    expect(result.orders).toHaveLength(1);
+    expect(result.orders).toEqual(expect.arrayContaining([
         expect.objectContaining({
             storeId: store1.id,
         })

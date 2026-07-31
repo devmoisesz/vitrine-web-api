@@ -26,7 +26,7 @@ export class PrismaAddressRepository implements AddressRepository {
         neighborhood: address.neighborhood,
         street: address.street,
         number: address.number,
-        complement: address.complement 
+        complement: address.complement,
       },
     });
   }
@@ -41,19 +41,29 @@ export class PrismaAddressRepository implements AddressRepository {
     return user;
   }
 
-  async findManyByUserId(userId: string, page: number): Promise<Address[]> {
-    const user = await this.prisma.address.findMany({
-      where: {
-        userId,
-      },
-      orderBy: {
-        createdAt: 'desc'
-      },
-      take: 5,
-      skip: (page - 1) * 5
-    });
+  async findManyByUserId(
+    userId: string,
+    page: number,
+  ): Promise<{ addresses: Address[]; total: number }> {
+    const pageSize = 5;
 
-    return user;
+    const where: Prisma.AddressWhereInput = {
+      userId,
+    };
+
+    const [addresses, total] = await this.prisma.$transaction([
+      this.prisma.address.findMany({
+        where,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+      }),
+      this.prisma.address.count({ where }),
+    ]);
+
+    return { addresses, total };
   }
 
   async findByStoreId(storeId: string): Promise<Address | null> {

@@ -17,8 +17,8 @@ export interface CreateOrder {
 
 export abstract class OrdersRepository {
   abstract create(data: CreateOrder): Promise<Order>;
-  abstract findManyByUserId(userId: string, page: number): Promise<Order[]>
-  abstract findManyByStoreId(storeId: string, page: number): Promise<Order[]>
+  abstract findManyByUserId(userId: string, page: number): Promise<{orders: Order[], total: number}>
+  abstract findManyByStoreId(storeId: string, page: number): Promise<{orders: Order[], total: number}>
   abstract findById(id: string): Promise<Order | null>
   abstract findOrderDetails(orderId: string, page: number)
 }

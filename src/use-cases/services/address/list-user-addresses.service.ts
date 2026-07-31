@@ -10,7 +10,7 @@ export class ListUserAddressesService {
     private addressRepository: AddressRepository,
   ) {}
 
-  async execute(userId: string, page: number): Promise<Address[]> {
+  async execute(userId: string, page: number): Promise<{addresses: Address[], total: number}> {
     const user = await this.usersRepository.findById(userId);
     
     if (!user) {

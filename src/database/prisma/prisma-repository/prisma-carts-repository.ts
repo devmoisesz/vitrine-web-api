@@ -10,63 +10,73 @@ export class PrismaCartsRepository implements CartsRepository {
   async findById(id: string): Promise<Cart | null> {
     const cart = await this.prisma.cart.findUnique({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
 
-    if(!cart) {
-      return null
+    if (!cart) {
+      return null;
     }
 
-    return cart
+    return cart;
   }
 
-  async findMany(userId: string, page: number): Promise<Cart[]> {
+  async findMany(
+    userId: string,
+    page: number,
+  ): Promise<{ carts: Cart[]; total: number }> {
     const pageSize = 5;
 
-    return await this.prisma.cart.findMany({
-      where: {
-        userId,
-        store: {
-          status: 'ATIVA',
-        },
+    const where: Prisma.CartWhereInput = {
+      userId,
+      store: {
+        status: 'ATIVA',
       },
-      include: {
-        store: {
-          select: {
-            id: true,
-            name: true,
-            logo_image_url: true,
-            whatsapp: true,
-            payment_methods: true,
-            delivery_methods: true,
+    };
+
+    const [carts, total] = await this.prisma.$transaction([
+      this.prisma.cart.findMany({
+        where,
+        include: {
+          store: {
+            select: {
+              id: true,
+              name: true,
+              logo_image_url: true,
+              whatsapp: true,
+              payment_methods: true,
+              delivery_methods: true,
+            },
           },
-        },
-        cart_items: {
-          include: {
-            product: {
-              select: {
-                id: true,
-                name: true,
-                price: true,
-                stock: true,
-                products_images: {
-                  where: {
-                    is_main: true,
+          cart_items: {
+            include: {
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                  price: true,
+                  stock: true,
+                  products_images: {
+                    where: {
+                      is_main: true,
+                    },
+                    take: 1,
                   },
-                  take: 1,
                 },
               },
             },
           },
         },
-      },
-      take: pageSize,
-      skip: (page - 1) * pageSize,
-      orderBy: {
-        updatedAt: 'desc',
-      },
-    });
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+        orderBy: {
+          updatedAt: 'desc',
+        },
+      }),
+      this.prisma.cart.count({ where }),
+    ]);
+
+    return { carts, total };
   }
 
   async create(data: Prisma.CartUncheckedCreateInput): Promise<Cart> {

@@ -56,6 +56,7 @@ export class GetProfileService {
         provider: user.provider,
         user_role: collaboratorRole,
         store_name: store?.name,
+        store_slug: store.slug,
         store_address: storeAddress ?? undefined,
         user_address: userAddress ?? null,
       };

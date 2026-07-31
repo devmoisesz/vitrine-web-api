@@ -52,7 +52,8 @@ describe('List Employee Service', () => {
 
     const result = await sut.execute(store.slug, page);
 
-    expect(result).toHaveLength(3)
+    expect(result.employees).toHaveLength(3)
+    expect(result.total).toEqual(3)
   });
 
   it('should return employees from page 2.', async () => {
@@ -105,7 +106,8 @@ describe('List Employee Service', () => {
 
     const result = await sut.execute(store.slug, page);
 
-    expect(result).toHaveLength(1)
+    expect(result.employees).toHaveLength(1)
+    expect(result.total).toEqual(1)
   });
 
   it('Only the employees should return.', async () => {
@@ -137,10 +139,11 @@ describe('List Employee Service', () => {
 
     const result = await sut.execute(store.slug, page);
 
-    expect(result).toHaveLength(1)
+    expect(result.employees).toHaveLength(1)
+    expect(result.total).toEqual(1)
   });
 
-  it('should return an empty array because there are no registered employees..', async () => {
+  it('should return an empty array because there are no registered employees.', async () => {
     const store = await makeStore(storesRepository)
 
     const user = await makeUser(usersRepository)
@@ -155,7 +158,8 @@ describe('List Employee Service', () => {
 
     const result = await sut.execute(store.slug, page);
 
-    expect(result).toHaveLength(0)
+    expect(result.employees).toHaveLength(0)
+    expect(result.total).toEqual(0)
   });
 
   it('should return an unauthorized error because the store does not.', async () => {

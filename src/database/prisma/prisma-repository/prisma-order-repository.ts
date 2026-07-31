@@ -4,7 +4,7 @@ import {
   CreateOrder,
   OrdersRepository,
 } from '@/database/repositories/orders-repository';
-import { Order } from '@prisma/client';
+import { Order, Prisma } from '@prisma/client';
 
 @Injectable()
 export class PrismaOrdersRepository implements OrdersRepository {
@@ -13,13 +13,13 @@ export class PrismaOrdersRepository implements OrdersRepository {
   async findById(id: string): Promise<Order | null> {
     const order = await this.prisma.order.findUnique({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
 
-    if(!order) return null
+    if (!order) return null;
 
-    return order
+    return order;
   }
 
   async findOrderDetails(id: string, page: number) {
@@ -55,28 +55,48 @@ export class PrismaOrdersRepository implements OrdersRepository {
     });
   }
 
-  async findManyByUserId(userId: string, page: number): Promise<Order[]> {
+  async findManyByUserId(
+    userId: string,
+    page: number,
+  ): Promise<{ orders: Order[]; total: number }> {
     const pageSize = 5;
 
-    return await this.prisma.order.findMany({
-      where: {
-        userId,
-      },
-      take: pageSize,
-      skip: (page - 1) * pageSize,
-    });
+    const where: Prisma.OrderWhereInput = {
+      userId,
+    };
+
+    const [orders, total] = await this.prisma.$transaction([
+      this.prisma.order.findMany({
+        where,
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+
+    return { orders, total };
   }
 
-  async findManyByStoreId(storeId: string, page: number): Promise<Order[]> {
+  async findManyByStoreId(
+    storeId: string,
+    page: number,
+  ): Promise<{ orders: Order[]; total: number }> {
     const pageSize = 10;
 
-    return await this.prisma.order.findMany({
-      where: {
-        storeId,
-      },
-      take: pageSize,
-      skip: (page - 1) * pageSize,
-    });
+    const where: Prisma.OrderWhereInput = {
+      storeId,
+    };
+
+    const [orders, total] = await this.prisma.$transaction([
+      this.prisma.order.findMany({
+        where,
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+
+    return { orders, total }
   }
 
   async create(data: CreateOrder): Promise<Order> {

@@ -1,17 +1,25 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InputRegisterCollaboratorDto } from './dtos/register-collaborator.dto';
 import { UsersRepository } from '@/database/repositories/users-repository';
 import { CollaboratorsRepository } from '@/database/repositories/collaborators-repository';
 import { hash } from 'bcryptjs';
+import { StoresRepository } from '@/database/repositories/stores-repository';
 
 @Injectable()
 export class RegisterCollaboratorService {
   constructor(
     private collaboratorsRepository: CollaboratorsRepository,
     private usersRepository: UsersRepository,
+    private storesRepository: StoresRepository
   ) {}
 
-  async execute(storeId: string, data: InputRegisterCollaboratorDto) {
+  async execute(slug: string, data: InputRegisterCollaboratorDto) {
+    const store = await this.storesRepository.findBySlug(slug)
+
+    if(!store){
+      throw new NotFoundException('Resorce Not Found')
+    }
+
     let userId: string;
 
     const existingUser = await this.usersRepository.findByEmail(data.email);
@@ -40,7 +48,7 @@ export class RegisterCollaboratorService {
 
     return await this.collaboratorsRepository.create({
       userId: userId,
-      storeId: storeId,
+      storeId: store.id,
     });
   }
 }

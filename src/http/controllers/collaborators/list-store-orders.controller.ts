@@ -8,6 +8,7 @@ import {
   HttpCode,
   Param,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -19,6 +20,7 @@ import {
   ApiForbiddenResponse,
   ApiNotFoundResponse,
 } from '@nestjs/swagger';
+import type { Response } from 'express';
 
 @Controller('/store/:slug/orders')
 @RequireRoles('FUNCIONARIO', 'PROPRIETARIO')
@@ -50,7 +52,18 @@ export class ListStoreOrdersController {
   @ApiNotFoundResponse({
     description: 'Store not found.',
   })
-  async handle(@Param('slug') slug: string, @Query('page') page: number = 1) {
-    return await this.listStoreOrdersService.execute(slug, page);
+  async handle(
+    @Res({ passthrough: true }) res: Response,
+    @Param('slug') slug: string,
+    @Query('page') page: number = 1,
+  ) {
+    const { orders, total } = await this.listStoreOrdersService.execute(
+      slug,
+      page,
+    );
+
+    res.setHeader('X-Total-Count', total.toString());
+
+    return orders
   }
 }

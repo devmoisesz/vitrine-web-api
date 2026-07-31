@@ -6,7 +6,7 @@ import { hash } from 'bcryptjs';
 import { StoresInMemoryRepository } from '../../../../test/in-memory-repository/stores-in-memory-repository';
 import { makeStore } from '../../../../test/factories/make-store';
 import { makeUser } from '../../../../test/factories/make-user';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 let usersRepository: UsersInMemoryRepository;
 let collaboratorsRepository: CollaboratorsInMemoryRepository;
@@ -21,11 +21,14 @@ describe('Register Collaborator Service', () => {
     sut = new RegisterCollaboratorService(
       collaboratorsRepository,
       usersRepository,
+      storesRepository
     );
   });
 
   it('should be possible to register a collaborator.', async () => {
-    const result = await sut.execute('1', {
+    const store = await makeStore(storesRepository)
+
+    const result = await sut.execute(store.slug, {
       name: 'John doe',
       email: 'johndoe@example.com',
       password: '123456',
@@ -33,6 +36,16 @@ describe('Register Collaborator Service', () => {
 
     expect(result.id).toEqual(expect.any(String));
     expect(collaboratorsRepository.items[0]).toEqual(result);
+  });
+
+  it('should not allow registering an employee in a non-existent store.', async () => {
+    const user = await makeUser(usersRepository)
+
+    await expect(() => sut.execute('store not exists', {
+      name: user.name,
+      email: user.email,
+      password: user.password!,
+    })).rejects.toBeInstanceOf(NotFoundException)
   });
 
   it('should not be possible to register an employee who is already linked to a store.', async () => {
@@ -45,7 +58,7 @@ describe('Register Collaborator Service', () => {
       storeId: store.id
     })
 
-    await expect(() => sut.execute(store.id, {
+    await expect(() => sut.execute(store.slug, {
       name: user.name,
       email: user.email,
       password: user.password!,
@@ -53,13 +66,15 @@ describe('Register Collaborator Service', () => {
   });
 
   it('should be possible to register an employee even when submitting a user who is already registered.', async () => {
+    const store = await makeStore(storesRepository)
+
     const user = await usersRepository.create({
       name: 'John doe',
       email: 'johndoe@example.com',
       password: await hash('123456', 8),
     });
 
-    const result = await sut.execute('1', {
+    const result = await sut.execute(store.slug, {
       name: 'John doe',
       email: user.email,
       password: '123456',

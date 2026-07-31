@@ -6,7 +6,7 @@ import { Store } from "@prisma/client";
 export class ListStoresService {
     constructor(private storesRepository: StoresRepository){}
 
-    async execute(page: number, name?: string): Promise<Store[]>{
+    async execute(page: number, name?: string): Promise<{stores: Store[], total: number}>{
         return await this.storesRepository.findMany(page, name)
     }
 }

@@ -5,9 +5,9 @@ import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
 import { pageQueryParamSchema, type PageQueryParamSchema } from '@/http/zod/schema/users';
 import { AddressResponseSwaggerDto } from '@/http/zod/swagger/addresses.swagger.dto';
 import { ListUserAddressesService } from '@/use-cases/services/address/list-user-addresses.service';
-import { Controller, Get, HttpCode, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, Query, Res, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
-import { Address } from '@prisma/client';
+import type { Response } from 'express';
 
 @Controller('/me/addresses')
 @UseGuards(JwtAuthGuard)
@@ -45,11 +45,16 @@ export class ListUserAddressesController {
     'Invalid authentication credentials.',
 })
   async handle(
+    @Res({ passthrough: true }) res: Response,
     @CurrentUser() user: UserPayload,
     @Query('page', new ZodValidationPipes(pageQueryParamSchema)) page: PageQueryParamSchema
-  ): Promise<Address[]> {
+  ) {
     const userId = user.sub
 
-    return await this.listUserAddressesService.execute(userId, page);
+    const { addresses, total } = await this.listUserAddressesService.execute(userId, page);
+
+    res.setHeader('X-Total-Count', total.toString())
+
+    return addresses 
   }
 }
