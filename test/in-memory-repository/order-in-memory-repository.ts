@@ -25,12 +25,16 @@ export class OrdersInMemoryRepository implements OrdersRepository {
     return order
   }
 
-  async findManyByUserId(userId: string, page: number): Promise<Order[]> {
+  async findManyByUserId(userId: string, page: number): Promise<{orders: Order[], total: number}> {
     const pageSize = 5;
 
-    return this.items
+    const orders = this.items
       .filter((order) => order.userId === userId)
       .slice((page - 1) * pageSize, page * pageSize);
+
+    const total = orders.length
+
+    return { orders, total }
   }
 
   async findManyByStoreId(storeId: string, page: number): Promise<Order[]> {
