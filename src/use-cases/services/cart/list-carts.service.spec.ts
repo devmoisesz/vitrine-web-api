@@ -108,6 +108,7 @@ describe('List Cart Service', () => {
 
     const result = await sut.execute(user.id, page);
     
-    expect(result).toHaveLength(2)
+    expect(result.carts).toHaveLength(2)
+    expect(result.total).toEqual(2)
   });
 });

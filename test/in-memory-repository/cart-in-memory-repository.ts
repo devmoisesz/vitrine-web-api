@@ -15,11 +15,11 @@ export class CartsInMemoryRepository implements CartsRepository {
   ) {}
 
   async findById(id: string): Promise<Cart | null> {
-    const cart = this.items.find((item) => item.id === id)
+    const cart = this.items.find((item) => item.id === id);
 
-    if(!cart) return null
+    if (!cart) return null;
 
-    return cart
+    return cart;
   }
 
   async create(data: Prisma.CartUncheckedCreateInput): Promise<Cart> {
@@ -49,7 +49,10 @@ export class CartsInMemoryRepository implements CartsRepository {
     return cart;
   }
 
-  async findMany(userId: string, page: number): Promise<any[]> {
+  async findMany(
+    userId: string,
+    page: number,
+  ): Promise<{ carts: Cart[]; total: number }> {
     const pageSize = 5;
 
     let userCarts = this.items.filter((item) => item.userId === userId);
@@ -59,18 +62,21 @@ export class CartsInMemoryRepository implements CartsRepository {
         const store = this.storesRepository?.items.find(
           (s) => s.id === cart.storeId,
         );
+
         return store && store.status === 'ATIVA';
       });
     }
 
     userCarts.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
 
+    const total = userCarts.length;
+
     const paginatedCarts = userCarts.slice(
       (page - 1) * pageSize,
       page * pageSize,
     );
 
-    return paginatedCarts.map((cart) => {
+    const carts = paginatedCarts.map((cart) => {
       const store = this.storesRepository?.items.find(
         (s) => s.id === cart.storeId,
       );
@@ -101,5 +107,10 @@ export class CartsInMemoryRepository implements CartsRepository {
         cart_items: cartItems ?? [],
       };
     });
+
+    return {
+      carts,
+      total,
+    };
   }
 }

@@ -3,7 +3,7 @@ import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
 import { UserPayload } from '@/auth/jwt-payload';
 import { CartResponseSwaggerDto } from '@/http/zod/swagger/carts.swagger.dto';
 import { ListCartsService } from '@/use-cases/services/cart/list-carts.service';
-import { Controller, Get, HttpCode, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, Query, Res, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -11,6 +11,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import type { Response } from 'express';
 
 @Controller('/carts')
 @UseGuards(JwtAuthGuard)
@@ -35,11 +36,16 @@ export class ListCartsController {
     isArray: true,
   })
   async handle(
+    @Res({ passthrough: true }) res: Response,
     @Query('page') page: number = 1,
     @CurrentUser() user: UserPayload,
   ) {
     const userId = user.sub;
 
-    return await this.listCartsService.execute(userId, page);
+    const { carts, total } = await this.listCartsService.execute(userId, page);
+
+    res.setHeader('X-Total-Count', total.toString())
+
+    return carts
   }
 }

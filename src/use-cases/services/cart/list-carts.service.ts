@@ -13,7 +13,7 @@ export class ListCartsService {
   async execute(
     userId: string,
     page: number
-  ): Promise<Cart[]> {
+  ): Promise<{carts: Cart[], total: number}> {
    return await this.cartsRepository.findMany(userId, page)
   }
 }
