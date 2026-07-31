@@ -1,5 +1,10 @@
 import { StoresRepository } from '@/database/repositories/stores-repository';
-import { DeliveryMethod, PaymentMethod, StatusStore, Store } from '@prisma/client';
+import {
+  DeliveryMethod,
+  PaymentMethod,
+  StatusStore,
+  Store,
+} from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 
 export interface CreateStore {
@@ -21,7 +26,10 @@ export interface CreateStore {
 export class StoresInMemoryRepository implements StoresRepository {
   public items: Store[] = [];
 
-  async findMany(page: number, name?: string): Promise<Store[]> {
+  async findMany(
+    page: number,
+    name?: string,
+  ): Promise<{ stores: Store[]; total: number }> {
     const pageSize = 40;
 
     let filteredStores = this.items.filter((store) => store.status === 'ATIVA');
@@ -39,14 +47,18 @@ export class StoresInMemoryRepository implements StoresRepository {
       });
     }
 
+    const total = filteredStores.length
+
     filteredStores.sort((a, b) => {
       return a.createdAt.getTime() - b.createdAt.getTime();
     });
 
-    return filteredStores.slice(
-      (page - 1) * pageSize,
-      page * pageSize
-    )
+    const stores = filteredStores.slice((page - 1) * pageSize, page * pageSize);
+
+    return {
+      stores,
+      total
+    }
   }
 
   async disable(slug: string): Promise<void> {
@@ -127,7 +139,7 @@ export class StoresInMemoryRepository implements StoresRepository {
       storage_public_id: data.storage_public_id ?? null,
       payment_methods: data.payment_methods ?? [],
       delivery_methods: data.delivery_methods ?? [],
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     this.items.push(store);

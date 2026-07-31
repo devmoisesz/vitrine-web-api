@@ -1,8 +1,14 @@
 import { Public } from '@/auth/public';
 import { StoreResponseSwaggerDto } from '@/http/zod/swagger/stores.swagger.dto';
 import { ListStoresService } from '@/use-cases/services/stores/list-stores.service';
-import { Controller, Get, HttpCode, Query } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, HttpCode, Query, Res } from '@nestjs/common';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import { type Response } from 'express';
 
 @Controller('/stores')
 @Public()
@@ -34,7 +40,15 @@ export class ListStoresController {
     type: StoreResponseSwaggerDto,
     isArray: true,
   })
-  async handle(@Query('name') name?: string, @Query('page') page: number = 1) {
-    return await this.listStoresService.execute(page, name);
+  async handle(
+    @Res({ passthrough: true }) res: Response,
+    @Query('name') name?: string,
+    @Query('page') page: number = 1,
+  ) {
+    const { stores, total } = await this.listStoresService.execute(page, name);
+
+    res.setHeader('X-Total-Count', total.toString())
+
+    return stores
   }
 }

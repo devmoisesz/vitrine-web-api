@@ -7,23 +7,35 @@ import { StoresRepository } from '@/database/repositories/stores-repository';
 export class PrismaStoresRepository implements StoresRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findMany(page: number, name?: string): Promise<Store[]> {
-    const pageSize = 20
+  async findMany(
+    page: number,
+    name?: string,
+  ): Promise<{ stores: Store[], total: number }> {
+    const pageSize = 20;
 
-    return await this.prisma.store.findMany({
-      where: {
-        status: 'ATIVA',
-        OR: name ? [
-          { name: { contains: name, mode: 'insensitive' } },
-          { description: { contains: name, mode: 'insensitive' } }
-        ] : undefined
-      },
-      take: pageSize,
-      skip: (page - 1) * pageSize,
-      orderBy: {
-        createdAt: 'asc'
-      }
-    })
+    const where: Prisma.StoreWhereInput = {
+      status: 'ATIVA',
+      OR: name
+        ? [
+            { name: { contains: name, mode: 'insensitive' } },
+            { description: { contains: name, mode: 'insensitive' } },
+          ]
+        : undefined,
+    };
+
+    const [stores, total] = await this.prisma.$transaction([
+      this.prisma.store.findMany({
+        where,
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+        orderBy: {
+          createdAt: 'asc',
+        },
+      }),
+      this.prisma.store.count({ where }),
+    ]);
+
+    return { stores, total };
   }
 
   async create(data: Prisma.StoreUncheckedCreateInput): Promise<Store> {
@@ -38,7 +50,7 @@ export class PrismaStoresRepository implements StoresRepository {
         id: store.id,
       },
       data: {
-        ...store
+        ...store,
       },
     });
   }
@@ -50,7 +62,7 @@ export class PrismaStoresRepository implements StoresRepository {
       },
       data: {
         logo_image_url: url,
-        storage_public_id: public_id
+        storage_public_id: public_id,
       },
     });
   }
@@ -61,7 +73,7 @@ export class PrismaStoresRepository implements StoresRepository {
         slug,
       },
       data: {
-        status: 'INATIVA'
+        status: 'INATIVA',
       },
     });
   }
@@ -72,7 +84,7 @@ export class PrismaStoresRepository implements StoresRepository {
         slug,
       },
       data: {
-        status: 'ATIVA'
+        status: 'ATIVA',
       },
     });
   }
@@ -105,7 +117,7 @@ export class PrismaStoresRepository implements StoresRepository {
     const user = await this.prisma.store.findUnique({
       where: {
         slug,
-        email
+        email,
       },
     });
 
