@@ -8,7 +8,14 @@ import {
 } from '@/http/zod/schema/users';
 import { ChangePasswordService } from '@/use-cases/services/users/change-password.service';
 import { Body, Controller, HttpCode, Patch, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 @Controller('/account/password')
 @UseGuards(JwtAuthGuard)
@@ -22,6 +29,17 @@ export class ChangePasswordController {
   @ApiOperation({
     summary: 'Change password',
     description: 'Updates the authenticated user password.',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid request data.',
+  })
+  @ApiUnauthorizedResponse({
+    description:
+      'Invalid authentication credentials. User not found or current password is incorrect.',
+  })
+  @ApiConflictResponse({
+    description:
+      'Unable to complete the requested operation. Password cannot be changed for Google accounts.',
   })
   async handle(
     @Body(new ZodValidationPipes(changePasswordBodySchema))
