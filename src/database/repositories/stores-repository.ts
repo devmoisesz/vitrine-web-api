@@ -8,6 +8,7 @@ export abstract class StoresRepository {
     abstract activate(slug: string): Promise<void>
     abstract findById(id: string): Promise<Store | null>
     abstract findMany(page: number, name?: string): Promise<{stores: Store[], total: number}>
+    abstract findAll(page: number, name?: string): Promise<{stores: Store[], total: number}>
     abstract findBySLugAndEmail(slug: string, email: string): Promise<Store | null>
     abstract findBySlug(slug: string): Promise<Store | null>
     abstract findByWhatsapp(whatsapp: string): Promise<Store | null>
