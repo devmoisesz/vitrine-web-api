@@ -14,7 +14,7 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConflictResponse, ApiNotFoundResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 @Controller('/cart/:cartItemId')
 @UseGuards(JwtAuthGuard)
@@ -31,6 +31,19 @@ export class EditSelectedProductController {
   })
   @ApiBody({
     type: UpdateCartItemBodySwaggerDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid request data or selected size is invalid.',
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Invalid authentication credentials.',
+  })
+  @ApiNotFoundResponse({
+    description: 'The requested cart item or product could not be found.',
+  })
+  @ApiConflictResponse({
+    description:
+      'Unable to process the request. Requested quantity exceeds available stock.',
   })
   async handle(
     @Param('cartItemId') cartItemId: string,
