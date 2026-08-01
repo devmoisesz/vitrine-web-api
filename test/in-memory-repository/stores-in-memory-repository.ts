@@ -61,6 +61,41 @@ export class StoresInMemoryRepository implements StoresRepository {
     }
   }
 
+  async findAll(
+    page: number,
+    name?: string,
+  ): Promise<{ stores: Store[]; total: number }> {
+    const pageSize = 40;
+
+    let filteredStores = this.items
+
+    if (name) {
+      const searchTerm = name.toLocaleLowerCase();
+
+      filteredStores = filteredStores.filter((store) => {
+        const nameMatch = store.name.toLocaleLowerCase().includes(searchTerm);
+        const descriptionMatch = store.description
+          ? store.description.toLocaleLowerCase().includes(searchTerm)
+          : false;
+
+        return nameMatch || descriptionMatch;
+      });
+    }
+
+    const total = filteredStores.length
+
+    filteredStores.sort((a, b) => {
+      return a.createdAt.getTime() - b.createdAt.getTime();
+    });
+
+    const stores = filteredStores.slice((page - 1) * pageSize, page * pageSize);
+
+    return {
+      stores,
+      total
+    }
+  }
+
   async disable(slug: string): Promise<void> {
     const store = this.items.find(
       (item) => item.slug === slug && item.status === 'ATIVA',

@@ -38,6 +38,36 @@ export class PrismaStoresRepository implements StoresRepository {
     return { stores, total };
   }
 
+  async findAll(
+    page: number,
+    name?: string,
+  ): Promise<{ stores: Store[], total: number }> {
+    const pageSize = 20;
+
+    const where: Prisma.StoreWhereInput = {
+      OR: name
+        ? [
+            { name: { contains: name, mode: 'insensitive' } },
+            { description: { contains: name, mode: 'insensitive' } },
+          ]
+        : undefined,
+    };
+
+    const [stores, total] = await this.prisma.$transaction([
+      this.prisma.store.findMany({
+        where,
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+        orderBy: {
+          createdAt: 'asc',
+        },
+      }),
+      this.prisma.store.count({ where }),
+    ]);
+
+    return { stores, total };
+  }
+
   async create(data: Prisma.StoreUncheckedCreateInput): Promise<Store> {
     return await this.prisma.store.create({
       data,
