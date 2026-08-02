@@ -97,7 +97,7 @@ describe('Add Product To Cart (E2E)', () => {
         description: 'Blouse White Feminine',
         price: 69.79,
         stock: 39,
-        sizes: ["P", "M", "G"],
+        sizes: ["P", "M"],
         storeId: store.id,
         categoryId: category.id,
         subcategoryId: subcategory.id,
@@ -112,7 +112,7 @@ describe('Add Product To Cart (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         quantity: 2,
-        size: "P"
+        size: "M"
       });
 
     expect(response.statusCode).toBe(201);

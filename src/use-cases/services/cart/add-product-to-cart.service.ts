@@ -30,9 +30,9 @@ export class AddProductToCartService {
       throw new NotFoundException('Produto não encontrado.');
     }
 
-    const store = await this.storesRepository.findById(product.storeId)
+    const store = await this.storesRepository.findById(product.storeId);
 
-    if(store?.status === 'INATIVA'){
+    if (store?.status === 'INATIVA') {
       throw new ConflictException('Unable to process the request');
     }
 
@@ -43,75 +43,81 @@ export class AddProductToCartService {
     if (product.stock <= 0) {
       throw new ConflictException('Produto sem estoque disponível.');
     }
+
     if (product.sizes.length > 0) {
       if (!size) {
         throw new BadRequestException('É necessário selecionar um tamanho.');
       }
+
       if (!product.sizes.includes(size)) {
         throw new BadRequestException('Tamanho selecionado é inválido.');
       }
+    } else {
+      if(size){
+        throw new BadRequestException('Não é necessário selecionar um tamanho.');
+      }
+    }
 
-      const hasStoreCart = await this.cartsRepository.findByUserIdAndStoreId(
-        userId,
-        product.storeId,
+    const hasStoreCart = await this.cartsRepository.findByUserIdAndStoreId(
+      userId,
+      product.storeId,
+    );
+
+    if (hasStoreCart) {
+      const items = await this.cartItems.findByCartId(hasStoreCart.id);
+
+      const existingItem = items.find(
+        (item) => item.productId === productId && item.selectedSize === size,
       );
 
-      if (hasStoreCart) {
-        const items = await this.cartItems.findByCartId(hasStoreCart.id);
+      if (existingItem) {
+        const newQuantity = existingItem.quantity + quantity;
 
-        const existingItem = items.find(
-          (item) => item.productId === productId && item.selectedSize == size,
-        );
-
-        if (existingItem) {
-          const newQuantity = existingItem.quantity + quantity;
-
-          if (newQuantity > product.stock) {
-            throw new ConflictException(
-              'Quantidade excede o estoque disponível.',
-            );
-          }
-
-          await this.cartItems.save({
-            id: existingItem.id,
-            cartId: hasStoreCart.id,
-            productId: productId,
-            quantity: (existingItem.quantity += quantity),
-            selectedSize: size,
-          });
-        } else {
-          if (quantity > product.stock) {
-            throw new ConflictException(
-              'Quantidade excede o estoque disponível.',
-            );
-          }
-
-          await this.cartItems.create({
-            cartId: hasStoreCart.id,
-            productId: productId,
-            quantity,
-            selectedSize: size,
-          });
+        if (newQuantity > product.stock) {
+          throw new ConflictException(
+            'Quantidade excede o estoque disponível.',
+          );
         }
 
-        return;
+        await this.cartItems.save({
+          id: existingItem.id,
+          cartId: hasStoreCart.id,
+          productId: productId,
+          quantity: newQuantity,
+          selectedSize: size,
+        });
+      } else {
+        if (quantity > product.stock) {
+          throw new ConflictException(
+            'Quantidade excede o estoque disponível.',
+          );
+        }
+
+        await this.cartItems.create({
+          cartId: hasStoreCart.id,
+          productId: productId,
+          quantity,
+          selectedSize: size,
+        });
       }
 
-      if (quantity > product.stock) {
-        throw new ConflictException('Quantidade excede o estoque disponível.');
-      }
-
-      const cart = await this.cartsRepository.create({
-        userId,
-        storeId: product.storeId,
-      });
-
-      await this.cartItems.create({
-        cartId: cart.id,
-        productId,
-        quantity,
-        selectedSize: size,
-      });
+      return;
     }
+
+    if (quantity > product.stock) {
+      throw new ConflictException('Quantidade excede o estoque disponível.');
+    }
+
+    const cart = await this.cartsRepository.create({
+      userId,
+      storeId: product.storeId,
+    });
+
+    await this.cartItems.create({
+      cartId: cart.id,
+      productId,
+      quantity,
+      selectedSize: size,
+    });
   }
 }

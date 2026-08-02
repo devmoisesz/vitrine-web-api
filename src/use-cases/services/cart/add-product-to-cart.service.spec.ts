@@ -6,7 +6,7 @@ import { SubcategoriesInMemoryRepository } from '../../../../test/in-memory-repo
 import { makeCategory } from '../../../../test/factories/make-category';
 import { makeStore } from '../../../../test/factories/make-store';
 import { makeSubCategory } from '../../../../test/factories/make-subcategory';
-import { ConflictException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { AddProductToCartService } from './add-product-to-cart.service';
 import { CartsInMemoryRepository } from '../../../../test/in-memory-repository/cart-in-memory-repository';
 import { CartItemsInMemoryRepository } from '../../../../test/in-memory-repository/cart-items-in-memory-repository';
@@ -81,6 +81,46 @@ describe('Add Product To Cart Service', () => {
     expect(cartItems?.productId).toEqual(product.id);
   });
 
+  it('should be possible to add a product without a size.', async () => {
+    const user = await makeUser(usersRepository);
+
+    const store = await makeStore(storesRepository);
+
+    const category = await makeCategory(categoriesRepository);
+
+    const subcategory = await makeSubCategory(
+      subcategoriesRepository,
+      category.id,
+    );
+
+    const product = await productsRepository.create({
+      name: 'old product',
+      slug: 'old-product',
+      description: 'old description',
+      price: 10,
+      sizes: [],
+      stock: 128,
+      status: 'ATIVO',
+      storeId: store.id,
+      categoryId: category.id,
+      subcategoryId: subcategory.id,
+      tags: ['old-tag'],
+    });
+
+    await sut.execute(user.id, product.id, 5);
+
+    const cart = cartsRepository.items.find(
+      (item) => item.userId === user.id && item.storeId === store.id,
+    );
+
+    const cartItems = cartItemsRepository.items.find(
+      (item) => item.cartId === cart?.id,
+    );
+
+    expect(cart?.storeId).toEqual(store.id);
+    expect(cartItems?.productId).toEqual(product.id);
+  });
+
   it('should be possible to add a product to an existing cart.', async () => {
     const user = await makeUser(usersRepository);
 
@@ -129,6 +169,79 @@ describe('Add Product To Cart Service', () => {
     expect(cartItemsDatabase?.quantity).toEqual(10);
   });
 
+  it('should not be possible to add a product without a size by sending a size.', async () => {
+    const user = await makeUser(usersRepository);
+
+    const store = await storesRepository.create({
+      name: 'Store Feminine',
+      slug: 'store-Feminine',
+      whatsapp: makeWhatsapp(),
+      description: 'Good Store Femine',
+      status: 'ATIVA'
+    });
+
+    const category = await makeCategory(categoriesRepository);
+
+    const subcategory = await makeSubCategory(
+      subcategoriesRepository,
+      category.id,
+    );
+
+    const product = await productsRepository.create({
+      name: 'old product',
+      slug: 'old-product',
+      description: 'old description',
+      price: 10,
+      sizes: [],
+      stock: 10,
+      status: 'ATIVO',
+      storeId: store.id,
+      categoryId: category.id,
+      subcategoryId: subcategory.id,
+      tags: ['old-tag'],
+    });
+
+    await cartsRepository.create({
+      storeId: store.id,
+      userId: user.id,
+    });
+
+    await expect(() =>
+      sut.execute(user.id, product.id, 1, 'M'),
+    ).rejects.toBeInstanceOf(BadRequestException);
+  });
+
+  it('should not allow adding an inactive product.', async () => {
+    const user = await makeUser(usersRepository);
+
+    const store = await makeStore(storesRepository);
+
+    const category = await makeCategory(categoriesRepository);
+
+    const subcategory = await makeSubCategory(
+      subcategoriesRepository,
+      category.id,
+    );
+
+    const product = await productsRepository.create({
+      name: 'old product',
+      slug: 'old-product',
+      description: 'old description',
+      price: 10,
+      sizes: ['P', 'M'],
+      stock: 10,
+      status: 'INATIVO',
+      storeId: store.id,
+      categoryId: category.id,
+      subcategoryId: subcategory.id,
+      tags: ['old-tag'],
+    });
+
+    await expect(() =>
+      sut.execute(user.id, product.id, 1, 'M'),
+    ).rejects.toBeInstanceOf(ConflictException);
+  });
+  
   it('must not allow selecting a product from an inactive store', async () => {
     const user = await makeUser(usersRepository);
 
