@@ -16,16 +16,16 @@ export class DeleteStoreLogoService {
       throw new NotFoundException('Resource not found.');
     }
 
-    if (!store.storage_public_id) {
+    if (!store.logoPublicId) {
       throw new NotFoundException('Resource Not Found');
     }
 
-    await this.storageService.delete(store.storage_public_id);
+    await this.storageService.delete(store.logoPublicId);
     
     await this.storesRepository.save({
         ...store,
         logo_image_url: null,
-        storage_public_id: null
+        logoPublicId: null
     })
   }
 }

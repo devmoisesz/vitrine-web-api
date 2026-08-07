@@ -85,7 +85,9 @@ model Store {
   cpf               String? @unique
   status            StatusStore @default(ATIVA)
   logo_image_url    String?
-  storage_public_id String?
+  logoPublicId String? @map("logo_public_id")
+  bannerUrl    String?
+  bannerPublicId String? @map("banner_public_id")
   createdAt    DateTime @default(now()) @map("created_at")
   payment_methods  PaymentMethod[]
   delivery_methods DeliveryMethod[]

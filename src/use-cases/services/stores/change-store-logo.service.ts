@@ -16,11 +16,11 @@ export class ChangeStoreLogoService {
       throw new NotFoundException('Resource not found.');
     }
 
-    if (!store.storage_public_id) {
+    if (!store.logoPublicId) {
       throw new NotFoundException('Resource Not Found');
     }
 
-    await this.storageService.delete(store.storage_public_id);
+    await this.storageService.delete(store.logoPublicId);
 
     const newLogo = await this.storageService.upload({
       body: file.buffer,

@@ -41,7 +41,7 @@ describe('Delete Store Logo Service', () => {
     const logo = await storesRepository.findById(store.id);
 
     expect(logo?.logo_image_url).toBeNull();
-    expect(logo?.storage_public_id).toBeNull();
+    expect(logo?.logoPublicId).toBeNull();
 
     expect(storageService.items).toHaveLength(0);
   });

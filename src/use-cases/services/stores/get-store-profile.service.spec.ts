@@ -28,7 +28,7 @@ describe('Get Store Profile Service', () => {
         description: faker.lorem.text(),
         whatsapp: faker.phone.imei(),
         logo_image_url: 'www.image.com',
-        storage_public_id: randomUUID()
+        logoPublicId: randomUUID()
     })
 
     const address = await makeStoreAddress(addressRepository, store.id)

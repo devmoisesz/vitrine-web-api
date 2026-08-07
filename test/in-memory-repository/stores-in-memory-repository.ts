@@ -18,7 +18,9 @@ export interface CreateStore {
   cpf?: string | null;
   status?: StatusStore;
   logo_image_url?: string | null;
-  storage_public_id?: string | null;
+  logoPublicId?: string | null;
+  bannerUrl?: string | null;
+  bannerPublicId?: string | null;
   payment_methods?: PaymentMethod[];
   delivery_methods?: DeliveryMethod[];
 }
@@ -171,7 +173,9 @@ export class StoresInMemoryRepository implements StoresRepository {
       cpf: data.cpf ?? null,
       status: data.status ?? 'ATIVA',
       logo_image_url: data.logo_image_url ?? null,
-      storage_public_id: data.storage_public_id ?? null,
+      logoPublicId: data.logoPublicId ?? null,
+      bannerUrl: data.bannerUrl ?? null,
+      bannerPublicId: data.bannerPublicId ?? null,
       payment_methods: data.payment_methods ?? [],
       delivery_methods: data.delivery_methods ?? [],
       createdAt: new Date(),
@@ -196,6 +200,6 @@ export class StoresInMemoryRepository implements StoresRepository {
     if (!store) return;
 
     store.logo_image_url = url;
-    store.storage_public_id = public_id;
+    store.logoPublicId = public_id;
   }
 }

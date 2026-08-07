@@ -51,7 +51,7 @@ describe('Upload Store logo Service', () => {
       slug: 'slug',
       whatsapp: makeWhatsapp(),
       logo_image_url: 'fake-logo.storage',
-      storage_public_id: randomUUID()
+      logoPublicId: randomUUID()
     })
 
     const fakeFile = makeFakeMulterFile('logo.jpg');

@@ -115,7 +115,7 @@ describe('Delete Store Logo (E2E)', () => {
       },
     });
 
-    if (!logo?.storage_public_id) {
+    if (!logo?.logoPublicId) {
       throw new Error('Image not found, test request failed.');
     }
 
@@ -133,6 +133,6 @@ describe('Delete Store Logo (E2E)', () => {
 
     //verifica se a imagem antiga foi deletada
     expect(imageOnDatabase!.logo_image_url).toBeNull()
-    expect(imageOnDatabase!.storage_public_id).toBeNull()
+    expect(imageOnDatabase!.logoPublicId).toBeNull()
   });
 });

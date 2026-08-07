@@ -92,7 +92,7 @@ export class PrismaStoresRepository implements StoresRepository {
       },
       data: {
         logo_image_url: url,
-        storage_public_id: public_id,
+        logoPublicId: public_id,
       },
     });
   }
