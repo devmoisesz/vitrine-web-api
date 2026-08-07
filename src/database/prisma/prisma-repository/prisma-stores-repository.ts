@@ -97,6 +97,18 @@ export class PrismaStoresRepository implements StoresRepository {
     });
   }
 
+  async saveBanner(id: string, url: string, public_id: string): Promise<void> {
+    await this.prisma.store.update({
+      where: {
+        id,
+      },
+      data: {
+        bannerUrl: url,
+        bannerPublicId: public_id,
+      },
+    });
+  }
+
   async disable(slug: string): Promise<void> {
     await this.prisma.store.update({
       where: {

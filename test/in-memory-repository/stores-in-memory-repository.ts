@@ -202,4 +202,13 @@ export class StoresInMemoryRepository implements StoresRepository {
     store.logo_image_url = url;
     store.logoPublicId = public_id;
   }
+
+  async saveBanner(id: string, url: string, public_id: string): Promise<void> {
+    const store = this.items.find((item) => item.id === id);
+
+    if (!store) return;
+
+    store.bannerUrl = url;
+    store.bannerPublicId = public_id;
+  }
 }

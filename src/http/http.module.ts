@@ -107,6 +107,8 @@ import { ListStoreManageProductsController } from './controllers/collaborators/l
 import { ListStoreManageProductsService } from '@/use-cases/services/products/list-store-manage-products.service';
 import { ListAllStoresController } from './controllers/admin/list-all-stores.controller';
 import { ListAllStoresService } from '@/use-cases/services/stores/list-all-stores.service';
+import { UploadStoreBannerController } from './controllers/collaborators/upload-store-banner.controller';
+import { UploadStoreBannerService } from '@/use-cases/services/stores/upload-store-banner.service';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -163,7 +165,8 @@ import { ListAllStoresService } from '@/use-cases/services/stores/list-all-store
     LogoutController,
     ChangePasswordController,
     ListStoreManageProductsController,
-    ListAllStoresController
+    ListAllStoresController,
+    UploadStoreBannerController
   ],
   providers: [
     CreateAccountService,
@@ -218,7 +221,8 @@ import { ListAllStoresService } from '@/use-cases/services/stores/list-all-store
     GoogleAuthenticateService,
     ChangePasswordService,
     ListStoreManageProductsService,
-    ListAllStoresService
+    ListAllStoresService,
+    UploadStoreBannerService
   ],
 })
 export class HttpModule {}
