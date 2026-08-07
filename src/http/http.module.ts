@@ -111,6 +111,8 @@ import { UploadStoreBannerController } from './controllers/collaborators/upload-
 import { UploadStoreBannerService } from '@/use-cases/services/stores/upload-store-banner.service';
 import { ChangeStoreBannerService } from '@/use-cases/services/stores/change-store-banner.service';
 import { ChangeStoreBannerController } from './controllers/collaborators/change-store-banner.controller';
+import { DeleteStoreBannerService } from '@/use-cases/services/stores/delete-store-banner.service';
+import { DeleteStoreBannerController } from './controllers/collaborators/delete-store-banner.controller';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -169,7 +171,8 @@ import { ChangeStoreBannerController } from './controllers/collaborators/change-
     ListStoreManageProductsController,
     ListAllStoresController,
     UploadStoreBannerController,
-    ChangeStoreBannerController
+    ChangeStoreBannerController,
+    DeleteStoreBannerController
   ],
   providers: [
     CreateAccountService,
@@ -226,7 +229,8 @@ import { ChangeStoreBannerController } from './controllers/collaborators/change-
     ListStoreManageProductsService,
     ListAllStoresService,
     UploadStoreBannerService,
-    ChangeStoreBannerService
+    ChangeStoreBannerService,
+    DeleteStoreBannerService
   ],
 })
 export class HttpModule {}
