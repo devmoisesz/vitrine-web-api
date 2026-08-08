@@ -97,8 +97,6 @@ describe('List All Stores (E2E)', () => {
       .get(`/stores/admin`)
       .set('Authorization', `Bearer ${accessToken}`);
 
-    console.log(JSON.stringify(response.body, null, 2));
-
     expect(response.statusCode).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
     expect(response.body).toHaveLength(4);
