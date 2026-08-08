@@ -25,6 +25,7 @@ export class GetStoreProfileService {
       name: store.name,
       description: store.description,
       logo_url: store.logo_image_url,
+      banner_url: store.bannerUrl,
       payment_methods: store.payment_methods,
       delivery_methods: store.delivery_methods,
       whatsapp: store.whatsapp,

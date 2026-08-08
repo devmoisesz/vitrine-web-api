@@ -28,6 +28,7 @@ describe('Get Store Profile Service', () => {
         description: faker.lorem.text(),
         whatsapp: faker.phone.imei(),
         logo_image_url: 'www.image.com',
+        bannerUrl: faker.internet.url(),
         logoPublicId: randomUUID()
     })
 
