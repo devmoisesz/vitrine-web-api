@@ -6,6 +6,7 @@ import {
   Store,
 } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
+import { ProductsInMemoryRepository } from './product-in-memory-repository';
 
 export interface CreateStore {
   id?: string;
@@ -27,6 +28,8 @@ export interface CreateStore {
 
 export class StoresInMemoryRepository implements StoresRepository {
   public items: Store[] = [];
+
+  constructor(private productsInMemoryRepository?: ProductsInMemoryRepository){}
 
   async findMany(
     page: number,
@@ -62,6 +65,65 @@ export class StoresInMemoryRepository implements StoresRepository {
       total
     }
   }
+
+  async findManyWithProducts(
+  page: number,
+  name?: string,
+): Promise<{ stores: Store[]; total: number }> { 
+  const pageSize = 5;
+
+  let filteredStores = this.items.filter((store) => {
+    if (store.status !== 'ATIVA') return false;
+
+    if (name) {
+      const search = name.toLowerCase();
+      const matchName = store.name.toLowerCase().includes(search);
+      const matchDescription = store.description?.toLowerCase().includes(search);
+      
+      return matchName || matchDescription;
+    }
+
+    return true;
+  });
+
+  const total = filteredStores.length;
+
+  const currentDate = new Date().toISOString().split('T')[0];
+  
+  filteredStores = filteredStores.sort((a, b) => {
+    const stringA = `${a.id}-${currentDate}`;
+    const stringB = `${b.id}-${currentDate}`;
+    
+    const compare = stringA.localeCompare(stringB);
+    if (compare === 0) {
+      return a.id.localeCompare(b.id);
+    }
+    return compare;
+  });
+
+  const startIndex = (page - 1) * pageSize;
+  const paginatedStores = filteredStores.slice(startIndex, startIndex + pageSize);
+
+  const storesWithProducts = paginatedStores.map((store) => {
+    const storeProducts = this.productsInMemoryRepository!.items.filter(
+      (product) => product.storeId === store.id 
+    );
+
+    const sortedProducts = storeProducts
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, 8);
+
+    return {
+      ...store,
+      products: sortedProducts,
+    };
+  });
+
+  return {
+    stores: storesWithProducts,
+    total,
+  };
+}
 
   async findAll(
     page: number,
