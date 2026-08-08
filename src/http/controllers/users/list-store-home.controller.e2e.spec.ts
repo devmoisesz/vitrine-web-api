@@ -9,14 +9,12 @@ import { PrismaClient } from '@prisma/client';
 import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
-import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
-import { JwtService } from '@nestjs/jwt';
+import { faker } from '@faker-js/faker';
+import { randomUUID } from 'node:crypto';
 
-describe('List All Stores (E2E)', () => {
+describe('List Store Home (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let slugUnique: SlugGeneratorService;
-  let jwt: JwtService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -47,8 +45,6 @@ describe('List All Stores (E2E)', () => {
     app.use(cookieParser());
 
     prisma = app.get(PrismaService);
-    jwt = moduleRef.get(JwtService);
-    slugUnique = app.get(SlugGeneratorService);
 
     await app.init();
     await prisma.$connect();
@@ -59,46 +55,62 @@ describe('List All Stores (E2E)', () => {
     await app.close();
   });
 
-  test('[GET] /stores/admin', async () => {
-    const admin = await prisma.user.create({
+  test('[GET] /home/stores', async () => {
+    const store = await prisma.store.create({
       data: {
-        name: 'Admin',
-        email: 'admin@example.com',
-        password: '123456',
-        role: 'ADMIN',
+        name: 'store 013',
+        slug: 'store-013',
+        whatsapp: makeWhatsapp(),
       },
     });
 
-    for (let i = 0; i < 3; i++) {
-      await prisma.store.create({
-        data: {
-          name: 'Pants White',
-          slug: await slugUnique.execute('Pants White'),
-          description: 'Pants White Masculine',
-          whatsapp: makeWhatsapp(),
-          status: 'ATIVA',
-        },
-      });
+
+    const categoryPants = await prisma.category.create({
+      data: {
+        name: 'Pants',
+        slug: 'pants',
+      },
+    });
+
+    const subcategoryMasculine = await prisma.subCategory.create({
+      data: {
+        name: 'Masculine',
+        slug: 'masculine',
+        categoryId: categoryPants.id,
+      },
+    });
+
+    for(let i = 0; i < 9; i++){
+      const product = await prisma.product.create({
+      data: {
+        name: faker.commerce.productName(),
+        slug: faker.string.uuid(),
+        description: faker.commerce.productDescription(),
+        price: 69.79,
+        stock: 39,
+        storeId: store.id,
+        categoryId: categoryPants.id,
+        subcategoryId: subcategoryMasculine.id,
+        status: 'ATIVO',
+      },
+    });
+
+    await prisma.productImages.create({
+      data: {
+        image_url: faker.internet.url(),
+        storage_public_id: randomUUID(),
+        is_main: true,
+        productId: product.id,
+      },
+    });
     }
 
-    await prisma.store.create({
-      data: {
-        name: 'Pants Black',
-        slug: await slugUnique.execute('Pants Black'),
-        description: 'Pants Black Masculine',
-        whatsapp: makeWhatsapp(),
-        status: 'INATIVA',
-      },
-    });
-
-    const accessToken = jwt.sign({ role: admin.role }, { subject: admin.id });
-
-    const response = await request(app.getHttpServer())
-      .get(`/stores/admin`)
-      .set('Authorization', `Bearer ${accessToken}`);
+    const response = await request(app.getHttpServer()).get(
+      `/home/stores`,
+    );
 
     expect(response.statusCode).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
-    expect(response.body).toHaveLength(4);
   });
 });
+

@@ -15,7 +15,7 @@ import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 import path from 'node:path';
 import fs from 'node:fs';
 
-describe('Delete Store Logo (E2E)', () => {
+describe('Delete Store Banner (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
@@ -60,7 +60,7 @@ describe('Delete Store Logo (E2E)', () => {
     await app.close();
   });
 
-  test('[DELETE] /stores/:slug/logo/delete', async () => {
+  test('[DELETE] /stores/:slug/banner/delete', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
@@ -100,7 +100,7 @@ describe('Delete Store Logo (E2E)', () => {
 
     //requisição feita para fazer upload da imagem que depois será deletada
     const res = await request(app.getHttpServer())
-      .post(`/stores/${store.slug}/logo`)
+      .post(`/stores/${store.slug}/banner`)
       .set('Authorization', `Bearer ${accessToken}`)
       .attach('file', ImageBufferDelete, {
         filename: 'white-logo.png',
@@ -115,12 +115,12 @@ describe('Delete Store Logo (E2E)', () => {
       },
     });
 
-    if (!logo?.logoPublicId) {
+    if (!logo?.bannerPublicId) {
       throw new Error('Image not found, test request failed.');
     }
 
     const response = await request(app.getHttpServer())
-      .delete(`/stores/${store.slug}/logo/delete`)
+      .delete(`/stores/${store.slug}/banner/delete`)
       .set('Authorization', `Bearer ${accessToken}`)
 
     expect(response.statusCode).toBe(204);
@@ -132,7 +132,7 @@ describe('Delete Store Logo (E2E)', () => {
     });
 
     //verifica se a imagem antiga foi deletada
-    expect(imageOnDatabase!.logo_image_url).toBeNull()
-    expect(imageOnDatabase!.logoPublicId).toBeNull()
+    expect(imageOnDatabase!.bannerUrl).toBeNull()
+    expect(imageOnDatabase!.bannerPublicId).toBeNull()
   });
 });

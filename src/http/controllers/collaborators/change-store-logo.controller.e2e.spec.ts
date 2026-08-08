@@ -123,7 +123,7 @@ describe('Change Store Logo (E2E)', () => {
       },
     });
 
-    if (!logo?.storage_public_id) {
+    if (!logo?.logoPublicId) {
       throw new Error('Image not found, test request failed.');
     }
 
@@ -155,11 +155,11 @@ describe('Change Store Logo (E2E)', () => {
     }
 
     //Usado para deletar a imagem após o teste
-    uploadedPublicId = imageOnDatabase.storage_public_id;
+    uploadedPublicId = imageOnDatabase.logoPublicId;
 
     expect(imageOnDatabase).toBeTruthy();
 
     //verifica se a imagem antiga foi deletada
-    expect(imageOnDatabase.storage_public_id).not.toBe(logo.storage_public_id);
+    expect(imageOnDatabase.logoPublicId).not.toBe(logo.logoPublicId);
   });
 });

@@ -3,7 +3,7 @@ import { StorageService } from '@/storage/storage.service';
 import { StoresRepository } from '@/database/repositories/stores-repository';
 
 @Injectable()
-export class DeleteStoreLogoService {
+export class DeleteStoreBannerService {
   constructor(
     private storesRepository: StoresRepository,
     private storageService: StorageService,
@@ -16,16 +16,16 @@ export class DeleteStoreLogoService {
       throw new NotFoundException('Resource not found.');
     }
 
-    if (!store.logoPublicId) {
+    if (!store.bannerPublicId) {
       throw new NotFoundException('Resource Not Found');
     }
 
-    await this.storageService.delete(store.logoPublicId);
+    await this.storageService.delete(store.bannerPublicId);
     
     await this.storesRepository.save({
         ...store,
-        logo_image_url: null,
-        logoPublicId: null
+        bannerUrl: null,
+        bannerPublicId: null
     })
   }
 }

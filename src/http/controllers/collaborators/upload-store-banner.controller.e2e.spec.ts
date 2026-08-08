@@ -14,11 +14,14 @@ import cookieParser from 'cookie-parser';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 import path from 'node:path';
 import fs from 'node:fs';
+import { StorageService } from '@/storage/storage.service';
 
-describe('Delete Store Logo (E2E)', () => {
+describe('Upload Store Banner (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let jwt: JwtService;
+  let storage: StorageService;
+  let uploadedPublicId: string | null = null;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -50,17 +53,22 @@ describe('Delete Store Logo (E2E)', () => {
 
     prisma = app.get(PrismaService);
     jwt = moduleRef.get(JwtService);
+    storage = app.get(StorageService);
 
     await app.init();
     await prisma.$connect();
   });
 
   afterAll(async () => {
+    if (uploadedPublicId) {
+      await storage.delete(uploadedPublicId);
+    }
+
     await prisma.$disconnect();
     await app.close();
   });
 
-  test('[DELETE] /stores/:slug/logo/delete', async () => {
+  test('[POST] stores/:slug/logo', async () => {
     const uniqueEmail = makeEmail();
 
     const user = await prisma.user.create({
@@ -91,48 +99,32 @@ describe('Delete Store Logo (E2E)', () => {
 
     const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
 
-    const ImagePathDelete = path.resolve(
+    const ImagePath = path.resolve(
       __dirname,
-      '../../../../img/white-logo.png',
+      '../../../../img/logo-vitrine-web.jpg',
     );
 
-    const ImageBufferDelete = fs.readFileSync(ImagePathDelete);
-
-    //requisição feita para fazer upload da imagem que depois será deletada
-    const res = await request(app.getHttpServer())
-      .post(`/stores/${store.slug}/logo`)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .attach('file', ImageBufferDelete, {
-        filename: 'white-logo.png',
-        contentType: 'image/png',
-      });
-
-    expect(res.statusCode).toEqual(201);
-
-    const logo = await prisma.store.findUnique({
-      where: {
-        id: store.id,
-      },
-    });
-
-    if (!logo?.logoPublicId) {
-      throw new Error('Image not found, test request failed.');
-    }
+    const ImageBuffer = fs.readFileSync(ImagePath);
 
     const response = await request(app.getHttpServer())
-      .delete(`/stores/${store.slug}/logo/delete`)
+      .post(`/stores/${store.slug}/banner`)
       .set('Authorization', `Bearer ${accessToken}`)
+      .attach('file', ImageBuffer, {
+        filename: 'logo-vitrine-web.jpg',
+        contentType: 'image/jpg',
+      });
 
-    expect(response.statusCode).toBe(204);
+    expect(response.statusCode).toBe(201);
 
     const imageOnDatabase = await prisma.store.findUnique({
-      where: {
-        id: store.id,
-      },
-    });
+        where: {
+            id: store.id
+        }
+    })
 
-    //verifica se a imagem antiga foi deletada
-    expect(imageOnDatabase!.logo_image_url).toBeNull()
-    expect(imageOnDatabase!.logoPublicId).toBeNull()
+    //Usado para deletar a imagem após o teste
+    uploadedPublicId = imageOnDatabase?.bannerPublicId ?? null;
+
+    expect(imageOnDatabase).toBeTruthy();
   });
 });

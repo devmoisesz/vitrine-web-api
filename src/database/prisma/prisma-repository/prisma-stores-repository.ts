@@ -38,6 +38,71 @@ export class PrismaStoresRepository implements StoresRepository {
     return { stores, total };
   }
 
+  async findManyWithProducts(
+  page: number,
+  name?: string,
+): Promise<{ stores: Store[], total: number }> {
+  const pageSize = 5;
+
+  const where: Prisma.StoreWhereInput = {
+    status: 'ATIVA',
+    OR: name
+      ? [
+          { name: { contains: name, mode: 'insensitive' } },
+          { description: { contains: name, mode: 'insensitive' } },
+        ]
+      : undefined,
+  };
+
+  const storeIds = await this.prisma.$queryRaw<{ id: string }[]>`
+    SELECT "id"
+    FROM "stores"
+    WHERE "status" = 'ATIVA'
+    ${name ? Prisma.sql`
+      AND (
+        "name" ILIKE ${`%${name}%`}
+        OR "description" ILIKE ${`%${name}%`}
+      )
+    ` : Prisma.empty}
+    ORDER BY
+      MD5("id"::text || CURRENT_DATE::text),
+      "id"
+    LIMIT ${pageSize}
+    OFFSET ${(page - 1) * pageSize}
+  `;
+
+  const stores = await this.prisma.store.findMany({
+    where: {
+      id: {
+        in: storeIds.map(store => store.id),
+      },
+    },
+    include: {
+      products: {
+        take: 8,
+        orderBy: {
+        createdAt: 'desc',
+      },
+      }
+    },
+  });
+
+  const storesMap = new Map(
+    stores.map(store => [store.id, store]),
+  );
+
+  const orderedStores = storeIds
+    .map(({ id }) => storesMap.get(id))
+    .filter((store) => store !== undefined);
+
+  const total = await this.prisma.store.count({ where });
+
+  return {
+    stores: orderedStores,
+    total,
+  };
+}
+
   async findAll(
     page: number,
     name?: string,
@@ -92,7 +157,19 @@ export class PrismaStoresRepository implements StoresRepository {
       },
       data: {
         logo_image_url: url,
-        storage_public_id: public_id,
+        logoPublicId: public_id,
+      },
+    });
+  }
+
+  async saveBanner(id: string, url: string, public_id: string): Promise<void> {
+    await this.prisma.store.update({
+      where: {
+        id,
+      },
+      data: {
+        bannerUrl: url,
+        bannerPublicId: public_id,
       },
     });
   }

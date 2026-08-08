@@ -107,6 +107,14 @@ import { ListStoreManageProductsController } from './controllers/collaborators/l
 import { ListStoreManageProductsService } from '@/use-cases/services/products/list-store-manage-products.service';
 import { ListAllStoresController } from './controllers/admin/list-all-stores.controller';
 import { ListAllStoresService } from '@/use-cases/services/stores/list-all-stores.service';
+import { UploadStoreBannerController } from './controllers/collaborators/upload-store-banner.controller';
+import { UploadStoreBannerService } from '@/use-cases/services/stores/upload-store-banner.service';
+import { ChangeStoreBannerService } from '@/use-cases/services/stores/change-store-banner.service';
+import { ChangeStoreBannerController } from './controllers/collaborators/change-store-banner.controller';
+import { DeleteStoreBannerService } from '@/use-cases/services/stores/delete-store-banner.service';
+import { DeleteStoreBannerController } from './controllers/collaborators/delete-store-banner.controller';
+import { ListStoreHomeController } from './controllers/users/list-store-home.controller';
+import { ListStoreHomeService } from '@/use-cases/services/stores/list-store-home.service';
 
 @Module({
   imports: [DatabaseModule, StorageModule],
@@ -163,7 +171,11 @@ import { ListAllStoresService } from '@/use-cases/services/stores/list-all-store
     LogoutController,
     ChangePasswordController,
     ListStoreManageProductsController,
-    ListAllStoresController
+    ListAllStoresController,
+    UploadStoreBannerController,
+    ChangeStoreBannerController,
+    DeleteStoreBannerController,
+    ListStoreHomeController
   ],
   providers: [
     CreateAccountService,
@@ -218,7 +230,11 @@ import { ListAllStoresService } from '@/use-cases/services/stores/list-all-store
     GoogleAuthenticateService,
     ChangePasswordService,
     ListStoreManageProductsService,
-    ListAllStoresService
+    ListAllStoresService,
+    UploadStoreBannerService,
+    ChangeStoreBannerService,
+    DeleteStoreBannerService,
+    ListStoreHomeService
   ],
 })
 export class HttpModule {}

@@ -123,7 +123,7 @@ describe('Upload Store Logo (E2E)', () => {
     })
 
     //Usado para deletar a imagem após o teste
-    uploadedPublicId = imageOnDatabase?.storage_public_id ?? null;
+    uploadedPublicId = imageOnDatabase?.logoPublicId ?? null;
 
     expect(imageOnDatabase).toBeTruthy();
   });

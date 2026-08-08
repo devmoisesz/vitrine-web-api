@@ -4,40 +4,40 @@ import { StorageInMemory } from '../../../../test/in-memory-repository/storage-i
 import { StoresInMemoryRepository } from '../../../../test/in-memory-repository/stores-in-memory-repository';
 import { makeStore } from '../../../../test/factories/make-store';
 import { makeFakeMulterFile } from '../../../../test/factories/make-multer-file';
-import { UploadStoreLogoService } from './upload-store-logo.service';
 import { faker } from '@faker-js/faker';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 import { randomUUID } from 'node:crypto';
+import { UploadStoreBannerService } from './upload-store-banner.service';
 
 let storesRepository: StoresInMemoryRepository;
 let storageService: StorageInMemory;
-let sut: UploadStoreLogoService;
+let sut: UploadStoreBannerService;
 
 describe('Upload Store logo Service', () => {
   beforeEach(() => {
     storesRepository = new StoresInMemoryRepository();
     storageService = new StorageInMemory();
 
-    sut = new UploadStoreLogoService(
+    sut = new UploadStoreBannerService(
       storesRepository,
       storageService,
     );
   });
 
-  it('should be possible to upload a store logo', async () => {
+  it('should be possible to upload a store banner', async () => {
     const store = await makeStore(storesRepository);
 
-    const fakeFile = makeFakeMulterFile('logo.jpg');
+    const fakeFile = makeFakeMulterFile('banner.jpg');
 
     await sut.execute(store.slug, fakeFile);
 
     const logo = await storesRepository.findBySlug(store.slug)
 
-    expect(logo?.logo_image_url).toContain(fakeFile.filename)
-    expect(logo?.logo_image_url).toContain(store.slug)
+    expect(logo?.bannerUrl).toContain(fakeFile.filename)
+    expect(logo?.bannerPublicId).toContain(store.slug)
   });
 
-  it('should not be possible to upload a logo for a non-existent store.', async () => {
+  it('should not be possible to upload a banner for a non-existent store.', async () => {
     const fakeFile = makeFakeMulterFile('imagem-6.jpg');
 
     await expect(() =>
@@ -45,16 +45,16 @@ describe('Upload Store logo Service', () => {
     ).rejects.toBeInstanceOf(NotFoundException);
   });
 
-  it('should not allow uploading an image for a store that already has a logo.', async () => {
+  it('should not allow uploading an image for a store that already has a banner.', async () => {
     const store = await storesRepository.create({
       name: faker.company.name(),
       slug: 'slug',
       whatsapp: makeWhatsapp(),
-      logo_image_url: 'fake-logo.storage',
-      logoPublicId: randomUUID()
+      bannerUrl: 'fake-banner.storage',
+      bannerPublicId: randomUUID()
     })
 
-    const fakeFile = makeFakeMulterFile('logo.jpg');
+    const fakeFile = makeFakeMulterFile('banner.jpg');
     
     await expect(() =>
       sut.execute(store.slug, fakeFile),

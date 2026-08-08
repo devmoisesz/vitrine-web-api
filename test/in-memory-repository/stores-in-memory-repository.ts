@@ -6,6 +6,7 @@ import {
   Store,
 } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
+import { ProductsInMemoryRepository } from './product-in-memory-repository';
 
 export interface CreateStore {
   id?: string;
@@ -18,13 +19,17 @@ export interface CreateStore {
   cpf?: string | null;
   status?: StatusStore;
   logo_image_url?: string | null;
-  storage_public_id?: string | null;
+  logoPublicId?: string | null;
+  bannerUrl?: string | null;
+  bannerPublicId?: string | null;
   payment_methods?: PaymentMethod[];
   delivery_methods?: DeliveryMethod[];
 }
 
 export class StoresInMemoryRepository implements StoresRepository {
   public items: Store[] = [];
+
+  constructor(private productsInMemoryRepository?: ProductsInMemoryRepository){}
 
   async findMany(
     page: number,
@@ -60,6 +65,65 @@ export class StoresInMemoryRepository implements StoresRepository {
       total
     }
   }
+
+  async findManyWithProducts(
+  page: number,
+  name?: string,
+): Promise<{ stores: Store[]; total: number }> { 
+  const pageSize = 5;
+
+  let filteredStores = this.items.filter((store) => {
+    if (store.status !== 'ATIVA') return false;
+
+    if (name) {
+      const search = name.toLowerCase();
+      const matchName = store.name.toLowerCase().includes(search);
+      const matchDescription = store.description?.toLowerCase().includes(search);
+      
+      return matchName || matchDescription;
+    }
+
+    return true;
+  });
+
+  const total = filteredStores.length;
+
+  const currentDate = new Date().toISOString().split('T')[0];
+  
+  filteredStores = filteredStores.sort((a, b) => {
+    const stringA = `${a.id}-${currentDate}`;
+    const stringB = `${b.id}-${currentDate}`;
+    
+    const compare = stringA.localeCompare(stringB);
+    if (compare === 0) {
+      return a.id.localeCompare(b.id);
+    }
+    return compare;
+  });
+
+  const startIndex = (page - 1) * pageSize;
+  const paginatedStores = filteredStores.slice(startIndex, startIndex + pageSize);
+
+  const storesWithProducts = paginatedStores.map((store) => {
+    const storeProducts = this.productsInMemoryRepository!.items.filter(
+      (product) => product.storeId === store.id 
+    );
+
+    const sortedProducts = storeProducts
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, 8);
+
+    return {
+      ...store,
+      products: sortedProducts,
+    };
+  });
+
+  return {
+    stores: storesWithProducts,
+    total,
+  };
+}
 
   async findAll(
     page: number,
@@ -171,7 +235,9 @@ export class StoresInMemoryRepository implements StoresRepository {
       cpf: data.cpf ?? null,
       status: data.status ?? 'ATIVA',
       logo_image_url: data.logo_image_url ?? null,
-      storage_public_id: data.storage_public_id ?? null,
+      logoPublicId: data.logoPublicId ?? null,
+      bannerUrl: data.bannerUrl ?? null,
+      bannerPublicId: data.bannerPublicId ?? null,
       payment_methods: data.payment_methods ?? [],
       delivery_methods: data.delivery_methods ?? [],
       createdAt: new Date(),
@@ -196,6 +262,15 @@ export class StoresInMemoryRepository implements StoresRepository {
     if (!store) return;
 
     store.logo_image_url = url;
-    store.storage_public_id = public_id;
+    store.logoPublicId = public_id;
+  }
+
+  async saveBanner(id: string, url: string, public_id: string): Promise<void> {
+    const store = this.items.find((item) => item.id === id);
+
+    if (!store) return;
+
+    store.bannerUrl = url;
+    store.bannerPublicId = public_id;
   }
 }

@@ -5,22 +5,22 @@ import { StoresInMemoryRepository } from '../../../../test/in-memory-repository/
 import { makeFakeMulterFile } from '../../../../test/factories/make-multer-file';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 import { faker } from '@faker-js/faker';
-import { DeleteStoreLogoService } from './delete-store-logo.service';
+import { ChangeStoreBannerService } from './change-store-banner.service';
 
 let storesRepository: StoresInMemoryRepository;
 let storageService: StorageInMemory;
-let sut: DeleteStoreLogoService;
+let sut: ChangeStoreBannerService;
 
-describe('Delete Store Logo Service', () => {
+describe('Change Store banner Service', () => {
   beforeEach(() => {
     storesRepository = new StoresInMemoryRepository();
     storageService = new StorageInMemory();
 
-    sut = new DeleteStoreLogoService(storesRepository, storageService);
+    sut = new ChangeStoreBannerService(storesRepository, storageService);
   });
 
-  it('should be possible to delete a store image', async () => {
-    const fakeFileDeleted = makeFakeMulterFile('logo1.jpg');
+  it('should be possible to change the store banner', async () => {
+    const fakeFileDeleted = makeFakeMulterFile('banner1.jpg');
 
     const store = await storesRepository.create({
       name: faker.company.name(),
@@ -34,33 +34,38 @@ describe('Delete Store Logo Service', () => {
       contentType: fakeFileDeleted.mimetype,
     });
 
-    await storesRepository.saveImage(store.id, upload.url, upload.public_id);
+    await storesRepository.saveBanner(store.id, upload.url, upload.public_id);
 
-    await sut.execute(store.slug);
+    const newFakeFile = makeFakeMulterFile('banner2.jpg');
 
-    const logo = await storesRepository.findById(store.id);
+    await sut.execute(store.slug, newFakeFile);
 
-    expect(logo?.logo_image_url).toBeNull();
-    expect(logo?.logoPublicId).toBeNull();
+    const banner = await storesRepository.findBySlug(store.slug);
 
-    expect(storageService.items).toHaveLength(0);
+    expect(banner?.bannerUrl).toContain(newFakeFile.filename);
+
+    expect(storageService.items).toHaveLength(1);
   });
 
-  it('should not allow the immediate deletion of a non-existent store..', async () => {
-    await expect(() => sut.execute('not exists')).rejects.toBeInstanceOf(
-      NotFoundException,
-    );
+  it('not allow uploading a banner for a non-existent banner.', async () => {
+    const fakeFile = makeFakeMulterFile('banner1.jpg');
+
+    await expect(() =>
+      sut.execute('not exists', fakeFile),
+    ).rejects.toBeInstanceOf(NotFoundException);
   });
 
-  it('should not allow changing the logo of a store that doesnt have a logo.', async () => {
+  it('should not allow changing the banner of a store that doesnt have a banner.', async () => {
     const store = await storesRepository.create({
       name: faker.company.name(),
       slug: 'slug',
       whatsapp: makeWhatsapp(),
     });
 
+    const fakeFile = makeFakeMulterFile('image.jpg');
+
     await expect(() =>
-      sut.execute(store.slug),
+      sut.execute(store.slug, fakeFile),
     ).rejects.toBeInstanceOf(NotFoundException);
   });
 });

@@ -1,9 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { StorageService } from '@/storage/storage.service';
 import { StoresRepository } from '@/database/repositories/stores-repository';
 
 @Injectable()
-export class ChangeStoreLogoService {
+export class UploadStoreBannerService {
   constructor(
     private storesRepository: StoresRepository,
     private storageService: StorageService,
@@ -16,23 +20,17 @@ export class ChangeStoreLogoService {
       throw new NotFoundException('Resource not found.');
     }
 
-    if (!store.logoPublicId) {
-      throw new NotFoundException('Resource Not Found');
+    if (store.bannerUrl) {
+      throw new ConflictException('Already has a banner');
     }
 
-    await this.storageService.delete(store.logoPublicId);
-
-    const newLogo = await this.storageService.upload({
+    const banner = await this.storageService.upload({
       body: file.buffer,
       fileName: file.originalname,
       contentType: file.mimetype,
-      folder: `vitrine-web/${slug}/logos`,
+      folder: `vitrine-web/${slug}/banner`,
     });
 
-    await this.storesRepository.saveImage(
-      store.id,
-      newLogo.url,
-      newLogo.public_id,
-    );
+    await this.storesRepository.saveBanner(store.id, banner.url, banner.public_id);
   }
 }

@@ -5,22 +5,22 @@ import { StoresInMemoryRepository } from '../../../../test/in-memory-repository/
 import { makeFakeMulterFile } from '../../../../test/factories/make-multer-file';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 import { faker } from '@faker-js/faker';
-import { DeleteStoreLogoService } from './delete-store-logo.service';
+import { DeleteStoreBannerService } from './delete-store-banner.service';
 
 let storesRepository: StoresInMemoryRepository;
 let storageService: StorageInMemory;
-let sut: DeleteStoreLogoService;
+let sut: DeleteStoreBannerService;
 
-describe('Delete Store Logo Service', () => {
+describe('Delete Store banner Service', () => {
   beforeEach(() => {
     storesRepository = new StoresInMemoryRepository();
     storageService = new StorageInMemory();
 
-    sut = new DeleteStoreLogoService(storesRepository, storageService);
+    sut = new DeleteStoreBannerService(storesRepository, storageService);
   });
 
   it('should be possible to delete a store image', async () => {
-    const fakeFileDeleted = makeFakeMulterFile('logo1.jpg');
+    const fakeFileDeleted = makeFakeMulterFile('banner1.jpg');
 
     const store = await storesRepository.create({
       name: faker.company.name(),
@@ -34,25 +34,25 @@ describe('Delete Store Logo Service', () => {
       contentType: fakeFileDeleted.mimetype,
     });
 
-    await storesRepository.saveImage(store.id, upload.url, upload.public_id);
+    await storesRepository.saveBanner(store.id, upload.url, upload.public_id);
 
     await sut.execute(store.slug);
 
-    const logo = await storesRepository.findById(store.id);
+    const banner = await storesRepository.findById(store.id);
 
-    expect(logo?.logo_image_url).toBeNull();
-    expect(logo?.logoPublicId).toBeNull();
+    expect(banner?.bannerUrl).toBeNull();
+    expect(banner?.bannerPublicId).toBeNull();
 
     expect(storageService.items).toHaveLength(0);
   });
 
-  it('should not allow the immediate deletion of a non-existent store..', async () => {
+  it('should not allow the immediate deletion of a non-existent store.', async () => {
     await expect(() => sut.execute('not exists')).rejects.toBeInstanceOf(
       NotFoundException,
     );
   });
 
-  it('should not allow changing the logo of a store that doesnt have a logo.', async () => {
+  it('should not allow changing the banner of a store that doesnt have a banner.', async () => {
     const store = await storesRepository.create({
       name: faker.company.name(),
       slug: 'slug',
