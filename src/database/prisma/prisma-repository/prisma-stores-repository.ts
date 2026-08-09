@@ -83,6 +83,13 @@ export class PrismaStoresRepository implements StoresRepository {
         orderBy: {
         createdAt: 'desc',
       },
+      include: {
+        products_images: {
+          where: {
+            is_main: true
+          }
+        }
+      }
       }
     },
   });
