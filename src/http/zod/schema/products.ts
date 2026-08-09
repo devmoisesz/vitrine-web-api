@@ -42,7 +42,8 @@ export const registerProductBodySchema = z.object({
   tags: z
     .array(tagSchema)
     .min(1, 'Informe pelo menos uma tag.')
-    .max(10, 'É permitido informar no máximo 10 tags.'),
+    .max(10, 'É permitido informar no máximo 10 tags.')
+    .optional(),
 
   description: z
     .string({ message: 'Informe a descrição do produto.' })

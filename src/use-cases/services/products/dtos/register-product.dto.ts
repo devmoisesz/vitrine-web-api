@@ -1,6 +1,6 @@
 export interface InputRegisterProductDto {
     name_product: string
-    tags: string[]
+    tags?: string[]
     description: string
     price: number
     sizes: string[]
