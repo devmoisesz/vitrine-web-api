@@ -61,6 +61,8 @@ describe('List Store Home (E2E)', () => {
         name: 'store 013',
         slug: 'store-013',
         whatsapp: makeWhatsapp(),
+        logo_image_url: faker.internet.url(),
+        bannerUrl: faker.internet.url(),
       },
     });
 
