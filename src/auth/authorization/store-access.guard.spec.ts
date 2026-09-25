@@ -1,104 +1,135 @@
-import { ExecutionContext, ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ExecutionContext,
+  ForbiddenException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { StoreAccessGuard } from './store-access.guard';
-import type { PrismaService } from '@/database/prisma/prisma.service'; // Ajuste o caminho se necessário
+import type { PrismaService } from '@/database/prisma/prisma.service';
+import type { UserPayload } from '../jwt-payload';
 
 describe('StoreAccessGuard', () => {
   let guard: StoreAccessGuard;
-
-  // objetos de mock com todas as propriedades necessárias
+  const user: UserPayload = { sub: 'user-id', role: 'USER' };
   const prismaMock = {
-    store: {
-      findUnique: vi.fn(),
-    },
-    collaborator: {
-      findFirst: vi.fn(),
-    },
+    store: { findUnique: vi.fn() },
+    collaborator: { findFirst: vi.fn() },
   };
-
-  const reflectorMock = {
-    getAllAndOverride: vi.fn(),
-  };
+  const reflectorMock = { getAllAndOverride: vi.fn() };
 
   beforeEach(() => {
-    // Limpa o histórico de chamadas dos mocks antes de cada teste
-    vi.clearAllMocks();
-
+    vi.resetAllMocks();
     guard = new StoreAccessGuard(
       prismaMock as unknown as PrismaService,
       reflectorMock as unknown as Reflector,
     );
-
-    // na maioria dos testes, a loja existe
-    prismaMock.store.findUnique.mockResolvedValue({ id: 'store-id', name: 'Loja Teste' });
+    prismaMock.store.findUnique.mockResolvedValue({ id: 'store-id' });
   });
 
-  function createMockContext(user: any, storeId: string) {
+  function createMockContext(
+    user: unknown,
+    params: { storeId?: string; slug?: string } = { storeId: 'store-id' },
+  ) {
     return {
-      switchToHttp: () => ({
-        getRequest: () => ({
-          user,
-          params: { storeId },
-        }),
-      }),
+      switchToHttp: () => ({ getRequest: () => ({ user, params }) }),
       getHandler: () => ({}),
       getClass: () => ({}),
     } as unknown as ExecutionContext;
   }
 
-  it('must allow direct access if the user is a Global Admin', async () => {
-    const context = createMockContext({ id: 'admin-id', role: 'ADMIN' }, 'store-id');
-
-    const result = await guard.canActivate(context);
-
-    expect(result).toBe(true);
-   
+  it('allows a global admin without querying collaborators', async () => {
+    const context = createMockContext({ sub: 'admin-id', role: 'ADMIN' });
+    expect(await guard.canActivate(context)).toBe(true);
     expect(prismaMock.collaborator.findFirst).not.toHaveBeenCalled();
   });
 
-  it('must throw UnauthorizedException if there is no user in the request', async () => {
-    const context = createMockContext(undefined, 'store-id');
+  it.each([
+    undefined,
+    null,
+    { id: 'legacy-id', role: 'USER' },
+    { sub: undefined, role: 'USER' },
+    { sub: null, role: 'USER' },
+    { sub: '', role: 'USER' },
+    { sub: '   ', role: 'USER' },
+    { sub: 123, role: 'USER' },
+    { role: 'ADMIN' },
+    { sub: '', role: 'ADMIN' },
+  ])(
+    'rejects invalid identity %j before any database lookup',
+    async (identity) => {
+      await expect(
+        guard.canActivate(createMockContext(identity)),
+      ).rejects.toThrow(UnauthorizedException);
+      expect(prismaMock.store.findUnique).not.toHaveBeenCalled();
+      expect(prismaMock.collaborator.findFirst).not.toHaveBeenCalled();
+    },
+  );
 
-    await expect(guard.canActivate(context)).rejects.toThrow(UnauthorizedException);
+  it('requires a store identifier', async () => {
+    await expect(
+      guard.canActivate(createMockContext(user, {})),
+    ).rejects.toThrow(BadRequestException);
+    expect(prismaMock.store.findUnique).not.toHaveBeenCalled();
   });
 
-  it('must throw ForbiddenException if the user is not a store collaborator', async () => {
-    const context = createMockContext({ id: 'user-id', role: 'Usuário' }, 'store-id');
-    
-    prismaMock.collaborator.findFirst.mockResolvedValue(null);
-
-    await expect(guard.canActivate(context)).rejects.toThrow(ForbiddenException);
+  it('rejects a missing store', async () => {
+    prismaMock.store.findUnique.mockResolvedValue(null);
+    await expect(guard.canActivate(createMockContext(user))).rejects.toThrow(
+      NotFoundException,
+    );
+    expect(prismaMock.collaborator.findFirst).not.toHaveBeenCalled();
   });
 
-  it('must allow access if the user belongs to the store and the route does not require specific roles', async () => {
-    const context = createMockContext({ id: 'user-id', role: 'Usuário' }, 'store-id');
-    
-    prismaMock.collaborator.findFirst.mockResolvedValue({ id: 'collab-id', role: 'Funcionário' });
-    reflectorMock.getAllAndOverride.mockReturnValue(undefined); 
+  it.each([{ storeId: 'store-id' }, { slug: 'store-slug' }])(
+    'scopes membership by the authenticated subject and resolved store: %j',
+    async (params) => {
+      prismaMock.collaborator.findFirst.mockResolvedValue(null);
+      // An unrelated id must never override the authenticated subject.
+      const context = createMockContext({ ...user, id: 'other-user' }, params);
+      await expect(guard.canActivate(context)).rejects.toThrow(
+        ForbiddenException,
+      );
+      expect(prismaMock.store.findUnique).toHaveBeenCalledWith({
+        where:
+          'storeId' in params ? { id: params.storeId } : { slug: params.slug },
+      });
+      expect(prismaMock.collaborator.findFirst).toHaveBeenCalledExactlyOnceWith(
+        {
+          where: { userId: user.sub, storeId: 'store-id' },
+        },
+      );
+    },
+  );
 
-    const result = await guard.canActivate(context);
+  it.each([undefined, []])(
+    'allows a member without required roles: %j',
+    async (roles) => {
+      prismaMock.collaborator.findFirst.mockResolvedValue({
+        role: 'FUNCIONARIO',
+      });
+      reflectorMock.getAllAndOverride.mockReturnValue(roles);
+      expect(await guard.canActivate(createMockContext(user))).toBe(true);
+    },
+  );
 
-    expect(result).toBe(true);
+  it('rejects an employee on an owner-only route', async () => {
+    prismaMock.collaborator.findFirst.mockResolvedValue({
+      role: 'FUNCIONARIO',
+    });
+    reflectorMock.getAllAndOverride.mockReturnValue(['PROPRIETARIO']);
+    await expect(guard.canActivate(createMockContext(user))).rejects.toThrow(
+      ForbiddenException,
+    );
   });
 
-  it('must throw ForbiddenException if the collaborator does not have the role required by the route', async () => {
-    const context = createMockContext({ id: 'user-id', role: 'Usuário' }, 'store-id');
-    
-    prismaMock.collaborator.findFirst.mockResolvedValue({ id: 'collab-id', role: 'Funcionário' });
-    reflectorMock.getAllAndOverride.mockReturnValue(['Proprietário']); 
-
-    await expect(guard.canActivate(context)).rejects.toThrow(ForbiddenException);
-  });
-
-  it('must allow access if the user holds the role required by the route.', async () => {
-    const context = createMockContext({ id: 'user-id', role: 'Usuário' }, 'store-id');
-    
-    prismaMock.collaborator.findFirst.mockResolvedValue({ id: 'collab-id', role: 'Proprietário' });
-    reflectorMock.getAllAndOverride.mockReturnValue(['Proprietário']); 
-
-    const result = await guard.canActivate(context);
-
-    expect(result).toBe(true);
+  it('allows an owner on an owner-only route', async () => {
+    prismaMock.collaborator.findFirst.mockResolvedValue({
+      role: 'PROPRIETARIO',
+    });
+    reflectorMock.getAllAndOverride.mockReturnValue(['PROPRIETARIO']);
+    expect(await guard.canActivate(createMockContext(user))).toBe(true);
   });
 });
