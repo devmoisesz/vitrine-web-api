@@ -5,6 +5,12 @@ import { randomUUID } from 'node:crypto';
 export class CollaboratorsInMemoryRepository implements CollaboratorsRepository {
   public items: Collaborator[] = [];
 
+  async findByIdAndStoreId(id: string, storeId: string): Promise<Collaborator | null> {
+    if (!id || !storeId) return null;
+
+    return this.items.find((item) => item.id === id && item.storeId === storeId) ?? null;
+  }
+
   async findByUserAndStore(userId: string, storeId: string): Promise<Collaborator | null> {
     const collaborator = this.items.find((item) => item.userId === userId && item.storeId === storeId)
 
@@ -13,10 +19,10 @@ export class CollaboratorsInMemoryRepository implements CollaboratorsRepository 
     return collaborator
   }
   
-  async delete(userId: string): Promise<void> {
-    const employee = this.items.findIndex((item) => item.userId === userId)
+  async delete(id: string): Promise<void> {
+    const employee = this.items.findIndex((item) => item.id === id)
 
-    this.items.splice(employee, 1)
+    if (employee !== -1) this.items.splice(employee, 1)
   }
 
   async findManyEmployee(storeId: string): Promise<Collaborator[]> {

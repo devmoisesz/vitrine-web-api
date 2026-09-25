@@ -7,6 +7,14 @@ import { CollaboratorsRepository } from '@/database/repositories/collaborators-r
 export class PrismaCollaboratorsRepository implements CollaboratorsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findByIdAndStoreId(id: string, storeId: string): Promise<Collaborator | null> {
+    if (!id || !storeId) return null;
+
+    return this.prisma.collaborator.findFirst({
+      where: { id, storeId },
+    });
+  }
+
   async findByUserAndStore(
     userId: string,
     storeId: string,
