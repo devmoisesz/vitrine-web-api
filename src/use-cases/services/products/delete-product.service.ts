@@ -11,8 +11,11 @@ export class DeleteProductService {
     private storageService: StorageService,
   ) {}
 
-  async execute(productId: string): Promise<void> {
-    const product = await this.productsRepository.findById(productId);
+  async execute(storeSlug: string, productId: string): Promise<void> {
+    const product = await this.productsRepository.findByIdAndStoreSlug(
+      productId,
+      storeSlug,
+    );
 
     if (!product) {
       throw new NotFoundException('Resource not found');

@@ -1,6 +1,4 @@
-import {
-    Injectable, NotFoundException
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProductsRepository } from '@/database/repositories/products-repository';
 import { ProductsImagesRepository } from '@/database/repositories/products-images-repository';
 import { StorageService } from '@/storage/storage.service';
@@ -13,8 +11,16 @@ export class ChangeProductImageService {
     private productsImagesRepository: ProductsImagesRepository,
   ) {}
 
-  async execute(productId: string, imageId: string, file: Express.Multer.File) {
-    const product = await this.productsRepository.findById(productId);
+  async execute(
+    storeSlug: string,
+    productId: string,
+    imageId: string,
+    file: Express.Multer.File,
+  ) {
+    const product = await this.productsRepository.findByIdAndStoreSlug(
+      productId,
+      storeSlug,
+    );
 
     if (!product) {
       throw new NotFoundException(

@@ -13,8 +13,15 @@ export class EditProductService {
     private subcategoriesRepository: SubcategoriesRepository,
   ) {}
 
-  async execute(productId: string, data: InputEditProductDto): Promise<void> {
-    const product = await this.productsRepository.findById(productId);
+  async execute(
+    storeSlug: string,
+    productId: string,
+    data: InputEditProductDto,
+  ): Promise<void> {
+    const product = await this.productsRepository.findByIdAndStoreSlug(
+      productId,
+      storeSlug,
+    );
 
     if (!product) {
       throw new NotFoundException(

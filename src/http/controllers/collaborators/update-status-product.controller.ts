@@ -51,9 +51,10 @@ export class UpdateStatusProductController {
 })
   async handle(
     @Param('productId') productId: string,
+    @Param('slug') slug: string,
 
     @Body('status', new ParseEnumPipe(ProductStatus)) status: ProductStatus,
   ) {
-    await this.updateStatusProductService.execute(productId, status);
+    await this.updateStatusProductService.execute(slug, productId, status);
   }
 }

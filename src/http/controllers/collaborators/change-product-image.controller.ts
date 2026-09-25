@@ -75,9 +75,11 @@ export class ChangeProductImageController {
     file: Express.Multer.File,
 
     @Param('productId') productId: string,
+    @Param('slug') slug: string,
     @Param('imageId') imageId: string,
   ) {
     return await this.changeProductImageService.execute(
+      slug,
       productId,
       imageId,
       file,

@@ -31,8 +31,9 @@ export class SetMainImageController {
   })
   async handle(
     @Param('productId') productId: string,
+    @Param('slug') slug: string,
     @Param('imageId') imageId: string,
   ) {
-    return await this.setMainImageService.execute(productId, imageId);
+    return await this.setMainImageService.execute(slug, productId, imageId);
   }
 }

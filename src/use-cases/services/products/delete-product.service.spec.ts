@@ -23,8 +23,8 @@ let sut: DeleteProductService;
 
 describe('Delete Product Image Service', () => {
   beforeEach(() => {
-    productsRepository = new ProductsInMemoryRepository();
     storesRepository = new StoresInMemoryRepository();
+    productsRepository = new ProductsInMemoryRepository(storesRepository);
     categoriesRepository = new CategoriesInMemoryRepository();
     subcategoriesRepository = new SubcategoriesInMemoryRepository();
     productsImagesRepository = new ProductsImagesInMemoryRepository();
@@ -51,7 +51,7 @@ describe('Delete Product Image Service', () => {
       subcategory.id,
     ); 
 
-    await sut.execute(product.id);
+    await sut.execute(store.slug, product.id);
 
     expect(productsRepository.items).toHaveLength(0);
   });
@@ -89,7 +89,7 @@ describe('Delete Product Image Service', () => {
 
     expect(storageService.items).toHaveLength(5);    
 
-    await sut.execute(product.id);
+    await sut.execute(store.slug, product.id);
 
     const storedImages = await productsImagesRepository.findById(product.id);
 
@@ -100,7 +100,7 @@ describe('Delete Product Image Service', () => {
 
   it('should not allow deleting a non-existent product', async () => {
     await expect(() =>
-      sut.execute('not exists'),
+      sut.execute('slug-test', 'not exists'),
     ).rejects.toBeInstanceOf(NotFoundException);
   });
 });

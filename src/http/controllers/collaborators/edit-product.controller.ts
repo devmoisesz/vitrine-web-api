@@ -62,8 +62,9 @@ export class EditProductController {
     body: EditProductBodySchema,
 
     @Param('productId') productId: string,
+    @Param('slug') slug: string,
   ) {
-    await this.editProductService.execute(productId, {
+    await this.editProductService.execute(slug, productId, {
       newNameProduct: body.newNameProduct,
       newTags: body.newTags,
       newDescription: body.newDescription,

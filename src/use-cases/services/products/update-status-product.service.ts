@@ -9,8 +9,15 @@ import { ProductsRepository } from '@/database/repositories/products-repository'
 export class UpdateStatusProductService {
   constructor(private productsRepository: ProductsRepository) {}
 
-  async execute(productId: string, status: 'ATIVO' | 'INATIVO'): Promise<void> {
-    const product = await this.productsRepository.findById(productId);
+  async execute(
+    storeSlug: string,
+    productId: string,
+    status: 'ATIVO' | 'INATIVO',
+  ): Promise<void> {
+    const product = await this.productsRepository.findByIdAndStoreSlug(
+      productId,
+      storeSlug,
+    );
 
     if (!product) {
       throw new NotFoundException('Resource not found');

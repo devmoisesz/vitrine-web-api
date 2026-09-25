@@ -24,8 +24,8 @@ let sut: UploadProductImagesService;
 
 describe('Register Product Images Service', () => {
   beforeEach(() => {
-    productsRepository = new ProductsInMemoryRepository();
     storesRepository = new StoresInMemoryRepository();
+    productsRepository = new ProductsInMemoryRepository(storesRepository);
     categoriesRepository = new CategoriesInMemoryRepository();
     subcategoriesRepository = new SubcategoriesInMemoryRepository();
     productsImagesRepository = new ProductsImagesInMemoryRepository();

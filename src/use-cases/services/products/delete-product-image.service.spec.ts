@@ -24,8 +24,8 @@ let sut: DeleteProductImageService;
 
 describe('Delete Product Image Service', () => {
   beforeEach(() => {
-    productsRepository = new ProductsInMemoryRepository();
     storesRepository = new StoresInMemoryRepository();
+    productsRepository = new ProductsInMemoryRepository(storesRepository);
     categoriesRepository = new CategoriesInMemoryRepository();
     subcategoriesRepository = new SubcategoriesInMemoryRepository();
     productsImagesRepository = new ProductsImagesInMemoryRepository();
@@ -67,7 +67,7 @@ describe('Delete Product Image Service', () => {
       is_main: false,
     });
 
-    await sut.execute(product.id, productImage.id);
+    await sut.execute(store.slug, product.id, productImage.id);
 
     const storedImages = await productsImagesRepository.findById(product.id);
 
@@ -118,7 +118,7 @@ describe('Delete Product Image Service', () => {
       is_main: false,
     });
 
-    await sut.execute(product.id, productImageDeleted.id);
+    await sut.execute(store.slug, product.id, productImageDeleted.id);
 
     const imageDeleted = await productsImagesRepository.findById(
       productImageDeleted.id,
@@ -190,7 +190,7 @@ describe('Delete Product Image Service', () => {
       is_main: false,
     });
 
-    await sut.execute(product.id, productImageDeleted.id, nextImageMain.id);
+    await sut.execute(store.slug, product.id, productImageDeleted.id, nextImageMain.id);
 
     const imageDeleted = await productsImagesRepository.findById(
       productImageDeleted.id,
@@ -218,7 +218,7 @@ describe('Delete Product Image Service', () => {
     });
 
     await expect(() =>
-      sut.execute('not exists', productImage.id),
+      sut.execute('slug-test', 'not exists', productImage.id),
     ).rejects.toBeInstanceOf(NotFoundException);
   });
 
@@ -237,7 +237,7 @@ describe('Delete Product Image Service', () => {
     );
 
     await expect(() =>
-      sut.execute(product.id, 'not exists'),
+      sut.execute(store.slug, product.id, 'not exists'),
     ).rejects.toBeInstanceOf(NotFoundException);
   });
 });

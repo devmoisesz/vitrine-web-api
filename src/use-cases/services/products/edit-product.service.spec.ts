@@ -17,10 +17,10 @@ describe('Edit Product Service', () => {
   let sut: EditProductService;
 
   beforeEach(() => {
-    productsRepository = new ProductsInMemoryRepository();
     categoriesRepository = new CategoriesInMemoryRepository();
     subcategoriesRepository = new SubcategoriesInMemoryRepository();
     storesRepository = new StoresInMemoryRepository();
+    productsRepository = new ProductsInMemoryRepository(storesRepository);
     sut = new EditProductService(
       productsRepository,
       categoriesRepository,
@@ -59,7 +59,7 @@ describe('Edit Product Service', () => {
       tags: ['old-tag'],
     });
 
-    await sut.execute(product.id, {
+    await sut.execute(store.slug, product.id, {
       newTags: ['new-tag', 'another-tag'],
       newDescription: 'updated description',
       newPrice: 15.5,
@@ -83,7 +83,7 @@ describe('Edit Product Service', () => {
 
   it('should not allow editing a non-existent product.', async () => {
     await expect(() =>
-      sut.execute('not exits', {
+      sut.execute('slug-test', 'not exits', {
         newTags: ['new-tag', 'another-tag'],
         newDescription: 'updated description',
         newPrice: 15.5,
@@ -117,7 +117,7 @@ describe('Edit Product Service', () => {
     });
 
     await expect(() =>
-      sut.execute(product.id, {
+      sut.execute(store.slug, product.id, {
         newTags: ['new-tag', 'another-tag'],
         newDescription: 'updated description',
         newPrice: 15.5,
@@ -154,7 +154,7 @@ describe('Edit Product Service', () => {
     });
 
     await expect(() =>
-      sut.execute(product.id, {
+      sut.execute(store.slug, product.id, {
         newTags: ['new-tag', 'another-tag'],
         newDescription: 'updated description',
         newPrice: 15.5,

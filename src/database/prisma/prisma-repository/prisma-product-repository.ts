@@ -274,6 +274,14 @@ export class PrismaProductsRepository implements ProductsRepository {
     });
   }
 
+  async findByIdAndStoreSlug(id: string, storeSlug: string): Promise<Product | null> {
+    if (!id || !storeSlug) return null;
+
+    return this.prisma.product.findFirst({
+      where: { id, store: { slug: storeSlug } },
+    });
+  }
+
   async create(data: CreateProductInput): Promise<Product> {
     const { tags, ...productData } = data;
 
