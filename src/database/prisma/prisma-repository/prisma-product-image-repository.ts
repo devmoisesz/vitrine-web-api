@@ -37,10 +37,6 @@ export class PrismaProductsImagesRepository implements ProductsImagesRepository 
       },
     });
 
-    if (!image) {
-      throw new Error('Image Not Found');
-    }
-
     return image;
   }
 

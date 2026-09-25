@@ -23,8 +23,8 @@ let sut: SetMainImageService;
 
 describe('Change Product Image Service', () => {
   beforeEach(() => {
-    productsRepository = new ProductsInMemoryRepository();
     storesRepository = new StoresInMemoryRepository();
+    productsRepository = new ProductsInMemoryRepository(storesRepository);
     categoriesRepository = new CategoriesInMemoryRepository();
     subcategoriesRepository = new SubcategoriesInMemoryRepository();
     productsImagesRepository = new ProductsImagesInMemoryRepository();
@@ -80,7 +80,7 @@ describe('Change Product Image Service', () => {
       is_main: false,
     });
 
-    await sut.execute(product.id, productImage2.id);
+    await sut.execute(store.slug, product.id, productImage2.id);
 
     const storedImages = await productsImagesRepository.findManyByProductId(
       product.id,
@@ -111,7 +111,7 @@ describe('Change Product Image Service', () => {
     );
 
     await expect(() =>
-      sut.execute(product.id, 'not exists'),
+      sut.execute(store.slug, product.id, 'not exists'),
     ).rejects.toBeInstanceOf(NotFoundException);
   });
 
@@ -145,7 +145,7 @@ describe('Change Product Image Service', () => {
     });
 
     await expect(() =>
-      sut.execute(product.id, productImage.id),
+      sut.execute(store.slug, product.id, productImage.id),
     ).rejects.toBeInstanceOf(ConflictException);
   });
 });

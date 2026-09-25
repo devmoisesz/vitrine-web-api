@@ -35,8 +35,9 @@ export class DeleteProductController {
       'Product not found.',
   })
   async handle(
+    @Param('slug') slug: string,
     @Param('productId') productId: string,
   ) {
-    return await this.deleteProductService.execute(productId);
+    return await this.deleteProductService.execute(slug, productId);
   }
 }

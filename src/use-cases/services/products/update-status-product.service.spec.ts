@@ -17,10 +17,10 @@ describe('Update Status Product Service', () => {
   let sut: UpdateStatusProductService;
 
   beforeEach(() => {
-    productsRepository = new ProductsInMemoryRepository();
     categoriesRepository = new CategoriesInMemoryRepository();
     subcategoriesRepository = new SubcategoriesInMemoryRepository();
     storesRepository = new StoresInMemoryRepository();
+    productsRepository = new ProductsInMemoryRepository(storesRepository);
     sut = new UpdateStatusProductService(
       productsRepository,
     );
@@ -50,7 +50,7 @@ describe('Update Status Product Service', () => {
       tags: ['old-tag'],
     });
 
-    await sut.execute(product.id, 'INATIVO');
+    await sut.execute(store.slug, product.id, 'INATIVO');
 
     const updatedProduct = await productsRepository.findById(product.id);
 
@@ -82,7 +82,7 @@ describe('Update Status Product Service', () => {
       tags: ['old-tag'],
     });
 
-    await sut.execute(product.id, 'ATIVO');
+    await sut.execute(store.slug, product.id, 'ATIVO');
 
     const updatedProduct = await productsRepository.findById(product.id);
 
@@ -92,7 +92,7 @@ describe('Update Status Product Service', () => {
 
   it('must not allow the operation to be performed with an invalid product..', async () => {
     await expect(() =>
-      sut.execute('not exists', 'ATIVO'),
+      sut.execute('slug-test', 'not exists', 'ATIVO'),
     ).rejects.toBeInstanceOf(NotFoundException);
   });
 
@@ -121,7 +121,7 @@ describe('Update Status Product Service', () => {
     });
 
     await expect(() =>
-      sut.execute(product.id, 'INATIVO'),
+      sut.execute(store.slug, product.id, 'INATIVO'),
     ).rejects.toBeInstanceOf(ConflictException);
   });
 
@@ -150,7 +150,7 @@ describe('Update Status Product Service', () => {
     });
 
     await expect(() =>
-      sut.execute(product.id, 'ATIVO'),
+      sut.execute(store.slug, product.id, 'ATIVO'),
     ).rejects.toBeInstanceOf(ConflictException);
   });
 });

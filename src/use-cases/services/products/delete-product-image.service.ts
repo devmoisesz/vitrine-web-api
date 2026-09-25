@@ -11,8 +11,16 @@ export class DeleteProductImageService {
     private productsImagesRepository: ProductsImagesRepository,
   ) {}
 
-  async execute(productId: string, imageId: string, nextMainImageId?: string) {
-    const product = await this.productsRepository.findById(productId);
+  async execute(
+    storeSlug: string,
+    productId: string,
+    imageId: string,
+    nextMainImageId?: string,
+  ) {
+    const product = await this.productsRepository.findByIdAndStoreSlug(
+      productId,
+      storeSlug,
+    );
 
     if (!product) {
       throw new NotFoundException(
@@ -26,6 +34,21 @@ export class DeleteProductImageService {
       throw new NotFoundException(
         'The requested resource could not be processed.',
       );
+    }
+
+    if (nextMainImageId !== undefined) {
+      const nextMainImage =
+        await this.productsImagesRepository.findById(nextMainImageId);
+
+      if (
+        !nextMainImage ||
+        nextMainImage.productId !== product.id ||
+        nextMainImage.id === imageToDelete.id
+      ) {
+        throw new NotFoundException(
+          'The requested resource could not be processed.',
+        );
+      }
     }
 
     await this.storageService.delete(imageToDelete.storage_public_id);
@@ -48,9 +71,9 @@ export class DeleteProductImageService {
         return prev.createdAt > current.createdAt ? prev : current;
       });
 
-      nextMainImageId = mostRecentImage.id
+      nextMainImageId = mostRecentImage.id;
     }
 
-    await this.productsImagesRepository.updateToMain(nextMainImageId)
+    await this.productsImagesRepository.updateToMain(nextMainImageId);
   }
 }

@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   // O Passport injeta o retorno desse método diretamente dentro do `request.user`
-  async validate(payload: UserPayload) {
+  async validate(payload: UserPayload): Promise<UserPayload> {
     return {
       sub: payload.sub,
       role: payload.role,

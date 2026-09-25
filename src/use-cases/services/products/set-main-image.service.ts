@@ -1,7 +1,7 @@
 import {
   ConflictException,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { ProductsRepository } from '@/database/repositories/products-repository';
 import { ProductsImagesRepository } from '@/database/repositories/products-images-repository';
@@ -13,8 +13,11 @@ export class SetMainImageService {
     private productsImagesRepository: ProductsImagesRepository,
   ) {}
 
-  async execute(productId: string, imageId: string) {
-    const product = await this.productsRepository.findById(productId);
+  async execute(storeSlug: string, productId: string, imageId: string) {
+    const product = await this.productsRepository.findByIdAndStoreSlug(
+      productId,
+      storeSlug,
+    );
 
     if (!product) {
       throw new NotFoundException(

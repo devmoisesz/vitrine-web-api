@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { UsersInMemoryRepository } from '../../../../test/in-memory-repository/users-in-memory-repository';
 import { CollaboratorsInMemoryRepository } from '../../../../test/in-memory-repository/collaborators-in-memory-repository';
 import { StoresInMemoryRepository } from '../../../../test/in-memory-repository/stores-in-memory-repository';
@@ -67,5 +67,47 @@ describe('Delete Employee Service', () => {
     await expect(() =>
       sut.execute(store.slug, owner.id),
     ).rejects.toBeInstanceOf(ConflictException);
+  });
+
+  it.each(['FUNCIONARIO', 'PROPRIETARIO'] as const)(
+    'rejects a %s from another store before attempting deletion',
+    async (role) => {
+      const storeA = await makeStore(storesRepository, { slug: 'loja-a' });
+      const storeB = await makeStore(storesRepository, { slug: 'loja-b' });
+      const collaborator = await makeCollaborator(
+        collaboratorsRepository,
+        'user-b',
+        storeB.id,
+        role,
+      );
+      const deleteSpy = vi.spyOn(collaboratorsRepository, 'delete');
+
+      await expect(
+        sut.execute(storeA.slug, collaborator.id),
+      ).rejects.toBeInstanceOf(NotFoundException);
+      expect(deleteSpy).not.toHaveBeenCalled();
+      expect(collaboratorsRepository.items).toEqual([collaborator]);
+    },
+  );
+
+  it('deletes only the selected employee and preserves the other store', async () => {
+    const storeA = await makeStore(storesRepository, { slug: 'loja-a' });
+    const storeB = await makeStore(storesRepository, { slug: 'loja-b' });
+    const employeeA = await makeCollaborator(
+      collaboratorsRepository,
+      'user-a',
+      storeA.id,
+      'FUNCIONARIO',
+    );
+    const employeeB = await makeCollaborator(
+      collaboratorsRepository,
+      'user-b',
+      storeB.id,
+      'FUNCIONARIO',
+    );
+
+    await sut.execute(storeA.slug, employeeA.id);
+
+    expect(collaboratorsRepository.items).toEqual([employeeB]);
   });
 });

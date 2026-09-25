@@ -24,8 +24,8 @@ let sut: ChangeProductImageService;
 
 describe('Change Product Image Service', () => {
   beforeEach(() => {
-    productsRepository = new ProductsInMemoryRepository();
     storesRepository = new StoresInMemoryRepository();
+    productsRepository = new ProductsInMemoryRepository(storesRepository);
     categoriesRepository = new CategoriesInMemoryRepository();
     subcategoriesRepository = new SubcategoriesInMemoryRepository();
     productsImagesRepository = new ProductsImagesInMemoryRepository();
@@ -69,7 +69,7 @@ describe('Change Product Image Service', () => {
 
     const newFakeFile = makeFakeMulterFile('bermuda.jpg');
 
-    await sut.execute(product.id, productImage.id, newFakeFile);
+    await sut.execute(store.slug, product.id, productImage.id, newFakeFile);
 
     const storedImages = await productsImagesRepository.findManyByProductId(
       product.id,
@@ -114,7 +114,7 @@ describe('Change Product Image Service', () => {
 
     const newFakeFile = makeFakeMulterFile('bermuda.jpg');
 
-    await sut.execute(product.id, productImage.id, newFakeFile);
+    await sut.execute(store.slug, product.id, productImage.id, newFakeFile);
 
     const storedImages = await productsImagesRepository.findManyByProductId(
       product.id,
@@ -148,7 +148,7 @@ describe('Change Product Image Service', () => {
     const fakeFile = makeFakeMulterFile('nova.jpg');
 
     await expect(() =>
-      sut.execute('not exists', productImage.id, fakeFile),
+      sut.execute('slug-test', 'not exists', productImage.id, fakeFile),
     ).rejects.toBeInstanceOf(NotFoundException);
   });
 
@@ -169,7 +169,7 @@ describe('Change Product Image Service', () => {
     const fakeFile = makeFakeMulterFile('image.jpg');
 
     await expect(() =>
-      sut.execute(product.id, 'not exists', fakeFile),
+      sut.execute(store.slug, product.id, 'not exists', fakeFile),
     ).rejects.toBeInstanceOf(NotFoundException);
   });
 });

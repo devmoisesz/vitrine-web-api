@@ -28,6 +28,15 @@ export class ProductsInMemoryRepository implements ProductsRepository {
     return this.items.find((item) => item.id === id) ?? null;
   }
 
+  async findByIdAndStoreSlug(id: string, storeSlug: string): Promise<Product | null> {
+    if (!id || !storeSlug) return null;
+
+    const store = this.storesRepository?.items.find((item) => item.slug === storeSlug);
+    if (!store) return null;
+
+    return this.items.find((item) => item.id === id && item.storeId === store.id) ?? null;
+  }
+
   async findMany(
     page: number,
     name?: string,

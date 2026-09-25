@@ -44,10 +44,11 @@ export class DeleteProductImageController {
   })
   async handle(
     @Param('productId') productId: string,
+    @Param('slug') slug: string,
     @Param('imageId') imageId: string,
 
     @Query('newMainId') newMainId?: string
   ) {
-    return await this.deleteProductImageService.execute(productId, imageId, newMainId);
+    return await this.deleteProductImageService.execute(slug, productId, imageId, newMainId);
   }
 }

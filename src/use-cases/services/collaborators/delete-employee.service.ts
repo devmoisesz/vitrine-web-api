@@ -1,7 +1,7 @@
 import {
-    ConflictException,
-    Injectable,
-    NotFoundException
+  ConflictException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { CollaboratorsRepository } from '@/database/repositories/collaborators-repository';
 import { StoresRepository } from '@/database/repositories/stores-repository';
@@ -14,7 +14,6 @@ export class DeleteEmployeeService {
   ) {}
 
   async execute(storeSlug: string, employeeId: string) {
-
     const store = await this.storesRepository.findBySlug(storeSlug);
 
     if (!store) {
@@ -23,7 +22,10 @@ export class DeleteEmployeeService {
       );
     }
 
-    const employee = await this.collaboratorsRepository.findById(employeeId);
+    const employee = await this.collaboratorsRepository.findByIdAndStoreId(
+      employeeId,
+      store.id,
+    );
 
     if (!employee) {
       throw new NotFoundException(

@@ -1,11 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Address, Prisma } from '@prisma/client';
-import { AddressRepository } from '@/database/repositories/addresses-repository';
+import {
+  AddressRepository,
+  type UserAddressUpdate,
+} from '@/database/repositories/addresses-repository';
 
 @Injectable()
 export class PrismaAddressRepository implements AddressRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  async findByIdAndUserId(id: string, userId: string): Promise<Address | null> {
+    if (!id || !userId) return null;
+
+    return this.prisma.address.findFirst({
+      where: { id, userId, storeId: null },
+    });
+  }
+
+  async saveForUser(
+    id: string,
+    userId: string,
+    data: UserAddressUpdate,
+  ): Promise<Address | null> {
+    if (!id || !userId) return null;
+
+    try {
+      return await this.prisma.address.update({
+        where: { id, userId, AND: { storeId: null } },
+        data: {
+          label: data.label,
+          cep: data.cep,
+          state: data.state,
+          city: data.city,
+          neighborhood: data.neighborhood,
+          street: data.street,
+          number: data.number,
+          complement: data.complement,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        return null;
+      }
+      throw error;
+    }
+  }
 
   async create(data: Prisma.AddressUncheckedCreateInput): Promise<Address> {
     return await this.prisma.address.create({
