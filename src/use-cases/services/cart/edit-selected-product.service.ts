@@ -5,6 +5,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 @Injectable()
@@ -14,8 +15,20 @@ export class EditSelectedProductService {
     private productsRepository: ProductsRepository,
   ) {}
 
-  async execute(cartItemId: string, quantity?: number, newSize?: string) {
-    const currentItem = await this.cartItemsRepository.findById(cartItemId);
+  async execute(
+    userId: string,
+    cartItemId: string,
+    quantity?: number,
+    newSize?: string,
+  ) {
+    if (typeof userId !== 'string' || userId.trim().length === 0) {
+      throw new UnauthorizedException('Invalid authentication credentials.');
+    }
+
+    const currentItem = await this.cartItemsRepository.findByIdAndUserId(
+      cartItemId,
+      userId,
+    );
 
     if (!currentItem) {
       throw new NotFoundException('Resource Not Found');
@@ -40,7 +53,7 @@ export class EditSelectedProductService {
     }
 
     const isSizeChanged = currentItem.selectedSize !== finalSize;
-    
+
     if (isSizeChanged) {
       const existingItemWithNewSize =
         await this.cartItemsRepository.findByCartProductAndSize(
@@ -54,9 +67,7 @@ export class EditSelectedProductService {
           existingItemWithNewSize.quantity + finalQuantity;
 
         if (combinedQuantity > product.stock) {
-          throw new ConflictException(
-            'Unable to process the request.',
-          );
+          throw new ConflictException('Unable to process the request.');
         }
 
         await this.cartItemsRepository.save({
@@ -65,12 +76,12 @@ export class EditSelectedProductService {
         });
 
         await this.cartItemsRepository.delete(currentItem.id);
-        return
+        return;
       }
     }
 
-    if(finalQuantity > product.stock){
-      throw new ConflictException('Unable to process the request.')
+    if (finalQuantity > product.stock) {
+      throw new ConflictException('Unable to process the request.');
     }
 
     await this.cartItemsRepository.save({

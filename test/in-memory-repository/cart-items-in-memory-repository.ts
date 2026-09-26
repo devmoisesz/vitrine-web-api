@@ -8,6 +8,7 @@ import { ProductsInMemoryRepository } from './product-in-memory-repository';
 import { ProductsImagesInMemoryRepository } from './product-images-in-memory-repository';
 import { CategoriesInMemoryRepository } from './categories-in-memory-repository';
 import { SubcategoriesInMemoryRepository } from './subcategories-in-memory-repository';
+import type { CartsInMemoryRepository } from './cart-in-memory-repository';
 
 export class CartItemsInMemoryRepository implements CartItemsRepository {
   public items: CartItems[] = [];
@@ -17,7 +18,18 @@ export class CartItemsInMemoryRepository implements CartItemsRepository {
     private productImagesRepository?: ProductsImagesInMemoryRepository,
     private categoriesRepository?: CategoriesInMemoryRepository,
     private subcategoriesRepository?: SubcategoriesInMemoryRepository,
+    private cartsRepository?: CartsInMemoryRepository,
   ) {}
+
+  async findByIdAndUserId(id: string, userId: string): Promise<CartItems | null> {
+    if (!id || !userId) return null;
+
+    const item = this.items.find((item) => item.id === id);
+    if (!item) return null;
+
+    const cart = await this.cartsRepository?.findByIdAndUserId(item.cartId, userId);
+    return cart ? item : null;
+  }
 
   async delete(id: string): Promise<void> {
     const cartItems = this.items.findIndex((item) => item.id === id);

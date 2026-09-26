@@ -1,4 +1,6 @@
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { CurrentUser } from '@/auth/current-user-decorator';
+import type { UserPayload } from '@/auth/jwt-payload';
 import { RegisterOrderService } from '@/use-cases/services/order/register-order.service';
 import { Controller, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import {
@@ -43,7 +45,7 @@ export class RegisterOrderController {
   @ApiConflictResponse({
     description: 'Product is unavailable or there is insufficient stock.',
   })
-  async handle(@Param('cartId') cartId: string): Promise<void> {
-    await this.registerOrderService.execute(cartId);
+  async handle(@Param('cartId') cartId: string, @CurrentUser() user: UserPayload): Promise<void> {
+    await this.registerOrderService.execute(user.sub, cartId);
   }
 }

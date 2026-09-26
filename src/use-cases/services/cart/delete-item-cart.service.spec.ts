@@ -46,6 +46,7 @@ describe('List Cart Products Service', () => {
       productImagesRepository,
       categoriesRepository,
       subcategoriesRepository,
+      cartsRepository,
     );
     sut = new DeleteItemCartService(
       cartItemsRepository,
@@ -101,7 +102,7 @@ describe('List Cart Products Service', () => {
       'M',
     );
 
-    await sut.execute(cartItem.id);
+    await sut.execute(user.id, cartItem.id);
 
     expect(cartItemsRepository.items).toHaveLength(0)
   });
@@ -136,7 +137,7 @@ describe('List Cart Products Service', () => {
     });
 
     await expect(() =>
-      sut.execute('not exists'),
+      sut.execute('user-id', 'not exists'),
     ).rejects.toBeInstanceOf(NotFoundException);
   });
 });

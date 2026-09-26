@@ -1,4 +1,6 @@
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { CurrentUser } from '@/auth/current-user-decorator';
+import type { UserPayload } from '@/auth/jwt-payload';
 import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
 import {
   type UpdateCartItemBodySchema,
@@ -46,12 +48,13 @@ export class EditSelectedProductController {
       'Unable to process the request. Requested quantity exceeds available stock.',
   })
   async handle(
+    @CurrentUser() user: UserPayload,
     @Param('cartItemId') cartItemId: string,
     @Body(new ZodValidationPipes(updateCartItemBodySchema))
     body: UpdateCartItemBodySchema,
   ): Promise<void> {
     const { quantity, size } = body;
 
-    await this.editSelectedProductService.execute(cartItemId, quantity, size);
+    await this.editSelectedProductService.execute(user.sub, cartItemId, quantity, size);
   }
 }

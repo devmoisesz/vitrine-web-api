@@ -9,5 +9,6 @@ export abstract class CartItemsRepository {
     abstract findAllItemsByCart(cartId: string): Promise<CartItems[]>
     abstract findByCartProductAndSize(cartId: string, productId: string, selectedSize?: string): Promise<CartItems | null>
     abstract findById(id: string): Promise<CartItems | null>
+    abstract findByIdAndUserId(id: string, userId: string): Promise<CartItems | null>
     abstract delete(id: string): Promise<void>
 }

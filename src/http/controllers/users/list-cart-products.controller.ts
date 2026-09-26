@@ -1,4 +1,6 @@
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { CurrentUser } from '@/auth/current-user-decorator';
+import type { UserPayload } from '@/auth/jwt-payload';
 import { CartProductResponseSwaggerDto } from '@/http/zod/swagger/carts.swagger.dto';
 import { ListCartProductsService } from '@/use-cases/services/cart/list-cart-products.service';
 import { Controller, Get, HttpCode, Param, UseGuards } from '@nestjs/common';
@@ -28,7 +30,7 @@ export class ListCartProductsController {
   @ApiNotFoundResponse({
     description: 'Cart not found.',
   })
-  async handle(@Param('cartId') cartId: string) {
-    return await this.listCartProductsService.execute(cartId);
+  async handle(@Param('cartId') cartId: string, @CurrentUser() user: UserPayload) {
+    return await this.listCartProductsService.execute(user.sub, cartId);
   }
 }

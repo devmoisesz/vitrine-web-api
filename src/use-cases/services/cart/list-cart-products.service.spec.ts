@@ -111,7 +111,7 @@ describe('List Cart Products Service', () => {
     makeCartItems(cartItemsRepository, cart.id, product1.id, 10, 'M');
     makeCartItems(cartItemsRepository, cart.id, product2.id, 5);
 
-    const result = await sut.execute(cart.id);
+    const result = await sut.execute(user.id, cart.id);
 
     expect(result).toHaveLength(2);
   });
@@ -146,7 +146,7 @@ describe('List Cart Products Service', () => {
     });
 
     await expect(() => 
-        sut.execute('not exists cart')
+        sut.execute('user-id', 'not exists cart')
     ).rejects.toBeInstanceOf(NotFoundException)
   });
 });
