@@ -1,3 +1,4 @@
+import { SessionFixture } from '@/../test/factories/session-fixture';
 import type { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -58,6 +59,7 @@ type Operation = (typeof operations)[number];
 describe('SEG-02 product ownership (HTTP with real guards, controllers and services)', () => {
   let app: INestApplication;
   let jwt: JwtService;
+  const sessionFixture = new SessionFixture();
   const stores = new StoresInMemoryRepository();
   const products = new ProductsInMemoryRepository(stores);
   const images = new ProductsImagesInMemoryRepository();
@@ -89,6 +91,7 @@ describe('SEG-02 product ownership (HTTP with real guards, controllers and servi
       ],
       providers: [
         JwtStrategy,
+        ...sessionFixture.providers(jwt),
         DeleteProductService,
         EditProductService,
         UpdateStatusProductService,
@@ -192,7 +195,7 @@ describe('SEG-02 product ownership (HTTP with real guards, controllers and servi
   function authenticated(call: request.Test, subject = 'owner-a') {
     return call.set(
       'Authorization',
-      `Bearer ${jwt.sign({ role: 'USER' }, { subject })}`,
+      `Bearer ${sessionFixture.sign(jwt, { token_use: 'access', role: 'USER' }, { subject })}`,
     );
   }
 

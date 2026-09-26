@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
@@ -8,7 +9,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
+import { SessionService } from '@/auth/session.service';
 import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
@@ -19,7 +20,7 @@ import { StorageService } from '@/storage/storage.service';
 describe('Upload Product Image (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let jwt: JwtService;
+  let sessions: SessionService;
   let storage: StorageService;
   let uploadedPublicId: string | null = null;
 
@@ -52,7 +53,7 @@ describe('Upload Product Image (E2E)', () => {
     app.use(cookieParser());
 
     prisma = app.get(PrismaService);
-    jwt = moduleRef.get(JwtService);
+    sessions = moduleRef.get(SessionService);
     storage = app.get(StorageService);
 
     await app.init();
@@ -84,7 +85,7 @@ describe('Upload Product Image (E2E)', () => {
     const store = await prisma.store.create({
       data: {
         name: 'store 013',
-        slug: 'store-013',
+        slug: `e2e-${randomUUID()}`,
         whatsapp: uniqueWhatsapp,
       },
     });
@@ -126,7 +127,7 @@ describe('Upload Product Image (E2E)', () => {
       },
     });
 
-    const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
+    const accessToken = (await sessions.create(user)).access_token;
 
     const ImagePath = path.resolve(
       __dirname,

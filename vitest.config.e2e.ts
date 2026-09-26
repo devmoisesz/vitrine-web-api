@@ -6,9 +6,13 @@ export default defineConfig({
   test: {
     include: ['**/*.e2e.spec.ts'], // Roda apenas arquivos E2E
     globals: true,
-    setupFiles: ['./test/setup-e2e.ts'], // Caminho para o arquivo de setup
-    fileParallelism: false,
-    hookTimeout: 60000, 
+    globalSetup: ['./test/global-setup-e2e.ts'],
+    setupFiles: ['./test/setup-e2e.ts'],
+    pool: 'forks',
+    isolate: true,
+    fileParallelism: true,
+    maxWorkers: 2,
+    hookTimeout: 60000,
     testTimeout: 60000,
   },
 });

@@ -128,7 +128,7 @@ describe('Register Order Service', () => {
 
     await makeCartItems(cartItemsRepository, cart.id, product2.id, 5);
 
-    await sut.execute(cart.id);
+    await sut.execute(user.id, cart.id);
 
     expect(ordersRepository.items).toHaveLength(1)
     expect(ordersRepository.items[0].storeId).toEqual(store.id)
@@ -177,7 +177,7 @@ describe('Register Order Service', () => {
     });
 
     await expect(() =>
-      sut.execute(cart.id),
+      sut.execute(user.id, cart.id),
     ).rejects.toBeInstanceOf(BadRequestException);
   });
 });

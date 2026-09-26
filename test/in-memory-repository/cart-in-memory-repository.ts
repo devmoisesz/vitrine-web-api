@@ -22,6 +22,12 @@ export class CartsInMemoryRepository implements CartsRepository {
     return cart;
   }
 
+  async findByIdAndUserId(id: string, userId: string): Promise<Cart | null> {
+    if (!id || !userId) return null;
+
+    return this.items.find((cart) => cart.id === id && cart.userId === userId) ?? null;
+  }
+
   async create(data: Prisma.CartUncheckedCreateInput): Promise<Cart> {
     const cart = {
       id: randomUUID(),

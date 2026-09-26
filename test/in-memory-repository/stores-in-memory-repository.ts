@@ -1,4 +1,4 @@
-import { StoresRepository } from '@/database/repositories/stores-repository';
+import { StoresRepository, type StoreWithProducts } from '@/database/repositories/stores-repository';
 import {
   DeliveryMethod,
   PaymentMethod,
@@ -69,7 +69,7 @@ export class StoresInMemoryRepository implements StoresRepository {
   async findManyWithProducts(
   page: number,
   name?: string,
-): Promise<{ stores: Store[]; total: number }> { 
+): Promise<{ stores: StoreWithProducts[]; total: number }> {
   const pageSize = 5;
 
   let filteredStores = this.items.filter((store) => {

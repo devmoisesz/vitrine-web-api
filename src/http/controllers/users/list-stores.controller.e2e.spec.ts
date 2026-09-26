@@ -87,14 +87,16 @@ describe('List Stores (E2E)', () => {
     expect(response.statusCode).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
     expect(response.body).toHaveLength(1);
-    expect(response.body).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          name: 'Pants Black',
-          description: 'Pants Black Masculine',
-          status: 'ATIVA',
-        }),
-      ]),
-    );
+    // SEG-05 exposes only public fields; private metadata must stay absent.
+    expect(response.body).toEqual([
+      {
+        id: expect.any(String),
+        name: 'Pants Black',
+        slug: 'pants-black',
+        description: 'Pants Black Masculine',
+        logo_image_url: null,
+        bannerUrl: null,
+      },
+    ]);
   });
 });

@@ -48,6 +48,7 @@ describe('List Cart Products Service', () => {
       productImagesRepository,
       categoriesRepository,
       subcategoriesRepository,
+      cartsRepository,
     );
     sut = new EditSelectedProductService(
       cartItemsRepository,
@@ -125,7 +126,7 @@ describe('List Cart Products Service', () => {
 
     await makeCartItems(cartItemsRepository, cart.id, product2.id, 5);
 
-    await sut.execute(cartItem.id, 5, 'G');
+    await sut.execute(user.id, cartItem.id, 5, 'G');
 
     (expect(cartItemsRepository.items[0].quantity).toEqual(5),
       expect(cartItemsRepository.items[0].selectedSize).toEqual('G'));
@@ -184,7 +185,7 @@ describe('List Cart Products Service', () => {
 
     await makeCartItems(cartItemsRepository, cart.id, product.id, 1, 'G');
 
-    await sut.execute(cartItem.id, 2, 'G');
+    await sut.execute(user.id, cartItem.id, 2, 'G');
 
     expect(cartItemsRepository.items[0].quantity).toEqual(3);
     expect(cartItemsRepository.items[0].selectedSize).toEqual('G');
@@ -220,7 +221,7 @@ describe('List Cart Products Service', () => {
     });
 
     await expect(() =>
-      sut.execute('not exists cartItems', 8, 'M'),
+      sut.execute('user-id', 'not exists cartItems', 8, 'M'),
     ).rejects.toBeInstanceOf(NotFoundException);
   });
 
@@ -274,7 +275,7 @@ describe('List Cart Products Service', () => {
     );
 
     await expect(() =>
-      sut.execute(cartItem1.id, undefined, 'P'),
+      sut.execute(user.id, cartItem1.id, undefined, 'P'),
     ).rejects.toBeInstanceOf(BadRequestException);
   });
 
@@ -327,7 +328,7 @@ describe('List Cart Products Service', () => {
       'M',
     );
 
-    await expect(() => sut.execute(cartItem1.id, 3)).rejects.toBeInstanceOf(
+    await expect(() => sut.execute(user.id, cartItem1.id, 3)).rejects.toBeInstanceOf(
       ConflictException,
     );
   });

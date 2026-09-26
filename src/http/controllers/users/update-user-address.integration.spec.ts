@@ -1,3 +1,4 @@
+import { SessionFixture } from '@/../test/factories/session-fixture';
 import type { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -25,6 +26,7 @@ import { UpdateUserAddresController } from './update-user-address.controller';
 describe('SEG-03 personal address ownership (HTTP integration)', () => {
   let app: INestApplication;
   let jwt: JwtService;
+  const sessionFixture = new SessionFixture();
   const addresses = new AddressInMemoryRepository();
   const users = new UsersInMemoryRepository();
 
@@ -40,6 +42,7 @@ describe('SEG-03 personal address ownership (HTTP integration)', () => {
       controllers: [UpdateUserAddresController],
       providers: [
         JwtStrategy,
+        ...sessionFixture.providers(jwt),
         UpdateUserAddressService,
         { provide: AddressRepository, useValue: addresses },
         { provide: UsersRepository, useValue: users },
@@ -101,7 +104,7 @@ describe('SEG-03 personal address ownership (HTTP integration)', () => {
       .put(`/me/addressess/${addressId}`)
       .set(
         'Authorization',
-        `Bearer ${jwt.sign({ role: 'USER' }, { subject: userId })}`,
+        `Bearer ${sessionFixture.sign(jwt, { token_use: 'access', role: 'USER' }, { subject: userId })}`,
       )
       .send(body);
   }
@@ -185,7 +188,7 @@ describe('SEG-03 personal address ownership (HTTP integration)', () => {
   it('rejects a signed token without a subject', async () => {
     await request(app.getHttpServer())
       .put('/me/addressess/address-a')
-      .set('Authorization', `Bearer ${jwt.sign({ role: 'USER' })}`)
+      .set('Authorization', `Bearer ${sessionFixture.sign(jwt, { token_use: 'access', role: 'USER' })}`)
       .send({ city: 'Campinas' })
       .expect(401);
     expect(addresses.saveForUser).not.toHaveBeenCalled();

@@ -8,14 +8,14 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
+import { SessionService } from '@/auth/session.service';
 import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
 
 describe('Deactivate Store (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let jwt: JwtService;
+  let sessions: SessionService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -46,7 +46,7 @@ describe('Deactivate Store (E2E)', () => {
     app.use(cookieParser());
 
     prisma = app.get(PrismaService);
-    jwt = moduleRef.get(JwtService);
+    sessions = moduleRef.get(SessionService);
 
     await app.init();
     await prisma.$connect();
@@ -79,7 +79,7 @@ describe('Deactivate Store (E2E)', () => {
       },
     });
 
-    const accessToken = jwt.sign({ role: admin.role }, { subject: admin.id });
+    const accessToken = (await sessions.create(admin)).access_token;
 
     const response = await request(app.getHttpServer())
       .patch(`/stores/${store.slug}/deactivate`)

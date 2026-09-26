@@ -14,9 +14,9 @@ Passos:
 1. O cliente envia e-mail e senha para o endpoint de autenticação.
 2. O backend valida as credenciais com o serviço de autenticação.
 3. O backend gera dois tokens JWT:
-   - `access_token`: expira em 15 minutos e é usado para acessar rotas protegidas.
-   - `refresh_token`: expira em 1 hora e é usado para renovar a sessão sem pedir senha novamente.
-4. O backend define o `refreshToken` como cookie `httpOnly`, `Secure` em produção e `SameSite=strict`.
+   - `access_token`: contém `token_use: 'access'`, expira em 15 minutos e é usado para acessar rotas protegidas.
+   - `refresh_token`: contém `token_use: 'refresh'`, expira em 1 hora e é usado para renovar a sessão sem pedir senha novamente.
+4. O backend persiste a sessão e define o `refreshToken` como cookie `httpOnly`, `Secure` em produção e `SameSite=none`.
 5. O backend retorna o `access_token` e o `refresh_token` no corpo da resposta.
 
 ### Refresh de sessão
@@ -26,17 +26,16 @@ A rota pública `/refresh` lê o `refreshToken` do cookie.
 Passos:
 1. O frontend chama `PATCH /refresh` sem enviar o refresh token no corpo da requisição.
 2. O backend lê o cookie `refreshToken` do navegador.
-3. O backend verifica a assinatura e a expiração do token com a chave pública.
-4. Se for válido, emite um novo `access_token` e um novo `refresh_token`.
+3. O backend verifica a assinatura `RS256` e a expiração do token com a chave pública, exige `token_use: 'refresh'` e valida `sub` e `role`. Access tokens não são aceitos nesse endpoint.
+4. Se a sessão persistida estiver ativa, consome o refresh token em uma atualização atômica e emite um novo par com o papel atual da conta. Apenas uma requisição pode consumir cada refresh token.
 5. O backend sobrescreve o cookie `refreshToken` com o novo valor.
 6. O frontend deve tratar a resposta como um novo conjunto de tokens e manter a sessão atualizada.
 
 ### Logout
 
-Atualmente não existe um endpoint explícito de logout no backend. O fluxo esperado é:
-- limpar o cookie `refreshToken` no cliente;
-- descartar o `access_token` em memória ou em armazenamento local do frontend, caso o frontend o guarde;
-- impedir novas chamadas autenticadas até que o usuário faça login novamente.
+`POST /logout` usa o cookie `refreshToken` para revogar a sessão no banco e limpar o cookie. Não exige access token válido. Um refresh token assinado, mesmo já consumido ou expirado, pode encerrar sua própria sessão. Chamadas repetidas ou sem credencial válida são idempotentes.
+
+Após a revogação, tanto access quanto refresh tokens daquela sessão recebem `401`. Outras sessões da conta continuam ativas. Falhas de persistência não são tratadas como logout bem-sucedido; o frontend mantém o cookie para permitir nova tentativa e mostra o erro.
 
 ## 2. Armazenamento de tokens no frontend
 
@@ -59,6 +58,9 @@ O backend usa Passport + JWT Strategy para validar tokens recebidos nas rotas pr
 O payload do token contém:
 - `sub`: identificador do usuário.
 - `role`: papel do usuário, usado para autorização.
+- `token_use`: finalidade do token (`access` ou `refresh`), obrigatória e validada em cada ponto de entrada.
+- `sid`: identificador obrigatório da sessão persistida.
+- `jti`: identificador aleatório do token, garantindo valores distintos mesmo em emissões no mesmo segundo.
 
 ### Estratégia do JWT
 
@@ -66,9 +68,29 @@ A estratégia define:
 - extração do token pelo header `Authorization: Bearer <token>`;
 - validação com a chave pública RSA em base64;
 - algoritmo `RS256`;
+- exigência de `token_use: 'access'`, `sub` como string não vazia e `role` como `USER` ou `ADMIN`;
+- consulta da sessão e do usuário no banco a cada requisição, rejeitando sessões expiradas, revogadas ou invalidadas por troca de senha;
 - injeção do usuário autenticado em `request.user` com:
-  - `id`
-  - `role`
+  - `sub`
+  - `role` atual do banco, sem confiar no papel antigo do JWT
+
+### Compatibilidade após a SEG-06
+
+O login por senha, o login Google e a renovação emitem tokens com a finalidade explícita. Tokens antigos, sem `token_use`, passam a receber `401`, exigindo novo login após a publicação. O contrato de resposta e o cookie `refreshToken` permanecem os mesmos.
+
+### Sessões e revogação (SEG-07)
+
+Cada login comum ou Google cria uma sessão independente em `auth_sessions`. O banco guarda somente o SHA-256 do refresh token atual, a validade e a data de revogação. Access tokens duram 15 minutos; cada renovação válida mantém a sessão por mais uma hora e substitui o hash do refresh token.
+
+Reutilizar um refresh token ainda assinado e não expirado após seu consumo revoga toda aquela sessão, inclusive os tokens emitidos na renovação anterior. Renovações concorrentes com o mesmo token são tratadas como reutilização. O frontend usa Web Locks, quando disponíveis, para serializar refresh e logout entre abas. Sem esse recurso, renovações simultâneas podem exigir novo login.
+
+O proxy dos painéis consulta `/me` e, se precisar renovar, redireciona para `/session/restore`, que usa esse mesmo fluxo coordenado no navegador. Ele não consome refresh tokens de forma independente.
+
+Uma renovação normal não revoga access tokens já emitidos: eles permanecem válidos até expirar, desde que a sessão continue ativa. Logout, reutilização de refresh ou troca de senha impedem novas requisições com esses tokens imediatamente após a invalidação.
+
+A troca de senha incrementa `users.session_version` na mesma atualização que grava o novo hash da senha. Todas as sessões com a versão anterior ficam inválidas, incluindo sessões abertas em outros dispositivos. Novos logins usam a versão atual. Uma troca de senha rejeitada não invalida sessões.
+
+Para publicar, aplicar a migration `20260926120000_add_auth_sessions` com `pnpm exec prisma migrate deploy` antes de iniciar a nova versão do backend, e gerar o Prisma Client durante o build. Tokens anteriores à SEG-07 não possuem `sid` nem sessão persistida e exigem novo login. Não há migração de sessões antigas.
 
 ## 4. Guarda de autenticação global
 

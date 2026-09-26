@@ -10,6 +10,14 @@ import {
 export class PrismaCartItemsRepository implements CartItemsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findByIdAndUserId(id: string, userId: string): Promise<CartItems | null> {
+    if (!id || !userId) return null;
+
+    return this.prisma.cartItems.findFirst({
+      where: { id, cart: { userId } },
+    });
+  }
+
   async delete(id: string): Promise<void> {
     await this.prisma.cartItems.delete({
       where: {

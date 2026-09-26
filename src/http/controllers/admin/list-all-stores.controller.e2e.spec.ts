@@ -10,13 +10,13 @@ import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
-import { JwtService } from '@nestjs/jwt';
+import { SessionService } from '@/auth/session.service';
 
 describe('List All Stores (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
   let slugUnique: SlugGeneratorService;
-  let jwt: JwtService;
+  let sessions: SessionService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -47,7 +47,7 @@ describe('List All Stores (E2E)', () => {
     app.use(cookieParser());
 
     prisma = app.get(PrismaService);
-    jwt = moduleRef.get(JwtService);
+    sessions = moduleRef.get(SessionService);
     slugUnique = app.get(SlugGeneratorService);
 
     await app.init();
@@ -91,7 +91,7 @@ describe('List All Stores (E2E)', () => {
       },
     });
 
-    const accessToken = jwt.sign({ role: admin.role }, { subject: admin.id });
+    const accessToken = (await sessions.create(admin)).access_token;
 
     const response = await request(app.getHttpServer())
       .get(`/stores/admin`)

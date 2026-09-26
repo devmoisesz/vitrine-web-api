@@ -12,12 +12,12 @@ import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
 import { hash } from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
+import { SessionService } from '@/auth/session.service';
 
 describe('Edit Selected Product (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let jwt: JwtService;
+  let sessions: SessionService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -48,7 +48,7 @@ describe('Edit Selected Product (E2E)', () => {
     app.use(cookieParser());
 
     prisma = app.get(PrismaService);
-    jwt = moduleRef.get(JwtService);
+    sessions = moduleRef.get(SessionService);
 
     await app.init();
     await prisma.$connect();
@@ -142,7 +142,7 @@ describe('Edit Selected Product (E2E)', () => {
       },
     });
 
-    const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
+    const accessToken = (await sessions.create(user)).access_token;
 
     const response = await request(app.getHttpServer())
       .put(`/cart/${cartItem.id}`)

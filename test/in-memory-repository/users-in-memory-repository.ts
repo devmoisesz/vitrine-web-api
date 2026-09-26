@@ -16,6 +16,7 @@ export class UsersInMemoryRepository implements UsersRepository {
     if(!user) return;
 
     user.password = newPassword
+    user.sessionVersion += 1;
   }
 
   async findEmployeesByStoreId(storeId: string, page: number): Promise<User[]> {
@@ -71,6 +72,7 @@ export class UsersInMemoryRepository implements UsersRepository {
       provider: data.provider ?? 'LOCAL',
       google_id: data.google_id ?? null,
       role: data.role ?? 'USER',
+      sessionVersion: data.sessionVersion ?? 0,
     };
 
     this.items.push(user);

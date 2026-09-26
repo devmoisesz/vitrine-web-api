@@ -1,12 +1,17 @@
-import { StoresRepository } from "@/database/repositories/stores-repository";
-import { Injectable } from "@nestjs/common";
-import { Store } from "@prisma/client";
+import { StoresRepository } from '@/database/repositories/stores-repository';
+import { Injectable } from '@nestjs/common';
+import type { PublicStoreDto } from './dtos/public-store.dto';
+import { toPublicStore } from './public-store.mapper';
 
 @Injectable()
 export class ListStoresService {
-    constructor(private storesRepository: StoresRepository){}
+  constructor(private storesRepository: StoresRepository) {}
 
-    async execute(page: number, name?: string): Promise<{stores: Store[], total: number}>{
-        return await this.storesRepository.findMany(page, name)
-    }
+  async execute(
+    page: number,
+    name?: string,
+  ): Promise<{ stores: PublicStoreDto[]; total: number }> {
+    const { stores, total } = await this.storesRepository.findMany(page, name);
+    return { stores: stores.map(toPublicStore), total };
+  }
 }

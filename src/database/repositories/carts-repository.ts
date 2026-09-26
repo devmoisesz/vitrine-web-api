@@ -5,4 +5,5 @@ export abstract class CartsRepository {
     abstract findByUserIdAndStoreId(userId: string, storeId: string): Promise<Cart | null>
     abstract findMany(userId: string, page: number): Promise<{carts: Cart[], total: number}>
     abstract findById(id: string): Promise<Cart | null>
+    abstract findByIdAndUserId(id: string, userId: string): Promise<Cart | null>
 }

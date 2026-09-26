@@ -1,5 +1,5 @@
 import { Public } from '@/auth/public';
-import { StoreResponseSwaggerDto } from '@/http/zod/swagger/stores.swagger.dto';
+import { PublicHomeStoreResponseSwaggerDto } from '@/http/zod/swagger/public-stores.swagger.dto';
 import { ListStoreHomeService } from '@/use-cases/services/stores/list-store-home.service';
 import { Controller, Get, HttpCode, Query, Res } from '@nestjs/common';
 import {
@@ -37,7 +37,7 @@ export class ListStoreHomeController {
   })
   @ApiOkResponse({
     description: 'Stores retrieved successfully.',
-    type: StoreResponseSwaggerDto,
+    type: PublicHomeStoreResponseSwaggerDto,
     isArray: true,
   })
   async handle(

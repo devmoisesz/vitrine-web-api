@@ -1,4 +1,8 @@
-import { Prisma, Store } from "@prisma/client";
+import { Prisma, Store, Product, ProductImages } from "@prisma/client";
+
+export type StoreWithProducts = Store & {
+    products: Array<Product & { products_images?: ProductImages[] }>
+}
 
 export abstract class StoresRepository {
     abstract create(data: Prisma.StoreUncheckedCreateInput): Promise<Store>
@@ -9,7 +13,7 @@ export abstract class StoresRepository {
     abstract activate(slug: string): Promise<void>
     abstract findById(id: string): Promise<Store | null>
     abstract findMany(page: number, name?: string): Promise<{stores: Store[], total: number}>
-    abstract findManyWithProducts(page: number, name?: string): Promise<{stores: Store[], total: number}>
+    abstract findManyWithProducts(page: number, name?: string): Promise<{stores: StoreWithProducts[], total: number}>
     abstract findAll(page: number, name?: string): Promise<{stores: Store[], total: number}>
     abstract findBySLugAndEmail(slug: string, email: string): Promise<Store | null>
     abstract findBySlug(slug: string): Promise<Store | null>

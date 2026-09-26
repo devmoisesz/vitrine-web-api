@@ -1,3 +1,4 @@
+import { SessionFixture } from '@/../test/factories/session-fixture';
 import { Controller, Get, INestApplication, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -39,6 +40,7 @@ class ProtectedStoreController {
 describe('JWT authentication and store authorization (HTTP integration)', () => {
   let app: INestApplication;
   let jwt: JwtService;
+  const sessionFixture = new SessionFixture();
   const stores = [
     { id: 'store-a', slug: 'loja-a' },
     { id: 'store-b', slug: 'loja-b' },
@@ -80,6 +82,7 @@ describe('JWT authentication and store authorization (HTTP integration)', () => 
       controllers: [ProtectedStoreController],
       providers: [
         JwtStrategy,
+        ...sessionFixture.providers(jwt),
         JwtAuthGuard,
         StoreAccessGuard,
         { provide: PrismaService, useValue: prismaMock },
@@ -104,7 +107,7 @@ describe('JWT authentication and store authorization (HTTP integration)', () => 
     route = 'member',
     role = 'USER',
   ) {
-    const token = jwt.sign({ role }, { subject });
+    const token = sessionFixture.sign(jwt, { token_use: 'access', role }, { subject });
     return request(app.getHttpServer())
       .get(`/stores/${slug}/${route}`)
       .set('Authorization', `Bearer ${token}`);
@@ -158,7 +161,7 @@ describe('JWT authentication and store authorization (HTTP integration)', () => 
   ])('rejects a signed token with invalid identity %j', async (payload) => {
     await request(app.getHttpServer())
       .get('/stores/loja-b/owner')
-      .set('Authorization', `Bearer ${jwt.sign(payload)}`)
+      .set('Authorization', `Bearer ${sessionFixture.sign(jwt, { ...payload, token_use: 'access' })}`)
       .expect(401);
     expect(prismaMock.store.findUnique).not.toHaveBeenCalled();
     expect(prismaMock.collaborator.findFirst).not.toHaveBeenCalled();
