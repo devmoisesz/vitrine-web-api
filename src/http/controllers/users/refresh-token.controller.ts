@@ -1,4 +1,5 @@
 import { Public } from '@/auth/public';
+import { assertTokenPayload } from '@/auth/token-payload';
 import { EnvService } from '@/env/env.service';
 import { RefreshTokenResponseSwaggerDto } from '@/http/zod/swagger/users.swagger.dto';
 import {
@@ -54,15 +55,17 @@ export class RefreshTokenController {
 
       const payload = await this.jwt.verifyAsync(oldRefreshToken, {
         publicKey: Buffer.from(publicKey!, 'base64'),
+        algorithms: ['RS256'],
       });
+      assertTokenPayload(payload, 'refresh');
 
       const accessToken = this.jwt.sign(
-        { role: payload.role },
+        { role: payload.role, token_use: 'access' },
         { subject: payload.sub, expiresIn: '15m' },
       );
 
       const newRefreshToken = this.jwt.sign(
-        { role: payload.role },
+        { role: payload.role, token_use: 'refresh' },
         { subject: payload.sub, expiresIn: '1h' },
       );
 

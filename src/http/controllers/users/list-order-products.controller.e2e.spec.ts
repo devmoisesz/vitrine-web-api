@@ -170,7 +170,7 @@ describe('List Order Products (E2E)', () => {
       },
     });
 
-    const accessToken = jwt.sign({ role: owner.role }, { subject: owner.id });
+    const accessToken = jwt.sign({ token_use: 'access', role: owner.role }, { subject: owner.id });
 
     const response = await request(app.getHttpServer())
       .get(`/orders/${order.id}`)

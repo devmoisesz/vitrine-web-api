@@ -34,12 +34,12 @@ export class GoogleAuthenticateService {
     }
 
     const accessToken = this.jwt.sign(
-      { role: user.role },
+      { role: user.role, token_use: 'access' },
       { subject: user.id, expiresIn: '15m' },
     );
 
     const refreshToken = this.jwt.sign(
-      { role: user.role },
+      { role: user.role, token_use: 'refresh' },
       { subject: user.id, expiresIn: '1h' },
     );
 

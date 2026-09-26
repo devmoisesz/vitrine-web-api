@@ -150,7 +150,7 @@ describe('List Store Manage Products (E2E)', () => {
       });
     }
 
-    const accessToken = jwt.sign({ role: employee.role }, { subject: employee.id });
+    const accessToken = jwt.sign({ token_use: 'access', role: employee.role }, { subject: employee.id });
 
     const response = await request(app.getHttpServer())
       .get(`/store/${store.slug}/manage/products?categoryId=${categoryBlouse.id}&subcategoryId=${subcategoryFeminine.id}&status=INATIVO&page=1`)

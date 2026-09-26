@@ -164,7 +164,7 @@ describe('SEG-04 cart ownership (HTTP with real authentication, controllers and 
             ? client.delete(`/cart/item-${suffix}`)
             : client.post(`/cart/cart-${suffix}/order`).send(body);
     return payload
-      ? call.set('Authorization', `Bearer ${jwt.sign(payload)}`)
+      ? call.set('Authorization', `Bearer ${jwt.sign({ ...payload, token_use: 'access' })}`)
       : call;
   }
 

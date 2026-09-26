@@ -14,8 +14,8 @@ Passos:
 1. O cliente envia e-mail e senha para o endpoint de autenticação.
 2. O backend valida as credenciais com o serviço de autenticação.
 3. O backend gera dois tokens JWT:
-   - `access_token`: expira em 15 minutos e é usado para acessar rotas protegidas.
-   - `refresh_token`: expira em 1 hora e é usado para renovar a sessão sem pedir senha novamente.
+   - `access_token`: contém `token_use: 'access'`, expira em 15 minutos e é usado para acessar rotas protegidas.
+   - `refresh_token`: contém `token_use: 'refresh'`, expira em 1 hora e é usado para renovar a sessão sem pedir senha novamente.
 4. O backend define o `refreshToken` como cookie `httpOnly`, `Secure` em produção e `SameSite=strict`.
 5. O backend retorna o `access_token` e o `refresh_token` no corpo da resposta.
 
@@ -26,7 +26,7 @@ A rota pública `/refresh` lê o `refreshToken` do cookie.
 Passos:
 1. O frontend chama `PATCH /refresh` sem enviar o refresh token no corpo da requisição.
 2. O backend lê o cookie `refreshToken` do navegador.
-3. O backend verifica a assinatura e a expiração do token com a chave pública.
+3. O backend verifica a assinatura `RS256` e a expiração do token com a chave pública, exige `token_use: 'refresh'` e valida `sub` e `role`. Access tokens não são aceitos nesse endpoint.
 4. Se for válido, emite um novo `access_token` e um novo `refresh_token`.
 5. O backend sobrescreve o cookie `refreshToken` com o novo valor.
 6. O frontend deve tratar a resposta como um novo conjunto de tokens e manter a sessão atualizada.
@@ -59,6 +59,7 @@ O backend usa Passport + JWT Strategy para validar tokens recebidos nas rotas pr
 O payload do token contém:
 - `sub`: identificador do usuário.
 - `role`: papel do usuário, usado para autorização.
+- `token_use`: finalidade do token (`access` ou `refresh`), obrigatória e validada em cada ponto de entrada.
 
 ### Estratégia do JWT
 
@@ -66,9 +67,16 @@ A estratégia define:
 - extração do token pelo header `Authorization: Bearer <token>`;
 - validação com a chave pública RSA em base64;
 - algoritmo `RS256`;
+- exigência de `token_use: 'access'`, `sub` como string não vazia e `role` como `USER` ou `ADMIN`;
 - injeção do usuário autenticado em `request.user` com:
-  - `id`
+  - `sub`
   - `role`
+
+### Compatibilidade após a SEG-06
+
+O login por senha, o login Google e a renovação emitem tokens com a finalidade explícita. Tokens antigos, sem `token_use`, passam a receber `401`, exigindo novo login após a publicação. O contrato de resposta e o cookie `refreshToken` permanecem os mesmos.
+
+Essa separação não implementa revogação de sessões nem invalida refresh tokens anteriores ao renovar. Esses controles pertencem à SEG-07.
 
 ## 4. Guarda de autenticação global
 

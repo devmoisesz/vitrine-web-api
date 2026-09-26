@@ -107,7 +107,7 @@ describe('SEG-02 employee ownership (HTTP integration)', () => {
       .delete(`/store/${slug}/delete/${employeeId}`)
       .set(
         'Authorization',
-        `Bearer ${jwt.sign({ role: 'USER' }, { subject })}`,
+        `Bearer ${jwt.sign({ token_use: 'access', role: 'USER' }, { subject })}`,
       );
   }
 

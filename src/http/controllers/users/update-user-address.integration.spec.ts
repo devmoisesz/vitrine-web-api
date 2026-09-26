@@ -101,7 +101,7 @@ describe('SEG-03 personal address ownership (HTTP integration)', () => {
       .put(`/me/addressess/${addressId}`)
       .set(
         'Authorization',
-        `Bearer ${jwt.sign({ role: 'USER' }, { subject: userId })}`,
+        `Bearer ${jwt.sign({ token_use: 'access', role: 'USER' }, { subject: userId })}`,
       )
       .send(body);
   }
@@ -185,7 +185,7 @@ describe('SEG-03 personal address ownership (HTTP integration)', () => {
   it('rejects a signed token without a subject', async () => {
     await request(app.getHttpServer())
       .put('/me/addressess/address-a')
-      .set('Authorization', `Bearer ${jwt.sign({ role: 'USER' })}`)
+      .set('Authorization', `Bearer ${jwt.sign({ token_use: 'access', role: 'USER' })}`)
       .send({ city: 'Campinas' })
       .expect(401);
     expect(addresses.saveForUser).not.toHaveBeenCalled();

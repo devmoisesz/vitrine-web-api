@@ -87,7 +87,7 @@ describe('Register Store Address (E2E)', () => {
         }
     })
 
-    const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
+    const accessToken = jwt.sign({ token_use: 'access', role: user.role }, { subject: user.id });
 
     const response = await request(app.getHttpServer())
       .post(`/address/${store.slug}/register`)

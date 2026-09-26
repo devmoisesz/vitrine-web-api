@@ -3,6 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { EnvService } from '../env/env.service';
 import { UserPayload } from './jwt-payload';
+import { assertTokenPayload } from './token-payload';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -17,7 +18,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   // O Passport injeta o retorno desse método diretamente dentro do `request.user`
-  async validate(payload: UserPayload): Promise<UserPayload> {
+  async validate(payload: unknown): Promise<UserPayload> {
+    assertTokenPayload(payload, 'access');
     return {
       sub: payload.sub,
       role: payload.role,

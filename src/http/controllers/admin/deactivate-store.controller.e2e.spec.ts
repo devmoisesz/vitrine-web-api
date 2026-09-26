@@ -79,7 +79,7 @@ describe('Deactivate Store (E2E)', () => {
       },
     });
 
-    const accessToken = jwt.sign({ role: admin.role }, { subject: admin.id });
+    const accessToken = jwt.sign({ token_use: 'access', role: admin.role }, { subject: admin.id });
 
     const response = await request(app.getHttpServer())
       .patch(`/stores/${store.slug}/deactivate`)

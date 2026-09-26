@@ -104,7 +104,7 @@ describe('JWT authentication and store authorization (HTTP integration)', () => 
     route = 'member',
     role = 'USER',
   ) {
-    const token = jwt.sign({ role }, { subject });
+    const token = jwt.sign({ token_use: 'access', role }, { subject });
     return request(app.getHttpServer())
       .get(`/stores/${slug}/${route}`)
       .set('Authorization', `Bearer ${token}`);
@@ -158,7 +158,7 @@ describe('JWT authentication and store authorization (HTTP integration)', () => 
   ])('rejects a signed token with invalid identity %j', async (payload) => {
     await request(app.getHttpServer())
       .get('/stores/loja-b/owner')
-      .set('Authorization', `Bearer ${jwt.sign(payload)}`)
+      .set('Authorization', `Bearer ${jwt.sign({ ...payload, token_use: 'access' })}`)
       .expect(401);
     expect(prismaMock.store.findUnique).not.toHaveBeenCalled();
     expect(prismaMock.collaborator.findFirst).not.toHaveBeenCalled();

@@ -77,7 +77,7 @@ describe('Update User Address (E2E)', () => {
       },
     });
 
-    const accessToken = jwt.sign({ role: user.role }, { subject: user.id });
+    const accessToken = jwt.sign({ token_use: 'access', role: user.role }, { subject: user.id });
 
     const response = await request(app.getHttpServer())
       .put(`/me/addressess/${address.id}`)

@@ -192,7 +192,7 @@ describe('SEG-02 product ownership (HTTP with real guards, controllers and servi
   function authenticated(call: request.Test, subject = 'owner-a') {
     return call.set(
       'Authorization',
-      `Bearer ${jwt.sign({ role: 'USER' }, { subject })}`,
+      `Bearer ${jwt.sign({ token_use: 'access', role: 'USER' }, { subject })}`,
     );
   }
 
