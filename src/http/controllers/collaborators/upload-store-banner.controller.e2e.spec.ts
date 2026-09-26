@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
@@ -84,7 +85,7 @@ describe('Upload Store Banner (E2E)', () => {
     const store = await prisma.store.create({
       data: {
         name: 'store 013',
-        slug: 'store-013',
+        slug: `e2e-${randomUUID()}`,
         whatsapp: uniqueWhatsapp,
       },
     });
