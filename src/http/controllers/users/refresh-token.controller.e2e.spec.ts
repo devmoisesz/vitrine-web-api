@@ -9,6 +9,7 @@ import { PrismaClient } from '@prisma/client';
 import { hash } from 'bcryptjs';
 import { makeEmail } from '../../../../test/factories/make-email';
 import cookieParser from 'cookie-parser';
+import { SessionService } from '@/auth/session.service';
 
 describe('Refresh token (E2E)', () => {
   let app: INestApplication;
@@ -86,5 +87,51 @@ describe('Refresh token (E2E)', () => {
     expect(response.get('Set-Cookie')).toEqual([
       expect.stringContaining('refreshToken'),
     ]);
+  });
+
+  async function createSession() {
+    const user = await prisma.user.create({ data: {
+      name: 'Session User', email: makeEmail(), password: await hash('strong-password', 4),
+    } });
+    return { user, tokens: await app.get(SessionService).create(user) };
+  }
+
+  test('only one refresh wins a database race; reuse revokes the resulting session', async () => {
+    const { tokens } = await createSession();
+    const responses = await Promise.all([0, 1].map(() => request(app.getHttpServer())
+      .patch('/refresh').set('Cookie', `refreshToken=${tokens.refresh_token}`)));
+    expect(responses.map((response) => response.status).sort()).toEqual([200, 401]);
+    const winner = responses.find((response) => response.status === 200)!;
+    await request(app.getHttpServer()).patch('/refresh')
+      .set('Cookie', `refreshToken=${winner.body.refresh_token}`).expect(401);
+    await request(app.getHttpServer()).get('/me')
+      .set('Authorization', `Bearer ${winner.body.access_token}`).expect(401);
+  });
+
+  test('logout persists revocation of access and refresh tokens', async () => {
+    const { user, tokens } = await createSession();
+    await request(app.getHttpServer()).post('/logout')
+      .set('Cookie', `refreshToken=${tokens.refresh_token}`).expect(200);
+    const session = await prisma.authSession.findFirstOrThrow({ where: { userId: user.id } });
+    expect(session.revokedAt).toBeInstanceOf(Date);
+    await request(app.getHttpServer()).get('/me')
+      .set('Authorization', `Bearer ${tokens.access_token}`).expect(401);
+    await request(app.getHttpServer()).patch('/refresh')
+      .set('Cookie', `refreshToken=${tokens.refresh_token}`).expect(401);
+  });
+
+  test('password change invalidates all persisted sessions atomically', async () => {
+    const { user, tokens } = await createSession();
+    const other = await app.get(SessionService).create(user);
+    await request(app.getHttpServer()).patch('/account/password')
+      .set('Authorization', `Bearer ${tokens.access_token}`)
+      .send({ currentPassword: 'strong-password', newPassword: 'new-strong-password' }).expect(204);
+    expect((await prisma.user.findUniqueOrThrow({ where: { id: user.id } })).sessionVersion).toBe(1);
+    for (const pair of [tokens, other]) {
+      await request(app.getHttpServer()).get('/me')
+        .set('Authorization', `Bearer ${pair.access_token}`).expect(401);
+      await request(app.getHttpServer()).patch('/refresh')
+        .set('Cookie', `refreshToken=${pair.refresh_token}`).expect(401);
+    }
   });
 });

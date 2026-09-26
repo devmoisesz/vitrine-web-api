@@ -1,4 +1,5 @@
 import { DatabaseModule } from '@/database/database.module';
+import { AuthModule } from '@/auth/auth.module';
 import { Module } from '@nestjs/common';
 import { CreateAccountService } from '@/use-cases/services/users/create-account.service';
 import { CreateAccountController } from './controllers/users/create-account.controller';
@@ -117,7 +118,7 @@ import { ListStoreHomeController } from './controllers/users/list-store-home.con
 import { ListStoreHomeService } from '@/use-cases/services/stores/list-store-home.service';
 
 @Module({
-  imports: [DatabaseModule, StorageModule],
+  imports: [DatabaseModule, StorageModule, AuthModule],
   controllers: [
     CreateAccountController,
     AuthenticateController,

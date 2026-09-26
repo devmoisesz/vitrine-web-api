@@ -8,14 +8,14 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
+import { SessionService } from '@/auth/session.service';
 import { DatabaseModule } from '@/database/database.module';
 import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
 
 describe('Register collaborator (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let jwt: JwtService;
+  let sessions: SessionService;
   let slugGenerator: SlugGeneratorService
 
   beforeAll(async () => {
@@ -44,7 +44,7 @@ describe('Register collaborator (E2E)', () => {
 
     app = moduleRef.createNestApplication();
     prisma = app.get(PrismaService);
-    jwt = moduleRef.get(JwtService);
+    sessions = moduleRef.get(SessionService);
     slugGenerator = moduleRef.get(SlugGeneratorService);
 
     await app.init();
@@ -84,7 +84,7 @@ describe('Register collaborator (E2E)', () => {
         }
     })
 
-    const accessToken = jwt.sign({ token_use: 'access', role: user.role }, { subject: user.id });
+    const accessToken = (await sessions.create(user)).access_token;
 
     const response = await request(app.getHttpServer())
       .post(`/stores/${store.slug}/collaborators`)

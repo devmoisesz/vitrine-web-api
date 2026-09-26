@@ -8,7 +8,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
+import { SessionService } from '@/auth/session.service';
 import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
@@ -18,7 +18,7 @@ import fs from 'node:fs';
 describe('Delete Store Logo (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let jwt: JwtService;
+  let sessions: SessionService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -49,7 +49,7 @@ describe('Delete Store Logo (E2E)', () => {
     app.use(cookieParser());
 
     prisma = app.get(PrismaService);
-    jwt = moduleRef.get(JwtService);
+    sessions = moduleRef.get(SessionService);
 
     await app.init();
     await prisma.$connect();
@@ -89,7 +89,7 @@ describe('Delete Store Logo (E2E)', () => {
       },
     });
 
-    const accessToken = jwt.sign({ token_use: 'access', role: user.role }, { subject: user.id });
+    const accessToken = (await sessions.create(user)).access_token;
 
     const ImagePathDelete = path.resolve(
       __dirname,

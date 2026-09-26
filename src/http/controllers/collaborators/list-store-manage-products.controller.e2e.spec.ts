@@ -11,14 +11,14 @@ import cookieParser from 'cookie-parser';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 import { faker } from '@faker-js/faker';
 import { randomUUID } from 'node:crypto';
-import { JwtService } from '@nestjs/jwt';
+import { SessionService } from '@/auth/session.service';
 import { Slug } from '@/use-cases/utils/slug';
 import { hash } from 'bcryptjs';
 
 describe('List Store Manage Products (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let jwt: JwtService;
+  let sessions: SessionService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -49,7 +49,7 @@ describe('List Store Manage Products (E2E)', () => {
     app.use(cookieParser());
 
     prisma = app.get(PrismaService);
-    jwt = app.get(JwtService);
+    sessions = app.get(SessionService);
 
     await app.init();
     await prisma.$connect();
@@ -150,7 +150,7 @@ describe('List Store Manage Products (E2E)', () => {
       });
     }
 
-    const accessToken = jwt.sign({ token_use: 'access', role: employee.role }, { subject: employee.id });
+    const accessToken = (await sessions.create(employee)).access_token;
 
     const response = await request(app.getHttpServer())
       .get(`/store/${store.slug}/manage/products?categoryId=${categoryBlouse.id}&subcategoryId=${subcategoryFeminine.id}&status=INATIVO&page=1`)

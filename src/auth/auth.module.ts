@@ -4,9 +4,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { EnvService } from '@/env/env.service';
 import { JwtStrategy } from './jwt.strategy';
 import { EnvModule } from '@/env/env.module';
+import { DatabaseModule } from '@/database/database.module';
+import { SessionService } from './session.service';
 
 @Module({
   imports: [
+    DatabaseModule,
     PassportModule,
     EnvModule,
     JwtModule.registerAsync({
@@ -26,7 +29,9 @@ import { EnvModule } from '@/env/env.module';
     }),
   ],
   providers: [
+    SessionService,
     JwtStrategy,
   ],
+  exports: [SessionService],
 })
 export class AuthModule {}

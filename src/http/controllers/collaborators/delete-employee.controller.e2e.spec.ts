@@ -8,13 +8,13 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { makeEmail } from '../../../../test/factories/make-email';
 import { hash } from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
+import { SessionService } from '@/auth/session.service';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 
 describe('Delete Employee (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let jwt: JwtService;
+  let sessions: SessionService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -42,7 +42,7 @@ describe('Delete Employee (E2E)', () => {
 
     app = moduleRef.createNestApplication();
     prisma = app.get(PrismaService);
-    jwt = moduleRef.get(JwtService)
+    sessions = moduleRef.get(SessionService)
 
     await app.init();
     await prisma.$connect();
@@ -100,7 +100,7 @@ describe('Delete Employee (E2E)', () => {
         }
     })
 
-    const accessToken = jwt.sign({ token_use: 'access', role: owner.role }, { subject: owner.id });
+    const accessToken = (await sessions.create(owner)).access_token;
 
     const response = await request(app.getHttpServer())
       .delete(`/store/${store.slug}/delete/${employee.id}`)

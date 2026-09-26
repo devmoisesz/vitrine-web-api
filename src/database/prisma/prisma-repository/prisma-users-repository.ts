@@ -13,7 +13,8 @@ export class PrismaUsersRepository implements UsersRepository {
         id: userId,
       },
       data: {
-        password: newPassword
+        password: newPassword,
+        sessionVersion: { increment: 1 },
       }
     })
   }

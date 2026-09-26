@@ -1,4 +1,6 @@
 import { Module } from "@nestjs/common";
+import { SessionsRepository } from './repositories/sessions-repository';
+import { PrismaSessionsRepository } from './prisma/prisma-repository/prisma-sessions-repository';
 import { PrismaService } from "./prisma/prisma.service";
 import { UsersRepository } from "./repositories/users-repository";
 import { PrismaUsersRepository } from "./prisma/prisma-repository/prisma-users-repository";
@@ -26,6 +28,7 @@ import { PrismaOrdersRepository } from "./prisma/prisma-repository/prisma-order-
 @Module({
     imports: [],
     providers: [
+        { provide: SessionsRepository, useClass: PrismaSessionsRepository },
         PrismaService,
         {
             provide: UsersRepository,
@@ -73,6 +76,7 @@ import { PrismaOrdersRepository } from "./prisma/prisma-repository/prisma-order-
         },
     ],
     exports: [
+        SessionsRepository,
         PrismaService,
         UsersRepository,
         CollaboratorsRepository,

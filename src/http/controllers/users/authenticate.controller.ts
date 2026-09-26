@@ -2,7 +2,7 @@ import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
 import { AuthenticateService } from '@/use-cases/services/users/authenticate.service';
 import type { Response } from 'express';
 import { Body, Controller, HttpCode, Post, Res } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { SessionService } from '@/auth/session.service';
 import { Public } from '@/auth/public';
 import {
   type AuthenticateBodySchema,
@@ -26,7 +26,7 @@ import {
 export class AuthenticateController {
   constructor(
     private authenticateService: AuthenticateService,
-    private jwt: JwtService,
+    private sessions: SessionService,
   ) {}
 
   @Post()
@@ -61,15 +61,8 @@ export class AuthenticateController {
       password,
     });
 
-    const accessToken = this.jwt.sign(
-      { role: user.role, token_use: 'access' },
-      { subject: user.id, expiresIn: '15m' },
-    );
-
-    const refreshToken = this.jwt.sign(
-      { role: user.role, token_use: 'refresh' },
-      { subject: user.id, expiresIn: '1h' },
-    );
+    const { access_token: accessToken, refresh_token: refreshToken } =
+      await this.sessions.create(user);
 
     response.cookie('refreshToken', refreshToken, {
       httpOnly: true,

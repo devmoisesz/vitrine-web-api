@@ -1,13 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { OAuth2Client } from 'google-auth-library';
 import { UsersRepository } from '@/database/repositories/users-repository';
-import { JwtService } from '@nestjs/jwt';
+import { SessionService } from '@/auth/session.service';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 @Injectable()
 export class GoogleAuthenticateService {
-  constructor(private usersRepository: UsersRepository, private jwt: JwtService) {}
+  constructor(private usersRepository: UsersRepository, private sessions: SessionService) {}
 
   async execute(idToken: string) {
     const ticket = await googleClient.verifyIdToken({
@@ -33,19 +33,6 @@ export class GoogleAuthenticateService {
       });
     }
 
-    const accessToken = this.jwt.sign(
-      { role: user.role, token_use: 'access' },
-      { subject: user.id, expiresIn: '15m' },
-    );
-
-    const refreshToken = this.jwt.sign(
-      { role: user.role, token_use: 'refresh' },
-      { subject: user.id, expiresIn: '1h' },
-    );
-
-    return {
-        access_token: accessToken,
-        refresh_token: refreshToken,
-    }
+    return this.sessions.create(user);
   }
 }

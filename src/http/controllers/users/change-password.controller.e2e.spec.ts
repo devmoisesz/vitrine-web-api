@@ -8,12 +8,12 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import { compare, hash } from 'bcryptjs';
 import { makeEmail } from '../../../../test/factories/make-email';
-import { JwtService } from '@nestjs/jwt';
+import { SessionService } from '@/auth/session.service';
 
 describe('Change Password (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let jwt: JwtService;
+  let sessions: SessionService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -41,7 +41,7 @@ describe('Change Password (E2E)', () => {
 
     app = moduleRef.createNestApplication();
     prisma = app.get(PrismaService);
-    jwt = app.get(JwtService);
+    sessions = app.get(SessionService);
 
     await app.init();
     await prisma.$connect();
@@ -63,7 +63,7 @@ describe('Change Password (E2E)', () => {
       },
     });
 
-    const accessToken = jwt.sign({ token_use: 'access', role: user.role }, { subject: user.id });
+    const accessToken = (await sessions.create(user)).access_token;
 
     const response = await request(app.getHttpServer())
       .patch('/account/password')

@@ -3,8 +3,9 @@ import type { UserPayload } from './jwt-payload';
 
 type TokenPurpose = 'access' | 'refresh';
 
-interface TokenPayload extends UserPayload {
+export interface TokenPayload extends UserPayload {
   token_use: TokenPurpose;
+  sid: string;
 }
 
 export function assertTokenPayload(
@@ -19,6 +20,9 @@ export function assertTokenPayload(
     !('sub' in payload) ||
     typeof payload.sub !== 'string' ||
     payload.sub.trim().length === 0 ||
+    !('sid' in payload) ||
+    typeof payload.sid !== 'string' ||
+    payload.sid.trim().length === 0 ||
     !('role' in payload) ||
     (payload.role !== 'USER' && payload.role !== 'ADMIN')
   ) {

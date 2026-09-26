@@ -1,3 +1,4 @@
+import { SessionFixture } from '@/../test/factories/session-fixture';
 import type { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -38,6 +39,7 @@ type Operation = (typeof operations)[number];
 describe('SEG-04 cart ownership (HTTP with real authentication, controllers and services)', () => {
   let app: INestApplication;
   let jwt: JwtService;
+  const sessionFixture = new SessionFixture();
   const carts = new CartsInMemoryRepository();
   const products = new ProductsInMemoryRepository();
   const items = new CartItemsInMemoryRepository(
@@ -66,6 +68,7 @@ describe('SEG-04 cart ownership (HTTP with real authentication, controllers and 
       ],
       providers: [
         JwtStrategy,
+        ...sessionFixture.providers(jwt),
         ListCartProductsService,
         EditSelectedProductService,
         DeleteItemCartService,
@@ -164,7 +167,7 @@ describe('SEG-04 cart ownership (HTTP with real authentication, controllers and 
             ? client.delete(`/cart/item-${suffix}`)
             : client.post(`/cart/cart-${suffix}/order`).send(body);
     return payload
-      ? call.set('Authorization', `Bearer ${jwt.sign({ ...payload, token_use: 'access' })}`)
+      ? call.set('Authorization', `Bearer ${sessionFixture.sign(jwt, { ...payload, token_use: 'access' })}`)
       : call;
   }
 

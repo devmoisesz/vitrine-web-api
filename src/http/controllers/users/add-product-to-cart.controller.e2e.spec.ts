@@ -10,12 +10,12 @@ import { DatabaseModule } from '@/database/database.module';
 import cookieParser from 'cookie-parser';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 import { hash } from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
+import { SessionService } from '@/auth/session.service';
 
 describe('Add Product To Cart (E2E)', () => {
   let app: INestApplication;
   let prisma: PrismaClient;
-  let jwt: JwtService;
+  let sessions: SessionService;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -46,7 +46,7 @@ describe('Add Product To Cart (E2E)', () => {
     app.use(cookieParser());
 
     prisma = app.get(PrismaService);
-    jwt = moduleRef.get(JwtService);
+    sessions = moduleRef.get(SessionService);
 
     await app.init();
     await prisma.$connect();
@@ -105,7 +105,7 @@ describe('Add Product To Cart (E2E)', () => {
       },
     });
 
-    const accessToken = jwt.sign({ token_use: 'access', role: user.role }, { subject: user.id });
+    const accessToken = (await sessions.create(user)).access_token;
 
     const response = await request(app.getHttpServer())
       .post(`/products/${product.id}/cart`)

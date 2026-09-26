@@ -1,6 +1,5 @@
 import { Public } from '@/auth/public';
-import { assertTokenPayload } from '@/auth/token-payload';
-import { EnvService } from '@/env/env.service';
+import { SessionService } from '@/auth/session.service';
 import { RefreshTokenResponseSwaggerDto } from '@/http/zod/swagger/users.swagger.dto';
 import {
   Controller,
@@ -10,7 +9,6 @@ import {
   Res,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 
@@ -19,8 +17,7 @@ import type { Request, Response } from 'express';
 @ApiTags('Refresh Token')
 export class RefreshTokenController {
   constructor(
-    private jwt: JwtService,
-    private env: EnvService,
+    private sessions: SessionService,
   ) {}
 
   @Patch()
@@ -51,23 +48,8 @@ export class RefreshTokenController {
     }
 
     try {
-      const publicKey = this.env.get('JWT_PUBLIC_KEY');
-
-      const payload = await this.jwt.verifyAsync(oldRefreshToken, {
-        publicKey: Buffer.from(publicKey!, 'base64'),
-        algorithms: ['RS256'],
-      });
-      assertTokenPayload(payload, 'refresh');
-
-      const accessToken = this.jwt.sign(
-        { role: payload.role, token_use: 'access' },
-        { subject: payload.sub, expiresIn: '15m' },
-      );
-
-      const newRefreshToken = this.jwt.sign(
-        { role: payload.role, token_use: 'refresh' },
-        { subject: payload.sub, expiresIn: '1h' },
-      );
+      const { access_token: accessToken, refresh_token: newRefreshToken } =
+        await this.sessions.refresh(oldRefreshToken);
 
       response.cookie('refreshToken', newRefreshToken, {
         httpOnly: true,
@@ -81,6 +63,7 @@ export class RefreshTokenController {
         refresh_token: newRefreshToken,
       };
     } catch (error) {
+      if (!(error instanceof UnauthorizedException)) throw error;
       response.clearCookie('refreshToken');
       throw new UnauthorizedException('Invalid or expired refresh token');
     }

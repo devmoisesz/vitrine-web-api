@@ -1,3 +1,4 @@
+import { SessionFixture } from '@/../test/factories/session-fixture';
 import type { INestApplication } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -27,6 +28,7 @@ import { DeleteEmployeeController } from './delete-employee.controller';
 describe('SEG-02 employee ownership (HTTP integration)', () => {
   let app: INestApplication;
   let jwt: JwtService;
+  const sessionFixture = new SessionFixture();
   const stores = new StoresInMemoryRepository();
   const collaborators = new CollaboratorsInMemoryRepository();
 
@@ -42,6 +44,7 @@ describe('SEG-02 employee ownership (HTTP integration)', () => {
       controllers: [DeleteEmployeeController],
       providers: [
         JwtStrategy,
+        ...sessionFixture.providers(jwt),
         DeleteEmployeeService,
         { provide: CollaboratorsRepository, useValue: collaborators },
         { provide: StoresRepository, useValue: stores },
@@ -107,7 +110,7 @@ describe('SEG-02 employee ownership (HTTP integration)', () => {
       .delete(`/store/${slug}/delete/${employeeId}`)
       .set(
         'Authorization',
-        `Bearer ${jwt.sign({ token_use: 'access', role: 'USER' }, { subject })}`,
+        `Bearer ${sessionFixture.sign(jwt, { token_use: 'access', role: 'USER' }, { subject })}`,
       );
   }
 
