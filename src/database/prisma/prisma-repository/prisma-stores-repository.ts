@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Prisma, Store } from '@prisma/client';
-import { StoresRepository } from '@/database/repositories/stores-repository';
+import { StoresRepository, type StoreWithProducts } from '@/database/repositories/stores-repository';
 
 @Injectable()
 export class PrismaStoresRepository implements StoresRepository {
@@ -41,7 +41,7 @@ export class PrismaStoresRepository implements StoresRepository {
   async findManyWithProducts(
   page: number,
   name?: string,
-): Promise<{ stores: Store[], total: number }> {
+): Promise<{ stores: StoreWithProducts[], total: number }> {
   const pageSize = 5;
 
   const where: Prisma.StoreWhereInput = {
