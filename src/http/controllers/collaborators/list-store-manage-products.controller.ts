@@ -1,30 +1,30 @@
 import { RequireRoles } from '@/auth/authorization/roles.decorator';
-import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { StoreAccessGuard } from '@/auth/authorization/store-access.guard';
 import { ProductResponseSwaggerDto } from '@/http/zod/swagger/products.swagger.dto';
 import { ListStoreManageProductsService } from '@/use-cases/services/products/list-store-manage-products.service';
 import {
-    Controller,
-    Get,
-    HttpCode,
-    Param,
-    Query,
-    Res,
-    UseGuards,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Query,
+  Res,
+  UseGuards,
 } from '@nestjs/common';
 import {
-    ApiHeader,
-    ApiNotFoundResponse,
-    ApiOkResponse,
-    ApiOperation,
-    ApiParam,
-    ApiQuery,
-    ApiTags,
+  ApiHeader,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
 } from '@nestjs/swagger';
 import { type Response } from 'express';
 
 @Controller('/store/:slug/manage/products')
 @RequireRoles('PROPRIETARIO', 'FUNCIONARIO')
-@UseGuards(JwtAuthGuard)
+@UseGuards(StoreAccessGuard)
 @ApiTags('List Store Manage Products')
 export class ListStoreManageProductsController {
   constructor(
