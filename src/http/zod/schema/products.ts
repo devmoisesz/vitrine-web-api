@@ -65,7 +65,8 @@ export const registerProductBodySchema = z.object({
 
   stock: z
     .number({ message: 'Informe a quantidade de estoque do produto.' })
-    .positive('A quantidade do estoque tem que ser positivo.'),
+    .int('O estoque deve ser um número inteiro.')
+    .nonnegative('O estoque não pode ser negativo.'),
 
   name_category: z
     .string({ message: 'Informe uma categoria.' })
@@ -109,7 +110,8 @@ export const editProductBodySchema = z.object({
 
   newStock: z
     .number({ message: 'Informe a quantidade de estoque do produto.' })
-    .positive('A quantidade do estoque tem que ser positivo.')
+    .int('O estoque deve ser um número inteiro.')
+    .nonnegative('O estoque não pode ser negativo.')
     .optional(),
   newCategory: z.string().trim().min(1, 'Informe uma categoria.').optional(),
   newSubcategory: z

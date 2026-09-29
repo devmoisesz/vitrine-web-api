@@ -87,7 +87,6 @@ export class EditProductService {
       sizes: data.newSizes,
       slug,
       stock: data.newStock ?? product.stock,
-      status: 'ATIVO',
       storeId: product.storeId,
       categoryId,
       subcategoryId,

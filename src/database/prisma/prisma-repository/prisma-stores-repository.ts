@@ -79,6 +79,9 @@ export class PrismaStoresRepository implements StoresRepository {
     },
     include: {
       products: {
+        where: {
+          status: 'ATIVO',
+        },
         take: 8,
         orderBy: {
         createdAt: 'desc',

@@ -22,7 +22,6 @@ export interface UpdateProductInput {
   price?: number;
   sizes?: string[];
   stock?: number;
-  status?: 'ATIVO' | 'INATIVO';
   storeId?: string;
   categoryId?: string;
   subcategoryId?: string;
