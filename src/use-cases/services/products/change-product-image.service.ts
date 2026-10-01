@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProductsRepository } from '@/database/repositories/products-repository';
 import { ProductsImagesRepository } from '@/database/repositories/products-images-repository';
 import { StorageService } from '@/storage/storage.service';
+import { replaceStoredImage } from '@/storage/replace-stored-image';
 
 @Injectable()
 export class ChangeProductImageService {
@@ -36,22 +37,18 @@ export class ChangeProductImageService {
       );
     }
 
-    await this.storageService.delete(image.storage_public_id);
-
-    await this.productsImagesRepository.remove(imageId);
-
-    const newImage = await this.storageService.upload({
-      body: file.buffer,
-      fileName: file.originalname,
-      contentType: file.mimetype,
-      folder: `vitrine-web/${product.storeId}/products/${productId}`,
-    });
-
-    return await this.productsImagesRepository.create({
-      image_url: newImage.url,
-      storage_public_id: newImage.public_id,
-      productId,
-      is_main: image.is_main,
-    });
+    return replaceStoredImage(
+      this.storageService,
+      image.storage_public_id,
+      {
+        body: file.buffer,
+        fileName: file.originalname,
+        contentType: file.mimetype,
+        folder: `vitrine-web/${product.storeId}/products/${productId}`,
+      },
+      (newImage) => this.productsImagesRepository.replaceFile(
+        imageId, newImage.url, newImage.public_id,
+      ),
+    );
   }
 }

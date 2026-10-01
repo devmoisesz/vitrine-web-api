@@ -4,6 +4,8 @@ import {
   OrdersRepository,
 } from '@/database/repositories/orders-repository';
 import { Decimal } from '@prisma/client/runtime/wasm-compiler-edge';
+import { CartsInMemoryRepository } from './cart-in-memory-repository';
+import { CartItemsInMemoryRepository } from './cart-items-in-memory-repository';
 
 export interface InMemoryOrder extends Order {
   order_items?: Array<{
@@ -19,6 +21,31 @@ export interface InMemoryOrder extends Order {
 
 export class OrdersInMemoryRepository implements OrdersRepository {
   public items: InMemoryOrder[] = [];
+  private checkingOut = new Set<string>();
+
+  constructor(
+    private carts?: CartsInMemoryRepository,
+    private cartItems?: CartItemsInMemoryRepository,
+  ) {}
+
+  async createFromCart(cartId: string, data: CreateOrder): Promise<Order | null> {
+    const cart = this.carts?.items.find((item) =>
+      item.id === cartId && item.userId === data.userId && item.storeId === data.storeId,
+    );
+    if (!cart || this.checkingOut.has(cartId)) return null;
+
+    this.checkingOut.add(cartId);
+    try {
+      const order = await this.create(data);
+      this.carts!.items = this.carts!.items.filter((item) => item.id !== cartId);
+      if (this.cartItems) {
+        this.cartItems.items = this.cartItems.items.filter((item) => item.cartId !== cartId);
+      }
+      return order;
+    } finally {
+      this.checkingOut.delete(cartId);
+    }
+  }
 
   async findById(id: string): Promise<Order | null> {
     const order = this.items.find((item) => item.id === id);

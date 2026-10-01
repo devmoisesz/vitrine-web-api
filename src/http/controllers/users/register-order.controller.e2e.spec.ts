@@ -159,5 +159,12 @@ describe('Register Order (E2E)', () => {
     })
 
     expect(orderOnDatabase).toBeTruthy()
+    expect(await prisma.cart.findUnique({ where: { id: cart.id } })).toBeNull();
+    expect(await prisma.cartItems.count({ where: { cartId: cart.id } })).toBe(0);
+    const repeated = await request(app.getHttpServer())
+      .post(`/cart/${cart.id}/order`)
+      .set('Authorization', `Bearer ${accessToken}`);
+    expect(repeated.statusCode).toBe(404);
+    expect(await prisma.order.count({ where: { userId: user.id } })).toBe(1);
   });
 });

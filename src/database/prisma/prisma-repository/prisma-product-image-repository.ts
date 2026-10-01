@@ -7,6 +7,13 @@ import { ProductsImagesRepository } from '@/database/repositories/products-image
 export class PrismaProductsImagesRepository implements ProductsImagesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async replaceFile(id: string, url: string, publicId: string): Promise<ProductImages> {
+    return this.prisma.productImages.update({
+      where: { id },
+      data: { image_url: url, storage_public_id: publicId },
+    });
+  }
+
   async updateIsMain(id: string, is_main: boolean): Promise<void> {
     await this.prisma.productImages.update({
       where: {

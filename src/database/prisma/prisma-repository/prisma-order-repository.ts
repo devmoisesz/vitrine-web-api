@@ -100,7 +100,26 @@ export class PrismaOrdersRepository implements OrdersRepository {
   }
 
   async create(data: CreateOrder): Promise<Order> {
-    return await this.prisma.order.create({
+    return this.createOrder(this.prisma, data);
+  }
+
+  async createFromCart(cartId: string, data: CreateOrder): Promise<Order | null> {
+    return this.prisma.$transaction(async (tx) => {
+      // Deleting claims this cart across all application instances. Concurrent
+      // checkouts wait for this transaction and cannot consume the same cart.
+      // Cascaded item deletion is also rolled back if order creation fails.
+      const consumed = await tx.cart.deleteMany({
+        where: { id: cartId, userId: data.userId, storeId: data.storeId },
+      });
+
+      if (consumed.count !== 1) return null;
+
+      return this.createOrder(tx, data);
+    });
+  }
+
+  private createOrder(tx: Prisma.TransactionClient, data: CreateOrder): Promise<Order> {
+    return tx.order.create({
       data: {
         storeId: data.storeId,
         userId: data.userId,

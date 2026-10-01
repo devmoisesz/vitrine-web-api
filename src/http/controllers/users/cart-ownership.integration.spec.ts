@@ -49,7 +49,7 @@ describe('SEG-04 cart ownership (HTTP with real authentication, controllers and 
     undefined,
     carts,
   );
-  const orders = new OrdersInMemoryRepository();
+  const orders = new OrdersInMemoryRepository(carts, items);
 
   beforeAll(async () => {
     const { privateKey, publicKey } = generateKeyPairSync('rsa', {

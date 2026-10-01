@@ -5,6 +5,14 @@ import { ProductsImagesRepository } from '@/database/repositories/products-image
 export class ProductsImagesInMemoryRepository implements ProductsImagesRepository {
   public items: ProductImages[] = [];
 
+  async replaceFile(id: string, url: string, publicId: string): Promise<ProductImages> {
+    const image = this.items.find((item) => item.id === id);
+    if (!image) throw new Error('Image not found');
+    image.image_url = url;
+    image.storage_public_id = publicId;
+    return image;
+  }
+
   async updateIsMain(id: string, is_main: boolean): Promise<void> {
     const image = await this.items.find((image) => image.id === id)
 

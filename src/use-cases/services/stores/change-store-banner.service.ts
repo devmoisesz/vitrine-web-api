@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { StorageService } from '@/storage/storage.service';
+import { replaceStoredImage } from '@/storage/replace-stored-image';
 import { StoresRepository } from '@/database/repositories/stores-repository';
 
 @Injectable()
@@ -20,19 +21,18 @@ export class ChangeStoreBannerService {
       throw new NotFoundException('Resource Not Found');
     }
 
-    await this.storageService.delete(store.bannerPublicId);
-
-    const newBanner = await this.storageService.upload({
-      body: file.buffer,
-      fileName: file.originalname,
-      contentType: file.mimetype,
-      folder: `vitrine-web/${slug}/banner`,
-    });
-
-    await this.storesRepository.saveBanner(
-      store.id,
-      newBanner.url,
-      newBanner.public_id,
+    await replaceStoredImage(
+      this.storageService,
+      store.bannerPublicId,
+      {
+        body: file.buffer,
+        fileName: file.originalname,
+        contentType: file.mimetype,
+        folder: `vitrine-web/${slug}/banner`,
+      },
+      (newBanner) => this.storesRepository.saveBanner(
+        store.id, newBanner.url, newBanner.public_id,
+      ),
     );
   }
 }
