@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { StorageService } from '@/storage/storage.service';
+import { replaceStoredImage } from '@/storage/replace-stored-image';
 import { StoresRepository } from '@/database/repositories/stores-repository';
 
 @Injectable()
@@ -20,19 +21,18 @@ export class ChangeStoreLogoService {
       throw new NotFoundException('Resource Not Found');
     }
 
-    await this.storageService.delete(store.logoPublicId);
-
-    const newLogo = await this.storageService.upload({
-      body: file.buffer,
-      fileName: file.originalname,
-      contentType: file.mimetype,
-      folder: `vitrine-web/${slug}/logos`,
-    });
-
-    await this.storesRepository.saveImage(
-      store.id,
-      newLogo.url,
-      newLogo.public_id,
+    await replaceStoredImage(
+      this.storageService,
+      store.logoPublicId,
+      {
+        body: file.buffer,
+        fileName: file.originalname,
+        contentType: file.mimetype,
+        folder: `vitrine-web/${slug}/logos`,
+      },
+      (newLogo) => this.storesRepository.saveImage(
+        store.id, newLogo.url, newLogo.public_id,
+      ),
     );
   }
 }

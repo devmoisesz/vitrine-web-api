@@ -64,11 +64,15 @@ export class RegisterOrderService {
       });
     }
 
-    await this.odersRepository.create({
+    const order = await this.odersRepository.createFromCart(cart.id, {
       storeId: cart.storeId,
       userId,
       total,
       items: orderItems,
     });
+
+    if (!order) {
+      throw new ConflictException('This cart has already been checked out.');
+    }
   }
 }

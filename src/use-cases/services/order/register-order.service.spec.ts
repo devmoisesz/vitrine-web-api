@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CategoriesInMemoryRepository } from '../../../../test/in-memory-repository/categories-in-memory-repository';
 import { ProductsInMemoryRepository } from '../../../../test/in-memory-repository/product-in-memory-repository';
 import { StoresInMemoryRepository } from '../../../../test/in-memory-repository/stores-in-memory-repository';
@@ -13,7 +13,7 @@ import { makeCartItems } from '../../../../test/factories/make-cart-items';
 import { makeWhatsapp } from '../../../../test/factories/make-whatsapp';
 import { ProductsImagesInMemoryRepository } from '../../../../test/in-memory-repository/product-images-in-memory-repository';
 import {
-    BadRequestException
+    BadRequestException, NotFoundException
 } from '@nestjs/common';
 import { makeProductImage } from '../../../../test/factories/make-product-image';
 import { RegisterOrderService } from './register-order.service';
@@ -38,7 +38,6 @@ describe('Register Order Service', () => {
     categoriesRepository = new CategoriesInMemoryRepository();
     subcategoriesRepository = new SubcategoriesInMemoryRepository();
     storesRepository = new StoresInMemoryRepository();
-    ordersRepository = new OrdersInMemoryRepository()
     cartsRepository = new CartsInMemoryRepository(
       storesRepository,
       cartItemsRepository,
@@ -50,6 +49,7 @@ describe('Register Order Service', () => {
       categoriesRepository,
       subcategoriesRepository,
     );
+    ordersRepository = new OrdersInMemoryRepository(cartsRepository, cartItemsRepository);
     sut = new RegisterOrderService(
       ordersRepository,
       cartsRepository,
@@ -58,7 +58,7 @@ describe('Register Order Service', () => {
     );
   });
 
-  it('should be possible to place an order.', async () => {
+  it.each(['single', 'concurrent', 'retry after failure'])('consumes the cart once: %s', async (scenario) => {
     const user = await makeUser(usersRepository);
 
     const store = await storesRepository.create({
@@ -128,7 +128,27 @@ describe('Register Order Service', () => {
 
     await makeCartItems(cartItemsRepository, cart.id, product2.id, 5);
 
-    await sut.execute(user.id, cart.id);
+    if (scenario === 'retry after failure') {
+      vi.spyOn(ordersRepository, 'create').mockRejectedValueOnce(new Error('database failed'));
+      await expect(sut.execute(user.id, cart.id)).rejects.toThrow('database failed');
+      expect(await cartsRepository.findById(cart.id)).not.toBeNull();
+      expect(cartItemsRepository.items.filter((item) => item.cartId === cart.id)).toHaveLength(2);
+      expect(ordersRepository.items).toHaveLength(0);
+    }
+
+    if (scenario === 'concurrent') {
+      const results = await Promise.allSettled([
+        sut.execute(user.id, cart.id), sut.execute(user.id, cart.id),
+      ]);
+      expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
+      expect(results.filter((result) => result.status === 'rejected')).toHaveLength(1);
+    } else {
+      await sut.execute(user.id, cart.id);
+    }
+
+    expect(await cartsRepository.findById(cart.id)).toBeNull();
+    expect(cartItemsRepository.items.filter((item) => item.cartId === cart.id)).toHaveLength(0);
+    await expect(sut.execute(user.id, cart.id)).rejects.toBeInstanceOf(NotFoundException);
 
     expect(ordersRepository.items).toHaveLength(1)
     expect(ordersRepository.items[0].storeId).toEqual(store.id)
