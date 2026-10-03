@@ -2,9 +2,9 @@
 
 ## Contexto do Produto
 
-Plataforma de vitrine digital para lojas de roupas de cidades pequenas, funcionando como um marketplace unificado.
+Plataforma de vitrines digitais próprias para lojistas de moda, com apresentação comercial e diretório de marcas.
 
-Clientes navegam livremente pelo catálogo unificado e solicitam compras via WhatsApp.
+Clientes escolhem uma loja no diretório, navegam pelo catálogo dessa loja e solicitam pedidos via WhatsApp. A plataforma oferece a vitrine; quem vende é o lojista.
 
 A negociação de pagamento e entrega acontece fora da plataforma.
 
@@ -25,9 +25,9 @@ O acesso ao catálogo é público, exigindo autenticação apenas no momento de 
 
 ## Cliente
 
-- [x] Deve ser possível pesquisar produtos por nome de forma global na plataforma
-- [x] Deve ser possível listar todos produtos mais recentes  
-- [x] Deve ser possível filtrar produtos de forma global
+- [x] O diretório deve apresentar lojas sem produtos ou preços
+- [x] A consulta pública de produtos deve respeitar a loja escolhida antes da paginação e contagem
+- [x] Os endpoints globais existentes ficam disponíveis para compatibilidade, sem uso na nova navegação pública
 - [x] Deve ser possível combinar filtros de categoria, subcategoria e busca por nome
 - [x] Deve ser possível buscar lojas pelo nome
 - [x] Deve ser possível filtrar produtos de uma loja só

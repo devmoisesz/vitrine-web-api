@@ -12,9 +12,9 @@
 
 <br/><br/>
 
-**Marketplace de roupas para cidades pequenas** — Uma plataforma escalável de e-commerce construída com arquitetura moderna, segurança robusta e padrões de design bem definidos.
+**Plataforma de vitrines digitais para lojistas de moda** — API para apresentação das lojas, catálogo local, carrinhos e pedidos com atendimento pelo WhatsApp.
 
-*Inspirado nos modelos do Mercado Livre, Amazon e OLX. Um catálogo unificado onde consumidores descobrem produtos de múltiplas lojas locais em um único lugar.*
+*A plataforma apresenta os negócios. Cada lojista apresenta sua marca, organiza seus produtos e conduz a venda.*
 
 </div>
 
@@ -22,11 +22,11 @@
 
 ## 🎯 Visão Geral
 
-Vitrine Web é um marketplace que conecta lojas de roupas locais de pequenas cidades com clientes através de um catálogo centralizado. Diferente de marketplaces tradicionais, a plataforma oferece:
+Vitrine Web oferece presença digital para lojas de moda e aproxima clientes do atendimento de cada lojista. A experiência pública oferece:
 
-- **Catálogo Unificado**: Clientes navegam por todas as lojas em um lugar
+- **Diretório de marcas**: Clientes escolhem uma loja e exploram seu catálogo próprio
 - **Negociação Flexível**: Carrinho integrado com envio de solicitação via WhatsApp
-- **Sem Barreira de Entrada**: Lojas não gerenciam pagamentos, apenas seus produtos
+- **Cadastro assistido**: O administrador cadastra a loja após o contato comercial
 - **Acesso Público**: Catálogo aberto, autenticação apenas para carrinho e pedidos
 
 ---
