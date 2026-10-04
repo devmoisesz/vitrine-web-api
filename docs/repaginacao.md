@@ -1,5 +1,15 @@
 # Contratos para a repaginação pública
 
+## Correção de escopo: catálogo original preservado
+
+O usuário limitou a mudança a landing, navegação e buscas. O frontend recupera o catálogo branco original e mantém o tema escuro somente na apresentação comercial. `/catalogo` e `/lojas` pesquisam lojas; os produtos são consultados somente no contexto de uma loja. A entrada autenticada e o login normal vão para `/catalogo`.
+
+Nenhuma nova alteração de endpoint, autorização, persistência ou migração foi necessária nesta correção. Os dois testes de `prisma-public-catalog.spec.ts` foram executados novamente e passaram, verificando `storeId` antes de busca, filtros, contagem e paginação, incluindo a segunda página. O código da API permanece igual.
+
+As versões dos repositórios seguem independentes, sem alteração de versão, release ou deploy nesta correção. O guia atualizado está na raiz do workspace, com cópia versionada em `frontend/docs/guia-repaginacao.md`.
+
+## Auditoria anterior dos contratos (mantidos)
+
 Nenhuma alteração de contrato HTTP, regra de produção ou migração foi necessária. Base auditada: `11669bf` em `dev`; branch de verificação: `test/repaginacao-catalogo`.
 
 | Contrato | Uso no front-end |
