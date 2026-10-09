@@ -113,8 +113,31 @@ model Store {
   products Product[]
   cart Cart[]
   orders Order[]
+  storeSegments StoreSegment[]
 
   @@map("stores")
+}
+
+model Segment {
+  id   String @id @default(uuid())
+  name String @unique
+  slug String @unique
+
+  stores StoreSegment[]
+
+  @@map("segment")
+}
+
+model StoreSegment {
+  storeId   String @map("store_id")
+  segmentId String @map("segment_id")
+
+  store   Store   @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  segment Segment @relation(fields: [segmentId], references: [id], onDelete: Restrict)
+
+  @@id([storeId, segmentId])
+  @@index([segmentId])
+  @@map("store_segments")
 }
 
 model Address {
