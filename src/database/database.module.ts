@@ -1,4 +1,6 @@
 import { Module } from "@nestjs/common";
+import { SegmentsRepository } from './repositories/segments-repository';
+import { PrismaSegmentsRepository } from './prisma/prisma-repository/prisma-segments-repository';
 import { SessionsRepository } from './repositories/sessions-repository';
 import { PrismaSessionsRepository } from './prisma/prisma-repository/prisma-sessions-repository';
 import { PrismaService } from "./prisma/prisma.service";
@@ -28,6 +30,7 @@ import { PrismaOrdersRepository } from "./prisma/prisma-repository/prisma-order-
 @Module({
     imports: [],
     providers: [
+        { provide: SegmentsRepository, useClass: PrismaSegmentsRepository },
         { provide: SessionsRepository, useClass: PrismaSessionsRepository },
         PrismaService,
         {
@@ -76,6 +79,7 @@ import { PrismaOrdersRepository } from "./prisma/prisma-repository/prisma-order-
         },
     ],
     exports: [
+        SegmentsRepository,
         SessionsRepository,
         PrismaService,
         UsersRepository,
