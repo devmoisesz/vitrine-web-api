@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Prisma, Store } from '@prisma/client';
-import { StoresRepository, type StoreWithProducts } from '@/database/repositories/stores-repository';
+import { StoresRepository, type StoreWithProducts, type StoreWithSegments } from '@/database/repositories/stores-repository';
+
+const segmentInclude = { storeSegments: { include: { segment: true } } } as const;
 
 @Injectable()
 export class PrismaStoresRepository implements StoresRepository {
@@ -10,11 +12,15 @@ export class PrismaStoresRepository implements StoresRepository {
   async findMany(
     page: number,
     name?: string,
-  ): Promise<{ stores: Store[], total: number }> {
+    segmentSlugs?: string[],
+  ): Promise<{ stores: StoreWithSegments[], total: number }> {
     const pageSize = 20;
 
     const where: Prisma.StoreWhereInput = {
       status: 'ATIVA',
+      storeSegments: segmentSlugs?.length
+        ? { some: { segment: { slug: { in: segmentSlugs } } } }
+        : undefined,
       OR: name
         ? [
             { name: { contains: name, mode: 'insensitive' } },
@@ -26,11 +32,10 @@ export class PrismaStoresRepository implements StoresRepository {
     const [stores, total] = await this.prisma.$transaction([
       this.prisma.store.findMany({
         where,
+        include: segmentInclude,
         take: pageSize,
         skip: (page - 1) * pageSize,
-        orderBy: {
-          createdAt: 'asc',
-        },
+        orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
       }),
       this.prisma.store.count({ where }),
     ]);
@@ -78,6 +83,7 @@ export class PrismaStoresRepository implements StoresRepository {
       },
     },
     include: {
+      ...segmentInclude,
       products: {
         where: {
           status: 'ATIVO',
@@ -131,6 +137,7 @@ export class PrismaStoresRepository implements StoresRepository {
     const [stores, total] = await this.prisma.$transaction([
       this.prisma.store.findMany({
         where,
+        include: segmentInclude,
         take: pageSize,
         skip: (page - 1) * pageSize,
         orderBy: {
@@ -143,21 +150,36 @@ export class PrismaStoresRepository implements StoresRepository {
     return { stores, total };
   }
 
-  async create(data: Prisma.StoreUncheckedCreateInput): Promise<Store> {
-    return await this.prisma.store.create({
-      data,
-    });
+  async create(data: Prisma.StoreUncheckedCreateInput, segmentIds?: string[]): Promise<Store> {
+    try {
+      return await this.prisma.store.create({
+        data: { ...data, ...(segmentIds ? { storeSegments: { create: segmentIds.map(segmentId => ({ segmentId })) } } : {}) },
+      });
+    } catch (error) { this.handleSegmentAssignmentError(error); }
   }
 
-  async save(store: Store): Promise<Store> {
-    return await this.prisma.store.update({
+  async save(store: Store, segmentIds?: string[]): Promise<Store> {
+    // findBySlug includes relations for public display; never write those objects as scalar data.
+    const { storeSegments: _segments, ...data } = store as StoreWithSegments;
+    try { return await this.prisma.store.update({
       where: {
         id: store.id,
       },
       data: {
-        ...store,
+        ...data,
+        ...(segmentIds !== undefined ? { storeSegments: {
+          deleteMany: {},
+          create: segmentIds.map(segmentId => ({ segmentId })),
+        } } : {}),
       },
-    });
+    }); } catch (error) { this.handleSegmentAssignmentError(error); }
+  }
+
+  private handleSegmentAssignmentError(error: unknown): never {
+    if ((error as { code?: string })?.code === 'P2003') {
+      throw new BadRequestException('Um segmento não está mais disponível. Atualize a lista e tente novamente.');
+    }
+    throw error;
   }
 
   async saveImage(id: string, url: string, public_id: string): Promise<void> {
@@ -243,8 +265,9 @@ export class PrismaStoresRepository implements StoresRepository {
     return user;
   }
 
-  async findBySlug(slug: string): Promise<Store | null> {
+  async findBySlug(slug: string): Promise<StoreWithSegments | null> {
     const user = await this.prisma.store.findUnique({
+      include: segmentInclude,
       where: {
         slug,
       },

@@ -1,21 +1,23 @@
-import { Prisma, Store, Product, ProductImages } from "@prisma/client";
+import { Prisma, Store, Product, ProductImages, Segment } from "@prisma/client";
+
+export type StoreWithSegments = Store & { storeSegments?: { segment: Segment }[] };
 
 export type StoreWithProducts = Store & {
     products: Array<Product & { products_images?: ProductImages[] }>
 }
 
 export abstract class StoresRepository {
-    abstract create(data: Prisma.StoreUncheckedCreateInput): Promise<Store>
-    abstract save(store: Store): Promise<Store>
+    abstract create(data: Prisma.StoreUncheckedCreateInput, segmentIds?: string[]): Promise<Store>
+    abstract save(store: Store, segmentIds?: string[]): Promise<Store>
     abstract saveImage(id: string, url: string, public_id: string): Promise<void>
     abstract saveBanner(id: string, url: string, public_id: string): Promise<void>
     abstract disable(slug: string): Promise<void>
     abstract activate(slug: string): Promise<void>
     abstract findById(id: string): Promise<Store | null>
-    abstract findMany(page: number, name?: string): Promise<{stores: Store[], total: number}>
+    abstract findMany(page: number, name?: string, segmentSlugs?: string[]): Promise<{stores: StoreWithSegments[], total: number}>
     abstract findManyWithProducts(page: number, name?: string): Promise<{stores: StoreWithProducts[], total: number}>
     abstract findAll(page: number, name?: string): Promise<{stores: Store[], total: number}>
     abstract findBySLugAndEmail(slug: string, email: string): Promise<Store | null>
-    abstract findBySlug(slug: string): Promise<Store | null>
+    abstract findBySlug(slug: string): Promise<StoreWithSegments | null>
     abstract findByWhatsapp(whatsapp: string): Promise<Store | null>
 }

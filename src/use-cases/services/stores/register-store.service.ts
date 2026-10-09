@@ -8,6 +8,7 @@ import { CollaboratorsRepository } from '@/database/repositories/collaborators-r
 import { InputRegisterStroreDto } from './dtos/register-store.dto';
 import { StoresRepository } from '@/database/repositories/stores-repository';
 import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
+import { SegmentsService } from '../segments/segments.service';
 
 @Injectable()
 export class RegisterStoreService {
@@ -16,9 +17,11 @@ export class RegisterStoreService {
     private usersRepository: UsersRepository,
     private storesRepository: StoresRepository,
     private slugGenerator: SlugGeneratorService,
+    private segments: SegmentsService,
   ) {}
 
   async execute(data: InputRegisterStroreDto) {
+    await this.segments.validateIds(data.segmentIds);
     const existingStore = await this.storesRepository.findByWhatsapp(
       data.whatsapp,
     );
@@ -52,7 +55,7 @@ export class RegisterStoreService {
       email: data.store_email,
       slug,
       whatsapp: data.whatsapp,
-    });
+    }, data.segmentIds);
 
     const owner = await this.collaboratorsRepository.create({
       storeId: store.id,

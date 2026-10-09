@@ -48,13 +48,14 @@ export class RegisterStoreController {
     @Body(new ZodValidationPipes(registerStoreBodySchema))
     body: RegisterStoreBodySchema,
   ) {
-    const { store_name, store_email, owner_email, whatsapp } = body;
+    const { store_name, store_email, owner_email, whatsapp, segmentIds } = body;
 
     await this.registerStoreService.execute({
       store_name,
       owner_email,
       store_email,
       whatsapp,
+      segmentIds,
     });
   }
 }

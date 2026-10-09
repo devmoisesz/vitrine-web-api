@@ -6,15 +6,18 @@ import {
 import { StoresRepository } from '@/database/repositories/stores-repository';
 import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
 import { EditStoreDataBodySchema } from '@/http/zod/schema/store';
+import { SegmentsService } from '../segments/segments.service';
 
 @Injectable()
 export class EditStoreDataService {
   constructor(
     private storesRepository: StoresRepository,
     private slugGenerator: SlugGeneratorService,
+    private segments: SegmentsService,
   ) {}
 
   async execute(slug: string, data: EditStoreDataBodySchema) {
+    await this.segments.validateIds(data.segmentIds);
     const store = await this.storesRepository.findBySlug(slug);
 
     if (!store) {
@@ -68,6 +71,6 @@ export class EditStoreDataService {
       payment_methods: data.newPaymentMethods ?? store.payment_methods,
       delivery_methods: data.newDeliveryMethods ?? store.delivery_methods,
       createdAt: store.createdAt,
-    });
+    }, data.segmentIds);
   }
 }

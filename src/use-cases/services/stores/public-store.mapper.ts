@@ -1,11 +1,10 @@
-import type { Store } from '@prisma/client';
-import type { StoreWithProducts } from '@/database/repositories/stores-repository';
+import type { StoreWithSegments, StoreWithProducts } from '@/database/repositories/stores-repository';
 import type {
   PublicHomeStoreDto,
   PublicStoreDto,
 } from './dtos/public-store.dto';
 
-export function toPublicStore(store: Store): PublicStoreDto {
+export function toPublicStore(store: StoreWithSegments): PublicStoreDto {
   return {
     id: store.id,
     name: store.name,
@@ -13,6 +12,7 @@ export function toPublicStore(store: Store): PublicStoreDto {
     description: store.description,
     logo_image_url: store.logo_image_url,
     bannerUrl: store.bannerUrl,
+    segments: (store.storeSegments ?? []).map(({ segment }) => ({ id: segment.id, name: segment.name, slug: segment.slug })),
   };
 }
 

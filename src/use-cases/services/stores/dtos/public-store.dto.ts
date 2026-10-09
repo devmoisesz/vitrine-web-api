@@ -1,9 +1,9 @@
-import type { Product, ProductImages, Store } from '@prisma/client';
+import type { Product, ProductImages, Store, Segment } from '@prisma/client';
 
 export type PublicStoreDto = Pick<
   Store,
   'id' | 'name' | 'slug' | 'description' | 'logo_image_url' | 'bannerUrl'
->;
+> & { segments: Segment[] };
 
 export type PublicProductImageDto = Pick<
   ProductImages,

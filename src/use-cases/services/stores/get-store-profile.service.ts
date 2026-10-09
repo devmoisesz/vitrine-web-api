@@ -23,6 +23,7 @@ export class GetStoreProfileService {
 
     return {
       name: store.name,
+      segments: (store.storeSegments ?? []).map(({ segment }) => ({ id: segment.id, name: segment.name, slug: segment.slug })),
       description: store.description,
       logo_url: store.logo_image_url,
       banner_url: store.bannerUrl,

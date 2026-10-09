@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import type { Segment } from '@prisma/client';
+import { SegmentResponseSwaggerDto } from './segments.swagger.dto';
 import type {
   PublicHomeProductDto,
   PublicHomeStoreDto,
@@ -7,6 +9,7 @@ import type {
 } from '@/use-cases/services/stores/dtos/public-store.dto';
 
 export class PublicStoreResponseSwaggerDto implements PublicStoreDto {
+  @ApiProperty({ type: [SegmentResponseSwaggerDto] }) segments!: Segment[];
   @ApiProperty() id!: string;
   @ApiProperty() name!: string;
   @ApiProperty() slug!: string;
