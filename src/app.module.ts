@@ -3,7 +3,8 @@ import { ConfigModule } from "@nestjs/config";
 import { envSchema } from './env/env';
 import { HttpModule } from './http/http.module';
 import { AuthModule } from './auth/auth.module';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ApiThrottlerGuard } from './auth/api-throttler.guard';
 import { APP_GUARD } from '@nestjs/core';
 
 @Module({
@@ -25,7 +26,7 @@ import { APP_GUARD } from '@nestjs/core';
   providers: [
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard
+      useClass: ApiThrottlerGuard
     }
   ]
 })

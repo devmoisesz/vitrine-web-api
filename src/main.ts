@@ -13,6 +13,7 @@ async function bootstrap() {
     origin: ['https://vitrineweb-app.vercel.app', 'http://localhost:3000'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
+    exposedHeaders: ['Retry-After', 'X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'X-Total-Count'],
   });
 
   const config = new DocumentBuilder()
