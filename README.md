@@ -22,6 +22,8 @@
 
 ## 🎯 Visão Geral
 
+O diretório agora permite [segmentos administráveis e filtros de lojas](docs/segmentos.md). O guia inclui os contratos, a migração incremental e os cuidados para preservar os dados existentes.
+
 Vitrine Web oferece presença digital para lojas de moda e aproxima clientes do atendimento de cada lojista. A experiência pública oferece:
 
 - **Diretório de marcas**: Clientes escolhem uma loja e exploram seu catálogo próprio

@@ -4,6 +4,8 @@ import { StoresInMemoryRepository } from '../../../../test/in-memory-repository/
 import { makeStore } from '../../../../test/factories/make-store';
 import { EditStoreDataService } from './edit-store-data.service';
 import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
+import { SegmentsService } from '../segments/segments.service';
+import { SegmentsInMemoryRepository } from '../../../../test/in-memory-repository/segments-in-memory-repository';
 
 let storesRepository: StoresInMemoryRepository;
 let slugGenerator: SlugGeneratorService
@@ -13,7 +15,7 @@ describe('Edit Data Store Service', () => {
   beforeEach(() => {
     storesRepository = new StoresInMemoryRepository()
     slugGenerator = new SlugGeneratorService(storesRepository)
-    sut = new EditStoreDataService(storesRepository, slugGenerator);
+    sut = new EditStoreDataService(storesRepository, slugGenerator, new SegmentsService(new SegmentsInMemoryRepository()));
   });
 
   it('should be possible to update store data.', async () => {

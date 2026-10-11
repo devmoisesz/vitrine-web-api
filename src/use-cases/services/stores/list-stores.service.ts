@@ -10,8 +10,9 @@ export class ListStoresService {
   async execute(
     page: number,
     name?: string,
+    segmentSlugs?: string[],
   ): Promise<{ stores: PublicStoreDto[]; total: number }> {
-    const { stores, total } = await this.storesRepository.findMany(page, name);
+    const { stores, total } = await this.storesRepository.findMany(page, name, segmentSlugs);
     return { stores: stores.map(toPublicStore), total };
   }
 }

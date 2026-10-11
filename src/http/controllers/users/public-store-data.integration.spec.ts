@@ -29,6 +29,7 @@ describe('SEG-05 public store responses (HTTP integration)', () => {
     description: 'Roupas',
     logo_image_url: 'https://example.com/logo.png',
     bannerUrl: 'https://example.com/banner.png',
+    segments: [],
   };
   const image = {
     id: 'image-a',
@@ -146,7 +147,8 @@ describe('SEG-05 public store responses (HTTP integration)', () => {
         .get(path)
         .query({ name: 'Loja', page: 2 })
         .expect(200);
-      expect(lookup).toHaveBeenCalledExactlyOnceWith('2', 'Loja');
+      if (path === '/stores') expect(lookup).toHaveBeenCalledExactlyOnceWith(2, 'Loja', []);
+      else expect(lookup).toHaveBeenCalledExactlyOnceWith('2', 'Loja');
       expect(response.body.map((store: { id: string }) => store.id)).toEqual([
         'store-b',
         'store-a',

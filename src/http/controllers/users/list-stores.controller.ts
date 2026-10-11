@@ -1,4 +1,6 @@
 import { Public } from '@/auth/public';
+import { ZodValidationPipes } from '@/http/zod/pipes/zod-validation-pipe';
+import { storesQuerySchema, type StoresQuery } from '@/http/zod/schema/segments';
 import { PublicStoreResponseSwaggerDto } from '@/http/zod/swagger/public-stores.swagger.dto';
 import { ListStoresService } from '@/use-cases/services/stores/list-stores.service';
 import { Controller, Get, HttpCode, Query, Res } from '@nestjs/common';
@@ -40,12 +42,12 @@ export class ListStoresController {
     type: PublicStoreResponseSwaggerDto,
     isArray: true,
   })
+  @ApiQuery({ name: 'segments', required: false, description: 'Slugs separados por vírgula; corresponde a pelo menos um segmento.' })
   async handle(
     @Res({ passthrough: true }) res: Response,
-    @Query('name') name?: string,
-    @Query('page') page: number = 1,
+    @Query(new ZodValidationPipes(storesQuerySchema)) query: StoresQuery,
   ) {
-    const { stores, total } = await this.listStoresService.execute(page, name);
+    const { stores, total } = await this.listStoresService.execute(query.page, query.name, query.segments);
 
     res.setHeader('X-Total-Count', total.toString())
 

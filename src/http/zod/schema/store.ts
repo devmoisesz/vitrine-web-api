@@ -1,6 +1,8 @@
 import z from 'zod';
+import { segmentIdsSchema } from './segments';
 
 export const registerStoreBodySchema = z.object({
+  segmentIds: segmentIdsSchema.optional(),
   store_name: z.string({ message: 'O nome da loja é obrigatório' }).trim(),
 
   store_email: z
@@ -37,6 +39,7 @@ export const deliveryMethodEnum = z.enum([
 ]);
 
 export const editStoreDataBodySchema = z.object({
+  segmentIds: segmentIdsSchema.optional(),
   newName: z.string().trim().optional(),
 
   newEmail: z

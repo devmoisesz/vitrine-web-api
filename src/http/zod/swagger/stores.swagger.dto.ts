@@ -1,6 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class RegisterStoreBodySwaggerDto {
+  @ApiPropertyOptional({ type: [String], description: 'IDs de segmentos existentes, sem repetições.' })
+  segmentIds?: string[];
   @ApiProperty({
     description: 'Store name.',
     example: 'Loja Exemplo',
@@ -61,6 +63,8 @@ export class StoreResponseSwaggerDto {
 }
 
 export class EditStoreDataBodySwaggerDto {
+  @ApiPropertyOptional({ type: [String], description: 'Substitui os segmentos; [] remove todos; omitido preserva.' })
+  segmentIds?: string[];
   @ApiPropertyOptional({
     example: 'Nova Loja',
   })

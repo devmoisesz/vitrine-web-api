@@ -340,7 +340,6 @@ export class ProductsInMemoryRepository implements ProductsRepository {
       description: product.description ?? currentProduct.description,
       price: product.price ? new Decimal(product.price) : currentProduct.price,
       stock: product.stock ?? currentProduct.stock,
-      status: product.status ?? currentProduct.status,
       storeId: product.storeId ?? currentProduct.storeId,
       categoryId: product.categoryId ?? currentProduct.categoryId,
       subcategoryId: product.subcategoryId ?? currentProduct.subcategoryId,

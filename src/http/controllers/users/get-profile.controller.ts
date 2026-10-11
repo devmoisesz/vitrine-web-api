@@ -1,5 +1,7 @@
 import { CurrentUser } from '@/auth/current-user-decorator';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard';
+import { ThrottleByUser } from '@/auth/api-throttler.guard';
+import { Throttle } from '@nestjs/throttler';
 import { UserPayload } from '@/auth/jwt-payload';
 import { GetProfileResponseSwaggerDto } from '@/http/zod/swagger/users.swagger.dto';
 import { OutputGetProfileDto } from '@/use-cases/services/users/dtos/get-profile.dto';
@@ -9,6 +11,8 @@ import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedRes
 
 @Controller('/me')
 @UseGuards(JwtAuthGuard)
+@ThrottleByUser()
+@Throttle({ default: { limit: 120, ttl: 60000 } })
 @ApiTags('Get Profile')
 @ApiBearerAuth()
 export class GetProfileController {

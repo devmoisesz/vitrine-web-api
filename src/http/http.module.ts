@@ -1,4 +1,7 @@
 import { DatabaseModule } from '@/database/database.module';
+import { SegmentsService } from '@/use-cases/services/segments/segments.service';
+import { SegmentsController } from './controllers/admin/segments.controller';
+import { ListSegmentsController } from './controllers/users/list-segments.controller';
 import { AuthModule } from '@/auth/auth.module';
 import { Module } from '@nestjs/common';
 import { CreateAccountService } from '@/use-cases/services/users/create-account.service';
@@ -120,6 +123,8 @@ import { ListStoreHomeService } from '@/use-cases/services/stores/list-store-hom
 @Module({
   imports: [DatabaseModule, StorageModule, AuthModule],
   controllers: [
+    SegmentsController,
+    ListSegmentsController,
     CreateAccountController,
     AuthenticateController,
     RegisterCollaboratorController,
@@ -179,6 +184,7 @@ import { ListStoreHomeService } from '@/use-cases/services/stores/list-store-hom
     ListStoreHomeController
   ],
   providers: [
+    SegmentsService,
     CreateAccountService,
     AuthenticateService,
     RegisterCollaboratorService,

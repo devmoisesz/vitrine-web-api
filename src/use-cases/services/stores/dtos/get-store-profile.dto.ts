@@ -1,6 +1,7 @@
-import { Address } from "@prisma/client"
+import { Address, Segment } from "@prisma/client"
 
 export interface OutputStoreProfileDto {
+    segments: Segment[]
     name: string
     logo_url: string | null
     banner_url: string | null

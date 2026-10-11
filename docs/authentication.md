@@ -159,6 +159,11 @@ Para o frontend, o modelo esperado é:
 4. Em caso de expirado ou inválido, chamar `/refresh` sem precisar manipular o refresh token manualmente.
 5. Tratar erros `401` e `403` como sinais de sessão expirada, sem permissão ou necessidade de reautenticação.
 6. Nunca depender de `localStorage` ou `sessionStorage` para o refresh token.
+7. `429`, indisponibilidade e falhas de rede não invalidam a sessão. Respeite `Retry-After` antes de tentar novamente.
+
+### Limites de consultas de perfil
+
+`GET /me` admite 120 requisições por minuto por usuário identificado por um access token RS256 válido. A rotação de tokens não reinicia o contador. Tokens inválidos compartilham o contador por IP; o `JwtAuthGuard` continua verificando a sessão persistida e as permissões atuais. As demais rotas mantêm o limite existente de 20 requisições por minuto por IP. Os cabeçalhos de limite e `Retry-After` são expostos ao navegador pelo CORS.
 
 ## 8. Resumo prático
 

@@ -9,6 +9,8 @@ import { RegisterStoreService } from './register-store.service';
 import { faker } from '@faker-js/faker';
 import { makeEmail } from '../../../../test/factories/make-email';
 import { SlugGeneratorService } from '@/use-cases/utils/generate-slug.service';
+import { SegmentsService } from '../segments/segments.service';
+import { SegmentsInMemoryRepository } from '../../../../test/in-memory-repository/segments-in-memory-repository';
 
 let usersRepository: UsersInMemoryRepository;
 let collaboratorsRepository: CollaboratorsInMemoryRepository;
@@ -26,7 +28,8 @@ describe('Register Collaborator Service', () => {
       collaboratorsRepository,
       usersRepository,
       storesRepository,
-      slugGenerator
+      slugGenerator,
+      new SegmentsService(new SegmentsInMemoryRepository()),
     );
   });
 

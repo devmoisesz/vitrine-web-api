@@ -96,6 +96,7 @@ describe('List Stores (E2E)', () => {
         description: 'Pants Black Masculine',
         logo_image_url: null,
         bannerUrl: null,
+        segments: [],
       },
     ]);
   });
